@@ -1,0 +1,16 @@
+{% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}
+
+{% block cms_breadcrumb %}
+    {% if activeRoute != 'frontend.home.page' %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
+
+{% block page_content %}
+    {% if activeRoute == 'frontend.home.page' %}
+        {% sw_include '@ZandersTheme/storefront/page/content/zanders-hero.html.twig' %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+

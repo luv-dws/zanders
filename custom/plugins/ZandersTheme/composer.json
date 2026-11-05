@@ -1,0 +1,32 @@
+{
+  "name": "zanders/zanders-theme",
+  "description": "ZANDERS Shopware 6 Custom Storefront Theme",
+  "version": "1.0.0",
+  "type": "shopware-platform-plugin",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ZANDERS Development Team"
+    }
+  ],
+  "require": {
+    "shopware/core": "~6.7.0",
+    "shopware/storefront": "~6.7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "ZandersTheme\\": "src/"
+    }
+  },
+  "extra": {
+    "shopware-plugin-class": "ZandersTheme\\ZandersTheme",
+    "label": {
+      "de-DE": "Zanders Theme",
+      "en-GB": "Zanders Theme"
+    },
+    "description": {
+      "de-DE": "Benutzerdefiniertes Shopware 6 Theme für ZANDERS",
+      "en-GB": "Custom Shopware 6 Storefront Theme for ZANDERS"
+    }
+  }
+}

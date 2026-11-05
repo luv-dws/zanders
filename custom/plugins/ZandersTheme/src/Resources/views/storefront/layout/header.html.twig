@@ -1,0 +1,23 @@
+{% sw_extends '@Storefront/storefront/layout/header.html.twig' %}
+
+{% block base_header %}
+    {% sw_include '@Storefront/storefront/utilities/staging-info.html.twig' %}
+
+    {% sw_include '@Storefront/storefront/layout/header/top-bar.html.twig' %}
+
+    <header class="header-main zanders-header-main">
+        {% block base_header_inner %}
+            <div class="zanders-container-fluid h-100">
+                {% sw_include '@Storefront/storefront/layout/header/header.html.twig' %}
+            </div>
+        {% endblock %}
+    </header>
+{% endblock %}
+
+{% block base_navigation %}
+    <div class="nav-main zanders-nav-main">
+        {% block base_navigation_inner %}
+            {% sw_include '@Storefront/storefront/layout/navbar/navbar.html.twig' with { header: header } %}
+        {% endblock %}
+    </div>
+{% endblock %}

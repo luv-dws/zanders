@@ -1,0 +1,35 @@
+/*
+ * ZandersTheme SCSS Variable Overrides
+ * ----------------------------------------------------
+ * Overrides Bootstrap and Shopware Storefront defaults
+ * before the core styles are compiled.
+ */
+
+// Brand Colors from Figma Frame Specs
+$primary: #991020 !default;           // Frame 11: #991020
+$secondary: #343434 !default;         // Frame 61: #343434
+$dark: #121212 !default;
+$light: #f8f9fa !default;
+
+// Theme brand color tokens
+$theme-color-primary: $primary !default;
+$theme-color-secondary: $secondary !default;
+
+// Typography Defaults
+$font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !default;
+$font-size-base: 0.9375rem !default;
+$line-height-base: 1.5 !default;
+
+// Storefront Layout Variables
+$container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1200px,
+    xxl: 1440px
+) !default;
+
+$grid-gutter-width: 20px !default;
+$border-radius: 4px !default;
+$border-radius-lg: 6px !default;
+$border-radius-sm: 2px !default;

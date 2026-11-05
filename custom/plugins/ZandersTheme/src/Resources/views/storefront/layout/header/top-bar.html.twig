@@ -1,0 +1,62 @@
+{% sw_extends '@Storefront/storefront/layout/header/top-bar.html.twig' %}
+
+{% block layout_header_top_bar %}
+    <div class="top-bar zanders-top-bar">
+        <div class="zanders-container-fluid h-100">
+            <div class="d-flex justify-content-between align-items-center h-100">
+                <div class="d-flex align-items-center gap-4 top-bar-left">
+                    <a href="tel:8008514373" class="top-bar-item text-decoration-none">
+                        <span class="top-bar-circle-icon">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.44-5.15-3.75-6.59-6.59l1.97-1.57c.26-.26.35-.65.24-1.01A11.36 11.36 0 0 1 8.96 4.3a1 1 0 0 0-1-1H4.3a1 1 0 0 0-1 1C3.3 13.9 10.1 20.7 19.01 20.7a1 1 0 0 0 1-1v-3.66c0-.55-.45-1-1-1z"/>
+                            </svg>
+                        </span>
+                        <span class="top-bar-text">800.851.4373</span>
+                    </a>
+
+                    <div class="top-bar-item d-none d-md-flex align-items-center">
+                        <span class="top-bar-circle-icon">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </span>
+                        <div class="top-bar-schedule-text">
+                            <div>Mon - Fri</div>
+                            <div>8:00AM to 4:30PM CST</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 top-bar-right">
+                    <span class="top-bar-welcome d-none d-md-inline">Welcome to Zanders Sporting Goods!</span>
+                    {% if context.customer %}
+                        <a href="{{ path('frontend.account.home.page') }}" class="top-bar-item text-decoration-none">
+                            <span class="top-bar-circle-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </span>
+                            <span class="top-bar-text">{{ context.customer.firstName }}</span>
+                        </a>
+                        <a href="{{ path('frontend.account.logout.page') }}" class="top-bar-item text-decoration-none ms-2">
+                            <span class="top-bar-text small">LogOut</span>
+                        </a>
+                    {% else %}
+                        <a href="{{ path('frontend.account.login.page') }}" class="top-bar-item text-decoration-none">
+                            <span class="top-bar-circle-icon">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 8 16 12 12 16"></polyline>
+                                    <line x1="8" y1="12" x2="16" y2="12"></line>
+                                </svg>
+                            </span>
+                            <span class="top-bar-text">Login</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

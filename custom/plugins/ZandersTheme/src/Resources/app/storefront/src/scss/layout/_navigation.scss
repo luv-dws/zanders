@@ -1,0 +1,352 @@
+// Navigation Layout Styles (Figma Frame 61)
+
+// ==========================================
+// Frame 61: Navigation Bar
+// width: 1920; height: 60; top: 204px; padding: 240px; background: #343434; gap: 8px;
+// ==========================================
+.nav-main.zanders-nav-main {
+    height: 60px;
+    background-color: #343434;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    position: relative;
+    z-index: 1000;
+}
+
+.zanders-navbar-wrapper {
+    background-color: #343434;
+    height: 60px;
+    width: 100%;
+}
+
+.zanders-main-nav {
+    height: 60px;
+    padding: 0;
+    background-color: transparent;
+
+    // Catalog Dropdown & Header Button
+    .zanders-catalog-dropdown-wrapper {
+        position: relative;
+        height: 60px;
+        flex-shrink: 0;
+
+        &:hover .zanders-catalog-dropdown-menu,
+        &.is-open .zanders-catalog-dropdown-menu {
+            display: block;
+        }
+    }
+
+    // On homepage desktop, keep Catalog dropdown open by default (matching reference website)
+    @media (min-width: 992px) {
+        .is-active-route-frontend-home-page & {
+            .zanders-catalog-dropdown-menu {
+                display: block;
+            }
+
+            .zanders-catalog-dropdown-wrapper.is-closed .zanders-catalog-dropdown-menu {
+                display: none;
+            }
+        }
+    }
+
+    .zanders-catalog-header-btn {
+        width: 240px;
+        min-width: 240px;
+        max-width: 240px;
+        height: 60px;
+        background-color: #5a5e62;
+        color: #FFFFFF;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: 0.8px;
+        cursor: pointer;
+        user-select: none;
+        flex-shrink: 0;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background-color: #676c71;
+        }
+
+        .zanders-grid-icon {
+            display: inline-flex;
+            align-items: center;
+        }
+    }
+
+    // Dynamic Category Dropdown (shown on hover over Catalog)
+    .zanders-catalog-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 240px;
+        background-color: #f7f8fa;
+        border: 1px solid #dce0e5;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+        z-index: 1050;
+
+        .zanders-catalog-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .zanders-catalog-item {
+            position: relative;
+            border-bottom: 1px solid #e2e5e9;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover > .zanders-catalog-flyout {
+                display: block;
+            }
+
+            &:hover > .zanders-catalog-link {
+                background-color: #ffffff;
+                color: #991020;
+
+                .zanders-chevron {
+                    color: #991020;
+                    transform: translateX(3px);
+                }
+            }
+        }
+
+        .zanders-catalog-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 11px 16px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #2b2f38;
+            text-decoration: none;
+            background-color: #f1f3f6;
+            transition: background-color 0.15s ease, color 0.15s ease;
+
+            .zanders-chevron {
+                font-size: 0.75rem;
+                color: #8c939d;
+                transition: transform 0.15s ease, color 0.15s ease;
+            }
+        }
+    }
+
+    // Flyout panels for subcategories (levels 2 & 3)
+    .zanders-catalog-flyout {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: -1px;
+        min-width: 240px;
+        background-color: #ffffff;
+        border: 1px solid #dce0e5;
+        box-shadow: 4px 6px 18px rgba(0, 0, 0, 0.15);
+        z-index: 1060;
+
+        .zanders-flyout-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .zanders-flyout-item {
+            position: relative;
+            border-bottom: 1px solid #f0f2f5;
+
+            &:last-child {
+                border-bottom: none;
+            }
+
+            &:hover > .zanders-catalog-subflyout {
+                display: block;
+            }
+
+            &:hover > .zanders-flyout-link {
+                background-color: #f7f8fa;
+                color: #991020;
+
+                .zanders-chevron {
+                    color: #991020;
+                    transform: translateX(3px);
+                }
+            }
+        }
+
+        .zanders-flyout-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: #333333;
+            text-decoration: none;
+            background-color: #ffffff;
+            transition: background-color 0.15s ease, color 0.15s ease;
+
+            .zanders-chevron {
+                font-size: 0.75rem;
+                color: #8c939d;
+                transition: transform 0.15s ease, color 0.15s ease;
+            }
+        }
+    }
+
+    .zanders-menu-list {
+        display: flex;
+        align-items: center;
+        gap: 8px; // From Figma: gap: 8px
+        height: 60px;
+        margin: 0;
+        padding: 0 0 0 16px;
+        list-style: none;
+
+        .nav-item {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            position: relative;
+
+            .zanders-nav-link {
+                color: #FFFFFF !important;
+                font-weight: 700;
+                font-size: 13.5px;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                padding: 0 16px !important;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+                position: relative;
+                transition: color 0.15s ease;
+
+                &:hover {
+                    color: #FFFFFF !important;
+                }
+            }
+
+            // Active underline for ZANDERS EXCLUSIVE (as shown in Figma Frame 61)
+            &.is-active,
+            &.item-zanders-exclusive {
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 16px;
+                    right: 16px;
+                    height: 4px;
+                    background-color: #991020;
+                    border-radius: 2px 2px 0 0;
+                }
+            }
+        }
+    }
+}
+
+// Floating Side Badges on Left Viewport Edge
+.zanders-floating-finders {
+    position: fixed;
+    left: 0;
+    top: 260px;
+    z-index: 1040;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    .zanders-floating-tab {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 12px 6px;
+        color: #FFFFFF;
+        text-decoration: none;
+        font-size: 0.75rem;
+        font-weight: 700;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        border-radius: 4px 0 0 4px;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        transition: transform 0.2s ease, padding 0.2s ease, opacity 0.2s ease;
+
+        &:hover {
+            opacity: 0.95;
+            color: #FFFFFF;
+        }
+
+        .zanders-tab-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(90deg);
+        }
+
+        .zanders-tab-text {
+            letter-spacing: 0.5px;
+        }
+    }
+
+    .zanders-tab-firearms {
+        background-color: #991020;
+    }
+
+    .zanders-tab-ammo {
+        background-color: #5a5e62;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .zanders-floating-finders {
+        display: none;
+    }
+
+    .zanders-catalog-dropdown-wrapper {
+        width: 100% !important;
+    }
+
+    .zanders-catalog-header-btn {
+        width: 100% !important;
+        min-width: 100% !important;
+    }
+
+    .zanders-catalog-dropdown-menu {
+        width: 100% !important;
+        position: static;
+    }
+
+    .zanders-catalog-flyout {
+        position: static;
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .zanders-menu-list {
+        flex-wrap: wrap;
+        height: auto !important;
+        padding: 8px !important;
+
+        .nav-item {
+            height: auto !important;
+
+            .zanders-nav-link {
+                height: 40px !important;
+                padding: 0 10px !important;
+            }
+
+            &.is-active::after {
+                display: none;
+            }
+        }
+    }
+}

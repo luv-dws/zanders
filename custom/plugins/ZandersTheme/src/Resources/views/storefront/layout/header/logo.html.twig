@@ -1,0 +1,9 @@
+{% sw_extends '@Storefront/storefront/layout/header/logo.html.twig' %}
+
+{% block layout_header_logo_image %}
+    <picture class="header-logo-picture d-block m-auto">
+        <img src="{{ asset('assets/zanders-logo.png', 'theme') }}"
+             alt="ZANDERS America's Distribution Company Since 1962"
+             class="img-fluid header-logo-main-img zanders-logo-img">
+    </picture>
+{% endblock %}

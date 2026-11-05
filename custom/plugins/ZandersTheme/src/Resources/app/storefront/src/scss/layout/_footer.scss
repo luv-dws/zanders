@@ -1,0 +1,16 @@
+// Footer Layout Styles
+
+.footer-main {
+    background-color: $zanders-secondary;
+    color: $zanders-white;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+    a {
+        color: $zanders-gray-300;
+
+        &:hover {
+            color: $zanders-white;
+        }
+    }
+}

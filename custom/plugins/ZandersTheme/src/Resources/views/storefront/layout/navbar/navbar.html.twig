@@ -1,0 +1,91 @@
+{% sw_extends '@Storefront/storefront/layout/navbar/navbar.html.twig' %}
+
+{% block layout_navbar %}
+    <div class="zanders-navbar-wrapper">
+        <div class="zanders-container-fluid h-100">
+            <nav class="navbar navbar-expand-lg zanders-main-nav p-0 h-100" id="main-navigation-menu" aria-label="Main Navigation">
+                <div class="d-flex align-items-center w-100 h-100">
+                    <div class="zanders-catalog-dropdown-wrapper position-relative">
+                        <div class="zanders-catalog-header-btn d-flex align-items-center" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false">
+                            <span class="zanders-grid-icon me-2">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+                                    <circle cx="5" cy="5" r="3.2"></circle>
+                                    <circle cx="19" cy="5" r="3.2"></circle>
+                                    <circle cx="5" cy="19" r="3.2"></circle>
+                                    <circle cx="19" cy="19" r="3.2"></circle>
+                                </svg>
+                            </span>
+                            <span class="zanders-catalog-title">CATALOG</span>
+                        </div>
+
+                        <div class="zanders-catalog-dropdown-menu">
+                            <ul class="zanders-catalog-list">
+                                {% for treeItem in header.navigation.tree %}
+                                    {% set category = treeItem.category %}
+                                    {% set name = category.translated.name %}
+                                    {% set hasChildren = treeItem.children|length > 0 %}
+                                    {% set itemSkipped = category.type == 'folder' and not hasChildren %}
+
+                                    {% if not itemSkipped %}
+                                        <li class="zanders-catalog-item{% if hasChildren %} has-children{% endif %}">
+                                            <a href="{{ category.seoUrl ?: category_url(category) ?: '#' }}"
+                                               class="zanders-catalog-link"
+                                               {% if category.type != 'folder' and category.shouldOpenInNewTab %}target="_blank"{% endif %}
+                                               title="{{ name }}">
+                                                <span>{{ name }}</span>
+                                                {% if hasChildren %}
+                                                    <span class="zanders-chevron">▸</span>
+                                                {% endif %}
+                                            </a>
+
+                                            {% if hasChildren %}
+                                                <div class="zanders-catalog-flyout">
+                                                    <ul class="zanders-flyout-list">
+                                                        {% for childItem in treeItem.children %}
+                                                            {% set childCat = childItem.category %}
+                                                            {% set childHasChildren = childItem.children|length > 0 %}
+                                                            <li class="zanders-flyout-item{% if childHasChildren %} has-children{% endif %}">
+                                                                <a href="{{ childCat.seoUrl ?: category_url(childCat) ?: '#' }}"
+                                                                   class="zanders-flyout-link"
+                                                                   title="{{ childCat.translated.name }}">
+                                                                    <span>{{ childCat.translated.name }}</span>
+                                                                    {% if childHasChildren %}
+                                                                        <span class="zanders-chevron">▸</span>
+                                                                    {% endif %}
+                                                                </a>
+                                                            </li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                </div>
+                                            {% endif %}
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="collapse navbar-collapse show zanders-nav-collapse h-100" id="main_nav">
+                        <ul class="navbar-nav zanders-menu-list flex-row align-items-center h-100">
+                            <li class="nav-item item-zanders-exclusive is-active">
+                                <a class="nav-link zanders-nav-link" href="#">ZANDERS EXCLUSIVE</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link zanders-nav-link" href="#">ON SALE</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link zanders-nav-link" href="#">CLOSE OUT</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link zanders-nav-link" href="#">NEW ITEMS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link zanders-nav-link" href="#">CONTACT US</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+{% endblock %}

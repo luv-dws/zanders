@@ -1,0 +1,37 @@
+// Button Component Styling
+
+.btn {
+    border-radius: $zanders-border-radius;
+    font-weight: $zanders-font-weight-medium;
+    letter-spacing: 0.3px;
+    transition: $zanders-transition-base;
+    padding: 0.625rem 1.25rem;
+
+    &:focus,
+    &.focus {
+        box-shadow: 0 0 0 0.2rem rgba(200, 16, 46, 0.25);
+    }
+}
+
+.btn-primary {
+    @include zanders-button-variant($zanders-primary, $zanders-white, $zanders-primary-hover);
+    font-weight: $zanders-font-weight-bold;
+}
+
+.btn-secondary {
+    @include zanders-button-variant($zanders-secondary, $zanders-white, $zanders-secondary-hover);
+}
+
+.btn-outline-primary {
+    color: $zanders-primary;
+    border-color: $zanders-primary;
+    background-color: transparent;
+
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: $zanders-primary;
+        border-color: $zanders-primary;
+        color: $zanders-white;
+    }
+}

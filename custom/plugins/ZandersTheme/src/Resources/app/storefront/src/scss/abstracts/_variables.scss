@@ -1,0 +1,48 @@
+// ZandersTheme Custom Variables & Tokens
+
+// Color Palette (Updated from Figma specifications)
+$zanders-primary: #991020;            // Frame 11 & active indicator: #991020
+$zanders-primary-hover: #7d0d1a;
+$zanders-secondary: #343434;          // Frame 61: #343434
+$zanders-secondary-hover: #484848;
+$zanders-nav-bg: #343434;             // Frame 61: #343434
+$zanders-header-bg: #FFFFFF;          // Frame 1171276222: #FFFFFF
+$zanders-header-shadow: 0px 4px 44px 0px rgba(0, 0, 0, 0.0784); // #00000014
+$zanders-catalog-btn-bg: #5a5e62;     // Lighter grey catalog trigger button
+
+$zanders-dark: #121212;
+$zanders-light: #f8f9fa;
+$zanders-white: #ffffff;
+$zanders-gray-100: #f8f9fa;
+$zanders-gray-200: #e8ebee;
+$zanders-gray-300: #dee2e6;
+$zanders-gray-600: #6c757d;
+$zanders-gray-800: #343a40;
+
+// Dimensions (Exact Figma Frame values)
+$zanders-topbar-height: 55px;         // Frame 11: height: 55
+$zanders-header-height: 146px;        // Frame 1171276222: height: 146
+$zanders-navbar-height: 60px;         // Frame 61: height: 60
+$zanders-sidebar-width: 240px;
+
+// Canvas & Horizontal Padding (Frame 11, 1171276222, 61: width 1920, padding: 240px)
+$zanders-canvas-width: 1920px;
+$zanders-canvas-padding-x: 240px;
+$zanders-frame-gap: 8px;
+
+// Typography Tokens
+$zanders-font-family-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+$zanders-font-family-heading: $zanders-font-family-sans;
+$zanders-font-size-base: 0.9375rem;
+$zanders-font-size-sm: 0.8125rem;
+$zanders-font-size-lg: 1.125rem;
+$zanders-font-size-h1: 1.875rem;
+$zanders-font-size-h2: 1.5rem;
+$zanders-font-size-h3: 1.25rem;
+$zanders-line-height-base: 1.5;
+$zanders-font-weight-normal: 400;
+$zanders-font-weight-medium: 500;
+$zanders-font-weight-bold: 700;
+
+$zanders-border-radius: 4px;
+$zanders-transition-base: all 0.15s ease-in-out;

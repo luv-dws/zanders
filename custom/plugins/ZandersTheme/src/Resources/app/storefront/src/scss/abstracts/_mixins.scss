@@ -1,0 +1,24 @@
+// ZandersTheme SCSS Mixins
+
+@mixin zanders-button-variant($background, $color, $hover-background, $hover-color: $color) {
+    background-color: $background;
+    color: $color;
+    border-color: $background;
+
+    &:hover,
+    &:focus,
+    &:active {
+        background-color: $hover-background;
+        border-color: $hover-background;
+        color: $hover-color;
+    }
+}
+
+@mixin zanders-card-shadow {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+}
