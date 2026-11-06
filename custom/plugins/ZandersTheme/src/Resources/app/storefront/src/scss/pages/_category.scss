@@ -1,0 +1,369 @@
+// Category Listing Page Styles for Zanders Theme
+
+.zanders-category-page-wrapper {
+    background-color: #ffffff;
+    padding: 1.5rem 0 4rem 0;
+    width: 100%;
+}
+
+.zanders-category-container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+// 3-Column Layout Grid: Side columns maintain their spacing without content so the center product listing maintains its exact position and width
+.zanders-category-layout-grid {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr) 220px;
+    gap: 24px;
+    align-items: start;
+
+    @media (max-width: 1199.98px) {
+        grid-template-columns: 200px minmax(0, 1fr) 200px;
+        gap: 16px;
+    }
+
+    @media (max-width: 991.98px) {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+}
+
+// Product listing section kept in its current column 2 position and maintaining its width
+.zanders-category-main-content {
+    grid-column: 2;
+    min-width: 0;
+
+    @media (max-width: 991.98px) {
+        grid-column: 1;
+    }
+
+    .zanders-category-breadcrumb {
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-bottom: 0.625rem;
+
+        .zanders-breadcrumb-link {
+            color: #64748b;
+            text-decoration: none;
+
+            &:hover {
+                color: #991020;
+            }
+        }
+
+        .zanders-breadcrumb-separator {
+            margin: 0 4px;
+            color: #94a3b8;
+        }
+
+        .zanders-breadcrumb-current {
+            color: #991020;
+            font-weight: 600;
+        }
+    }
+
+    .zanders-category-heading {
+        font-size: 1.875rem;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    // Listing Toolbar
+    .zanders-category-toolbar {
+        margin-bottom: 1.5rem;
+        font-size: 0.75rem;
+        color: #475569;
+
+        .zanders-toolbar-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .zanders-toolbar-items-count {
+            font-size: 0.75rem;
+            color: #334155;
+            font-weight: 500;
+        }
+
+        .zanders-toolbar-pagination {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+
+            .zanders-page-label {
+                font-weight: 600;
+                color: #334155;
+            }
+
+            .zanders-page-arrow {
+                color: #64748b;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .zanders-page-num {
+                padding: 1px 5px;
+                border-radius: 2px;
+
+                &.is-active {
+                    font-weight: 800;
+                    color: #0f172a;
+                }
+            }
+        }
+
+        .zanders-toolbar-per-page {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .zanders-per-page-label {
+                font-weight: 600;
+                color: #334155;
+                margin: 0;
+            }
+
+            .zanders-per-page-select {
+                font-size: 0.75rem;
+                padding: 2px 6px;
+                border: 1px solid #cbd5e1;
+                border-radius: 2px;
+                background-color: #fff;
+                color: #334155;
+            }
+        }
+
+        .zanders-toolbar-divider {
+            width: 100%;
+            height: 1px;
+            background-color: #cbd5e1;
+            margin: 6px 0;
+        }
+
+        .zanders-toolbar-row-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .zanders-toolbar-views {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .zanders-view-as-label {
+                font-size: 0.75rem;
+                color: #334155;
+                font-weight: 600;
+            }
+
+            .zanders-view-btn {
+                background: transparent;
+                border: none;
+                padding: 2px;
+                color: #64748b;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &.is-active {
+                    color: #991020;
+                }
+            }
+        }
+
+        .zanders-toolbar-stock-toggle {
+            .zanders-stock-link {
+                color: #991020;
+                font-weight: 800;
+                font-size: 0.6875rem;
+                text-decoration: underline;
+                letter-spacing: 0.4px;
+            }
+        }
+
+        .zanders-toolbar-sorting {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .zanders-sort-label {
+                font-weight: 600;
+                color: #334155;
+                margin: 0;
+            }
+
+            .zanders-sort-select {
+                font-size: 0.75rem;
+                padding: 2px 6px;
+                border: 1px solid #cbd5e1;
+                border-radius: 2px;
+                background-color: #fff;
+                color: #334155;
+                cursor: pointer;
+            }
+
+            .zanders-sort-direction {
+                font-weight: bold;
+                color: #991020;
+                font-size: 0.8125rem;
+            }
+        }
+    }
+
+    // 3-Column Product Grid (Maintained exactly as before)
+    .zanders-category-product-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1.25rem;
+
+        @media (max-width: 640px) {
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+    }
+
+    // Product Card
+    .zanders-cat-product-card {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 3px;
+        padding: 1.25rem 0.875rem 1rem 0.875rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        height: 100%;
+
+        &:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+
+            .zanders-cat-name {
+                color: #991020;
+            }
+
+            .zanders-cat-image {
+                transform: scale(1.03);
+            }
+        }
+
+        .zanders-cat-product-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .zanders-cat-image-container {
+            width: 100%;
+            height: 135px;
+            min-height: 135px;
+            max-height: 135px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.875rem;
+            overflow: hidden;
+            background-color: transparent;
+        }
+
+        .zanders-cat-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.2s ease;
+        }
+
+        .zanders-cat-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8fafc;
+            border-radius: 2px;
+        }
+
+        .zanders-cat-details {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            flex: 1 1 auto;
+        }
+
+        .zanders-cat-name {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: #0f172a;
+            text-transform: uppercase;
+            line-height: 1.35;
+            min-height: 2.1rem;
+            margin-bottom: 0.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: color 0.15s ease;
+        }
+
+        .zanders-cat-meta {
+            font-size: 0.6875rem;
+            color: #64748b;
+            line-height: 1.45;
+            margin-bottom: 0.5rem;
+
+            .zanders-meta-item {
+                display: block;
+            }
+
+            .zanders-meta-label {
+                color: #64748b;
+            }
+
+            .zanders-meta-val {
+                font-weight: 600;
+                color: #334155;
+            }
+        }
+
+        .zanders-cat-price {
+            font-size: 1.0625rem;
+            font-weight: 800;
+            color: #991020;
+            margin-bottom: 0.35rem;
+            margin-top: auto;
+            letter-spacing: -0.2px;
+            line-height: 1;
+        }
+
+        .zanders-cat-msrp-row {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            font-size: 0.625rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+    }
+}

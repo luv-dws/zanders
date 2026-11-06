@@ -1,40 +1,334 @@
 {
-  "name": "ZandersTheme",
-  "author": "ZANDERS",
-  "views": [
-     "@Storefront",
-     "@Plugins",
-     "@ZandersTheme"
-  ],
-  "style": [
-    "app/storefront/src/scss/overrides.scss",
-    "@Storefront",
-    "app/storefront/src/scss/base.scss"
-  ],
-  "script": [
-    "@Storefront",
-    "app/storefront/dist/storefront/js/zanders-theme/zanders-theme.js"
-  ],
-  "asset": [
-    "@Storefront",
-    "app/storefront/src/assets"
-  ],
-  "config": {
-    "fields": {
-      "sw-color-brand-primary": {
-        "type": "color",
-        "value": "#991020",
-        "editable": true,
-        "block": "themeColors",
-        "order": 100
-      },
-      "sw-color-brand-secondary": {
-        "type": "color",
-        "value": "#343434",
-        "editable": true,
-        "block": "themeColors",
-        "order": 200
-      }
+    "name": "ZandersTheme",
+    "author": "ZANDERS",
+    "views": [
+        "@Storefront",
+        "@Plugins",
+        "@ZandersTheme"
+    ],
+    "style": [
+        "app/storefront/src/scss/overrides.scss",
+        "@Storefront",
+        "app/storefront/src/scss/base.scss"
+    ],
+    "script": [
+        "@Storefront",
+        "app/storefront/dist/storefront/js/zanders-theme/zanders-theme.js"
+    ],
+    "asset": [
+        "@Storefront",
+        "app/storefront/src/assets"
+    ],
+    "config": {
+        "fields": {
+            "sw-color-brand-primary": {
+                "type": "color",
+                "value": "#991020",
+                "editable": true,
+                "block": "themeColors",
+                "order": 100
+            },
+            "sw-color-brand-secondary": {
+                "type": "color",
+                "value": "#343434",
+                "editable": true,
+                "block": "themeColors",
+                "order": 200
+            },
+            "zanders-daily-specials": {
+                "type": "text",
+                "value": [
+                    "SW-FA-001",
+                    "SW-FA-002",
+                    "SW-FA-003",
+                    "SW-FA-004",
+                    "SW-FA-005",
+                    "SW-AG-001",
+                    "SW-AG-002",
+                    "SW-AG-003",
+                    "SW-FA-ACC-001",
+                    "SW-FA-ACC-002",
+                    "SW-FA-ACC-004",
+                    "SW-FA-ACC-005"
+                ],
+                "editable": true,
+                "block": "featuredProducts",
+                "order": 300,
+                "custom": {
+                    "componentName": "sw-multi-select",
+                    "options": [
+                        {
+                            "value": "SW-AG-001",
+                            "label": "SW-AG-001 - Umarex Gauntlet 2 PCP .22 Caliber High-Power Air Rifle"
+                        },
+                        {
+                            "value": "SW-AG-002",
+                            "label": "SW-AG-002 - Crosman 1377 American Classic .177 Multi-Pump Pistol"
+                        },
+                        {
+                            "value": "SW-AG-003",
+                            "label": "SW-AG-003 - JSB Match Diabolo Exact Jumbo Heavy .22 Pellets (500 Ct)"
+                        },
+                        {
+                            "value": "SW-AG-004",
+                            "label": "SW-AG-004 - Hawke Vantage 3-9x40 AO Mil Dot Airgun Riflescope"
+                        },
+                        {
+                            "value": "SW-AG-005",
+                            "label": "SW-AG-005 - Air Venturi Nomad II Portable 4500 PSI PCP Compressor"
+                        },
+                        {
+                            "value": "SW-AM-001",
+                            "label": "SW-AM-001 - Federal American Eagle 9mm Luger 115gr FMJ (Box of 50)"
+                        },
+                        {
+                            "value": "SW-AM-002",
+                            "label": "SW-AM-002 - Winchester USA 5.56x45mm NATO 55gr FMJ (100 Round Pack)"
+                        },
+                        {
+                            "value": "SW-AM-003",
+                            "label": "SW-AM-003 - Hornady Precision Hunter 6.5 Creedmoor 143gr ELD-X (20 Rds)"
+                        },
+                        {
+                            "value": "SW-AM-004",
+                            "label": "SW-AM-004 - CCI Mini-Mag .22 LR 40gr CPRN (100 Rounds)"
+                        },
+                        {
+                            "value": "SW-AM-005",
+                            "label": "SW-AM-005 - Remington Premier STS Target 12 Gauge 2-3/4\" #8 (25 Rds)"
+                        },
+                        {
+                            "value": "SW-FA-001",
+                            "label": "SW-FA-001 - Glock 19 Gen5 9mm Luger Pistol - 15 Round"
+                        },
+                        {
+                            "value": "SW-FA-002",
+                            "label": "SW-FA-002 - Ruger 10/22 Carbine .22 LR Autoloading Rifle"
+                        },
+                        {
+                            "value": "SW-FA-003",
+                            "label": "SW-FA-003 - Remington 870 Fieldmaster 12 Gauge Pump Shotgun"
+                        },
+                        {
+                            "value": "SW-FA-004",
+                            "label": "SW-FA-004 - Smith & Wesson Model 686 .357 Magnum Revolver"
+                        },
+                        {
+                            "value": "SW-FA-005",
+                            "label": "SW-FA-005 - SIG Sauer MCX Spear-LT 5.56 NATO Tactical Rifle"
+                        },
+                        {
+                            "value": "SW-FA-ACC-001",
+                            "label": "SW-FA-ACC-001 - Magpul PMAG 30 AR/M4 GEN M3 5.56x45mm Magazine"
+                        },
+                        {
+                            "value": "SW-FA-ACC-002",
+                            "label": "SW-FA-ACC-002 - Streamlight TLR-1 HL 1000-Lumen Rail-Mounted Light"
+                        },
+                        {
+                            "value": "SW-FA-ACC-003",
+                            "label": "SW-FA-ACC-003 - Vortex StrikeFire II Red Dot Sight - 4 MOA Red/Green"
+                        },
+                        {
+                            "value": "SW-FA-ACC-004",
+                            "label": "SW-FA-ACC-004 - Magpul MS4 Dual QD Multi-Mission Weapon Sling Gen 2"
+                        },
+                        {
+                            "value": "SW-FA-ACC-005",
+                            "label": "SW-FA-ACC-005 - Magpul CTR Compact Carbine Stock Mil-Spec"
+                        },
+                        {
+                            "value": "SW-SA-001",
+                            "label": "SW-SA-001 - Walker's Razor Slim Electronic Hearing Protection Muffs"
+                        },
+                        {
+                            "value": "SW-SA-002",
+                            "label": "SW-SA-002 - Caldwell The Rock BR Adjustable Precision Shooting Rest"
+                        },
+                        {
+                            "value": "SW-SA-003",
+                            "label": "SW-SA-003 - Champion Heavy Duty Metal Target Stand"
+                        },
+                        {
+                            "value": "SW-SA-004",
+                            "label": "SW-SA-004 - 5.11 Tactical Range Ready Heavy-Duty 43L Gear Bag"
+                        },
+                        {
+                            "value": "SW-SA-005",
+                            "label": "SW-SA-005 - MTM Case-Gard 50-Round Flip-Top Rifle Ammo Box"
+                        },
+                        {
+                            "value": "SW-SP-001",
+                            "label": "SW-SP-001 - SilencerCo Omega 300 Multi-Caliber Suppressor - Black"
+                        },
+                        {
+                            "value": "SW-SP-002",
+                            "label": "SW-SP-002 - Dead Air Sandman-S 7.62mm QD Suppressor"
+                        },
+                        {
+                            "value": "SW-SP-003",
+                            "label": "SW-SP-003 - SureFire SOCOM556-RC2 Fast-Attach Suppressor - FDE"
+                        },
+                        {
+                            "value": "SW-SP-004",
+                            "label": "SW-SP-004 - Rugged Suppressors Obsidian 9 Modular 9mm Suppressor"
+                        },
+                        {
+                            "value": "SW-SP-005",
+                            "label": "SW-SP-005 - SilencerCo ASR Muzzle Brake 5/8x24 Thread Pitch"
+                        }
+                    ]
+                }
+            },
+            "popular-products": {
+                "type": "text",
+                "value": [
+                    "SW-SP-001",
+                    "SW-SP-002",
+                    "SW-SP-003",
+                    "SW-SP-004",
+                    "SW-SP-005",
+                    "SW-AM-001",
+                    "SW-AM-002",
+                    "SW-AM-003",
+                    "SW-AM-004",
+                    "SW-AM-005",
+                    "SW-SA-001",
+                    "SW-SA-004"
+                ],
+                "editable": true,
+                "block": "featuredProducts",
+                "order": 400,
+                "custom": {
+                    "componentName": "sw-multi-select",
+                    "options": [
+                        {
+                            "value": "SW-AG-001",
+                            "label": "SW-AG-001 - Umarex Gauntlet 2 PCP .22 Caliber High-Power Air Rifle"
+                        },
+                        {
+                            "value": "SW-AG-002",
+                            "label": "SW-AG-002 - Crosman 1377 American Classic .177 Multi-Pump Pistol"
+                        },
+                        {
+                            "value": "SW-AG-003",
+                            "label": "SW-AG-003 - JSB Match Diabolo Exact Jumbo Heavy .22 Pellets (500 Ct)"
+                        },
+                        {
+                            "value": "SW-AG-004",
+                            "label": "SW-AG-004 - Hawke Vantage 3-9x40 AO Mil Dot Airgun Riflescope"
+                        },
+                        {
+                            "value": "SW-AG-005",
+                            "label": "SW-AG-005 - Air Venturi Nomad II Portable 4500 PSI PCP Compressor"
+                        },
+                        {
+                            "value": "SW-AM-001",
+                            "label": "SW-AM-001 - Federal American Eagle 9mm Luger 115gr FMJ (Box of 50)"
+                        },
+                        {
+                            "value": "SW-AM-002",
+                            "label": "SW-AM-002 - Winchester USA 5.56x45mm NATO 55gr FMJ (100 Round Pack)"
+                        },
+                        {
+                            "value": "SW-AM-003",
+                            "label": "SW-AM-003 - Hornady Precision Hunter 6.5 Creedmoor 143gr ELD-X (20 Rds)"
+                        },
+                        {
+                            "value": "SW-AM-004",
+                            "label": "SW-AM-004 - CCI Mini-Mag .22 LR 40gr CPRN (100 Rounds)"
+                        },
+                        {
+                            "value": "SW-AM-005",
+                            "label": "SW-AM-005 - Remington Premier STS Target 12 Gauge 2-3/4\" #8 (25 Rds)"
+                        },
+                        {
+                            "value": "SW-FA-001",
+                            "label": "SW-FA-001 - Glock 19 Gen5 9mm Luger Pistol - 15 Round"
+                        },
+                        {
+                            "value": "SW-FA-002",
+                            "label": "SW-FA-002 - Ruger 10/22 Carbine .22 LR Autoloading Rifle"
+                        },
+                        {
+                            "value": "SW-FA-003",
+                            "label": "SW-FA-003 - Remington 870 Fieldmaster 12 Gauge Pump Shotgun"
+                        },
+                        {
+                            "value": "SW-FA-004",
+                            "label": "SW-FA-004 - Smith & Wesson Model 686 .357 Magnum Revolver"
+                        },
+                        {
+                            "value": "SW-FA-005",
+                            "label": "SW-FA-005 - SIG Sauer MCX Spear-LT 5.56 NATO Tactical Rifle"
+                        },
+                        {
+                            "value": "SW-FA-ACC-001",
+                            "label": "SW-FA-ACC-001 - Magpul PMAG 30 AR/M4 GEN M3 5.56x45mm Magazine"
+                        },
+                        {
+                            "value": "SW-FA-ACC-002",
+                            "label": "SW-FA-ACC-002 - Streamlight TLR-1 HL 1000-Lumen Rail-Mounted Light"
+                        },
+                        {
+                            "value": "SW-FA-ACC-003",
+                            "label": "SW-FA-ACC-003 - Vortex StrikeFire II Red Dot Sight - 4 MOA Red/Green"
+                        },
+                        {
+                            "value": "SW-FA-ACC-004",
+                            "label": "SW-FA-ACC-004 - Magpul MS4 Dual QD Multi-Mission Weapon Sling Gen 2"
+                        },
+                        {
+                            "value": "SW-FA-ACC-005",
+                            "label": "SW-FA-ACC-005 - Magpul CTR Compact Carbine Stock Mil-Spec"
+                        },
+                        {
+                            "value": "SW-SA-001",
+                            "label": "SW-SA-001 - Walker's Razor Slim Electronic Hearing Protection Muffs"
+                        },
+                        {
+                            "value": "SW-SA-002",
+                            "label": "SW-SA-002 - Caldwell The Rock BR Adjustable Precision Shooting Rest"
+                        },
+                        {
+                            "value": "SW-SA-003",
+                            "label": "SW-SA-003 - Champion Heavy Duty Metal Target Stand"
+                        },
+                        {
+                            "value": "SW-SA-004",
+                            "label": "SW-SA-004 - 5.11 Tactical Range Ready Heavy-Duty 43L Gear Bag"
+                        },
+                        {
+                            "value": "SW-SA-005",
+                            "label": "SW-SA-005 - MTM Case-Gard 50-Round Flip-Top Rifle Ammo Box"
+                        },
+                        {
+                            "value": "SW-SP-001",
+                            "label": "SW-SP-001 - SilencerCo Omega 300 Multi-Caliber Suppressor - Black"
+                        },
+                        {
+                            "value": "SW-SP-002",
+                            "label": "SW-SP-002 - Dead Air Sandman-S 7.62mm QD Suppressor"
+                        },
+                        {
+                            "value": "SW-SP-003",
+                            "label": "SW-SP-003 - SureFire SOCOM556-RC2 Fast-Attach Suppressor - FDE"
+                        },
+                        {
+                            "value": "SW-SP-004",
+                            "label": "SW-SP-004 - Rugged Suppressors Obsidian 9 Modular 9mm Suppressor"
+                        },
+                        {
+                            "value": "SW-SP-005",
+                            "label": "SW-SP-005 - SilencerCo ASR Muzzle Brake 5/8x24 Thread Pitch"
+                        }
+                    ]
+                }
+            }
+        },
+        "blocks": {
+            "themeColors": [],
+            "featuredProducts": []
+        }
     }
-  }
 }

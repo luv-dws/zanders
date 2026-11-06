@@ -1,7 +1,7 @@
 {% sw_extends '@Storefront/storefront/page/content/index.html.twig' %}
 
 {% block cms_breadcrumb %}
-    {% if activeRoute != 'frontend.home.page' %}
+    {% if activeRoute != 'frontend.home.page' and activeRoute != 'frontend.navigation.page' %}
         {{ parent() }}
     {% endif %}
 {% endblock %}
@@ -9,8 +9,11 @@
 {% block page_content %}
     {% if activeRoute == 'frontend.home.page' %}
         {% sw_include '@ZandersTheme/storefront/page/content/zanders-hero.html.twig' %}
+        {% sw_include '@ZandersTheme/storefront/page/content/zanders-featured-sections.html.twig' %}
+    {% elseif activeRoute == 'frontend.navigation.page' %}
+        {% sw_include '@ZandersTheme/storefront/page/content/zanders-category-listing.html.twig' %}
+    {% else %}
+        {{ parent() }}
     {% endif %}
-
-    {{ parent() }}
 {% endblock %}
 

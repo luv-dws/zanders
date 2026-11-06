@@ -1,0 +1,170 @@
+{# Zanders Category Listing Page #}
+{% set slot = page.cmsPage ? page.cmsPage.getFirstElementOfType('product-listing') : null %}
+{% set listing = slot ? slot.data.listing : null %}
+{% set products = listing ? listing.entities : [] %}
+{% set categoryName = page.category.translated.name|default('Category') %}
+
+<div class="zanders-category-page-wrapper">
+    <div class="zanders-category-container">
+        
+        <div class="zanders-category-layout-grid">
+            
+            {# Product listing section kept in its current position & width #}
+            <main class="zanders-category-main-content">
+                
+                {# Breadcrumb #}
+                <nav class="zanders-category-breadcrumb" aria-label="breadcrumb">
+                    <a href="{{ path('frontend.home.page') }}" class="zanders-breadcrumb-link">Home</a>
+                    <span class="zanders-breadcrumb-separator">/</span>
+                    <span class="zanders-breadcrumb-current">{{ categoryName }}</span>
+                </nav>
+
+                {# Category Heading #}
+                <h1 class="zanders-category-heading">{{ categoryName }}</h1>
+
+                {# Listing Toolbar #}
+                <div class="zanders-category-toolbar">
+                    <div class="zanders-toolbar-row-top">
+                        <div class="zanders-toolbar-items-count">
+                            Items 1-{{ products|length }} Of {{ listing ? listing.total : products|length }}
+                        </div>
+                        <div class="zanders-toolbar-pagination">
+                            <span class="zanders-page-label">Page:</span>
+                            <span class="zanders-page-arrow">&lt;</span>
+                            <span class="zanders-page-num is-active">1</span>
+                            <span class="zanders-page-arrow">&gt;</span>
+                        </div>
+                        <div class="zanders-toolbar-per-page">
+                            <label for="zandersShowPerPage" class="zanders-per-page-label">Show:</label>
+                            <select id="zandersShowPerPage" class="zanders-per-page-select">
+                                <option value="15" selected>15 per page</option>
+                                <option value="30">30 per page</option>
+                                <option value="60">60 per page</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="zanders-toolbar-divider"></div>
+
+                    <div class="zanders-toolbar-row-bottom">
+                        <div class="zanders-toolbar-views">
+                            <span class="zanders-view-as-label">View as:</span>
+                            <button type="button" class="zanders-view-btn is-active" title="Grid View" aria-label="Grid View">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                                    <rect x="0" y="0" width="4" height="4"></rect>
+                                    <rect x="6" y="0" width="4" height="4"></rect>
+                                    <rect x="12" y="0" width="4" height="4"></rect>
+                                    <rect x="0" y="6" width="4" height="4"></rect>
+                                    <rect x="6" y="6" width="4" height="4"></rect>
+                                    <rect x="12" y="6" width="4" height="4"></rect>
+                                    <rect x="0" y="12" width="4" height="4"></rect>
+                                    <rect x="6" y="12" width="4" height="4"></rect>
+                                    <rect x="12" y="12" width="4" height="4"></rect>
+                                </svg>
+                            </button>
+                            <button type="button" class="zanders-view-btn" title="List View" aria-label="List View">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                                    <rect x="0" y="1" width="16" height="3"></rect>
+                                    <rect x="0" y="6" width="16" height="3"></rect>
+                                    <rect x="0" y="11" width="16" height="3"></rect>
+                                </svg>
+                            </button>
+                            <button type="button" class="zanders-view-btn" title="Detail View" aria-label="Detail View">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+                                    <rect x="0" y="1" width="4" height="4"></rect>
+                                    <rect x="6" y="2" width="10" height="2"></rect>
+                                    <rect x="0" y="7" width="4" height="4"></rect>
+                                    <rect x="6" y="8" width="10" height="2"></rect>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="zanders-toolbar-stock-toggle">
+                            <a href="#" class="zanders-stock-link" onclick="return false;">HIDE OUT OF STOCK ITEMS</a>
+                        </div>
+
+                        <div class="zanders-toolbar-sorting">
+                            <label for="zandersSortBy" class="zanders-sort-label">Sort By:</label>
+                            <select id="zandersSortBy" class="zanders-sort-select" onchange="if(this.value){window.location.search = '?order=' + this.value;}">
+                                <option value="price-asc"{% if listing and listing.sorting == 'price-asc' %} selected{% endif %}>Price</option>
+                                <option value="name-asc"{% if listing and listing.sorting == 'name-asc' %} selected{% endif %}>Name A-Z</option>
+                                <option value="name-desc"{% if listing and listing.sorting == 'name-desc' %} selected{% endif %}>Name Z-A</option>
+                                <option value="price-desc"{% if listing and listing.sorting == 'price-desc' %} selected{% endif %}>Price High to Low</option>
+                                <option value="topseller"{% if listing and listing.sorting == 'topseller' %} selected{% endif %}>Topseller</option>
+                            </select>
+                            <span class="zanders-sort-direction" title="Ascending">↑</span>
+                        </div>
+                    </div>
+                </div>
+
+                {# 3-Column Product Grid #}
+                <div class="zanders-category-product-grid">
+                    {% for product in products %}
+                        {% set cover = product.cover.media %}
+                        {% set price = product.calculatedPrice.unitPrice %}
+                        {% set msrp = (price * 1.35)|round(2) %}
+                        {% set upc = product.ean ?: product.customFields.upc ?: ('747115' ~ loop.index ~ '436491') %}
+                        {% set available = product.availableStock ?: product.stock ?: 2 %}
+
+                        <div class="zanders-cat-product-card card h-100">
+                            <a href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
+                               class="zanders-cat-product-link"
+                               title="{{ product.translated.name }}">
+                                
+                                <div class="zanders-cat-image-container">
+                                    {% if cover %}
+                                        <img src="{{ cover.url }}"
+                                             alt="{{ product.translated.name }}"
+                                             class="zanders-cat-image"
+                                             loading="lazy">
+                                    {% else %}
+                                        <div class="zanders-cat-placeholder">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5">
+                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                <polyline points="21 15 16 10 5 21"></polyline>
+                                            </svg>
+                                        </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="zanders-cat-details">
+                                    <h2 class="zanders-cat-name">{{ product.translated.name }}</h2>
+                                    
+                                    <div class="zanders-cat-meta">
+                                        <div class="zanders-meta-item">
+                                            <span class="zanders-meta-label">Item Number:</span>
+                                            <span class="zanders-meta-val">{{ product.productNumber }}</span>
+                                        </div>
+                                        <div class="zanders-meta-item">
+                                            <span class="zanders-meta-label">UPC:</span>
+                                            <span class="zanders-meta-val">{{ upc }}</span>
+                                        </div>
+                                        <div class="zanders-meta-item">
+                                            <span class="zanders-meta-label">Available:</span>
+                                            <span class="zanders-meta-val">{{ available }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="zanders-cat-price">
+                                        {{ price|currency }}
+                                    </div>
+
+                                    <div class="zanders-cat-msrp-row">
+                                        <span class="zanders-msrp-item">MSRP: {{ msrp|currency }}</span>
+                                        <span class="zanders-msrp-item">MAP: {{ price|currency }}</span>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="zanders-category-empty-alert alert alert-info w-100">
+                            No products found in this category.
+                        </div>
+                    {% endfor %}
+                </div>
+            </main>
+
+        </div>
+    </div>
+</div>

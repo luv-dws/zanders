@@ -1,0 +1,24 @@
+{
+    "sw-theme": {
+        "ZandersTheme": {
+            "default": {
+                "themeColors": {
+                    "label": "Theme Farben"
+                },
+                "featuredProducts": {
+                    "label": "Ausgewählte Produktbereiche",
+                    "default": {
+                        "zanders-daily-specials": {
+                            "label": "Zanders Tagesangebote",
+                            "helpText": "Wählen Sie Produkt-SKUs für Zanders Tagesangebote"
+                        },
+                        "popular-products": {
+                            "label": "Beliebte Produkte",
+                            "helpText": "Wählen Sie Produkt-SKUs für Beliebte Produkte"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

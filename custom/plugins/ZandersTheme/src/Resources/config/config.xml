@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+    <card>
+        <title>Featured Products Configuration</title>
+        <title lang="de-DE">Ausgewählte Produkte Konfiguration</title>
+
+        <input-field type="multi-select">
+            <name>zandersDailySpecials</name>
+            <label>Zanders Daily Specials</label>
+            <label lang="de-DE">Zanders Tagesangebote</label>
+            <helpText>Select product SKUs to display under Zanders Daily Specials</helpText>
+            <helpText lang="de-DE">Wählen Sie Produkt-SKUs für Zanders Tagesangebote aus</helpText>
+            <options>
+                <option>
+                    <id>SW-AG-001</id>
+                    <name>SW-AG-001 - Umarex Gauntlet 2 PCP .22 Caliber High-Power Air Rifle</name>
+                </option>
+                <option>
+                    <id>SW-AG-002</id>
+                    <name>SW-AG-002 - Crosman 1377 American Classic .177 Multi-Pump Pistol</name>
+                </option>
+                <option>
+                    <id>SW-AG-003</id>
+                    <name>SW-AG-003 - JSB Match Diabolo Exact Jumbo Heavy .22 Pellets (500 Ct)</name>
+                </option>
+                <option>
+                    <id>SW-AG-004</id>
+                    <name>SW-AG-004 - Hawke Vantage 3-9x40 AO Mil Dot Airgun Riflescope</name>
+                </option>
+                <option>
+                    <id>SW-AG-005</id>
+                    <name>SW-AG-005 - Air Venturi Nomad II Portable 4500 PSI PCP Compressor</name>
+                </option>
+                <option>
+                    <id>SW-AM-001</id>
+                    <name>SW-AM-001 - Federal American Eagle 9mm Luger 115gr FMJ (Box of 50)</name>
+                </option>
+                <option>
+                    <id>SW-AM-002</id>
+                    <name>SW-AM-002 - Winchester USA 5.56x45mm NATO 55gr FMJ (100 Round Pack)</name>
+                </option>
+                <option>
+                    <id>SW-AM-003</id>
+                    <name>SW-AM-003 - Hornady Precision Hunter 6.5 Creedmoor 143gr ELD-X (20 Rds)</name>
+                </option>
+                <option>
+                    <id>SW-AM-004</id>
+                    <name>SW-AM-004 - CCI Mini-Mag .22 LR 40gr CPRN (100 Rounds)</name>
+                </option>
+                <option>
+                    <id>SW-AM-005</id>
+                    <name>SW-AM-005 - Remington Premier STS Target 12 Gauge 2-3/4" #8 (25 Rds)</name>
+                </option>
+                <option>
+                    <id>SW-FA-001</id>
+                    <name>SW-FA-001 - Glock 19 Gen5 9mm Luger Pistol - 15 Round</name>
+                </option>
+                <option>
+                    <id>SW-FA-002</id>
+                    <name>SW-FA-002 - Ruger 10/22 Carbine .22 LR Autoloading Rifle</name>
+                </option>
+                <option>
+                    <id>SW-FA-003</id>
+                    <name>SW-FA-003 - Remington 870 Fieldmaster 12 Gauge Pump Shotgun</name>
+                </option>
+                <option>
+                    <id>SW-FA-004</id>
+                    <name>SW-FA-004 - Smith &amp; Wesson Model 686 .357 Magnum Revolver</name>
+                </option>
+                <option>
+                    <id>SW-FA-005</id>
+                    <name>SW-FA-005 - SIG Sauer MCX Spear-LT 5.56 NATO Tactical Rifle</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-001</id>
+                    <name>SW-FA-ACC-001 - Magpul PMAG 30 AR/M4 GEN M3 5.56x45mm Magazine</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-002</id>
+                    <name>SW-FA-ACC-002 - Streamlight TLR-1 HL 1000-Lumen Rail-Mounted Light</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-003</id>
+                    <name>SW-FA-ACC-003 - Vortex StrikeFire II Red Dot Sight - 4 MOA Red/Green</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-004</id>
+                    <name>SW-FA-ACC-004 - Magpul MS4 Dual QD Multi-Mission Weapon Sling Gen 2</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-005</id>
+                    <name>SW-FA-ACC-005 - Magpul CTR Compact Carbine Stock Mil-Spec</name>
+                </option>
+                <option>
+                    <id>SW-SA-001</id>
+                    <name>SW-SA-001 - Walker's Razor Slim Electronic Hearing Protection Muffs</name>
+                </option>
+                <option>
+                    <id>SW-SA-002</id>
+                    <name>SW-SA-002 - Caldwell The Rock BR Adjustable Precision Shooting Rest</name>
+                </option>
+                <option>
+                    <id>SW-SA-003</id>
+                    <name>SW-SA-003 - Champion Heavy Duty Metal Target Stand</name>
+                </option>
+                <option>
+                    <id>SW-SA-004</id>
+                    <name>SW-SA-004 - 5.11 Tactical Range Ready Heavy-Duty 43L Gear Bag</name>
+                </option>
+                <option>
+                    <id>SW-SA-005</id>
+                    <name>SW-SA-005 - MTM Case-Gard 50-Round Flip-Top Rifle Ammo Box</name>
+                </option>
+                <option>
+                    <id>SW-SP-001</id>
+                    <name>SW-SP-001 - SilencerCo Omega 300 Multi-Caliber Suppressor - Black</name>
+                </option>
+                <option>
+                    <id>SW-SP-002</id>
+                    <name>SW-SP-002 - Dead Air Sandman-S 7.62mm QD Suppressor</name>
+                </option>
+                <option>
+                    <id>SW-SP-003</id>
+                    <name>SW-SP-003 - SureFire SOCOM556-RC2 Fast-Attach Suppressor - FDE</name>
+                </option>
+                <option>
+                    <id>SW-SP-004</id>
+                    <name>SW-SP-004 - Rugged Suppressors Obsidian 9 Modular 9mm Suppressor</name>
+                </option>
+                <option>
+                    <id>SW-SP-005</id>
+                    <name>SW-SP-005 - SilencerCo ASR Muzzle Brake 5/8x24 Thread Pitch</name>
+                </option>
+            </options>
+        </input-field>
+
+        <input-field type="multi-select">
+            <name>popularProducts</name>
+            <label>POPULAR PRODUCTS</label>
+            <label lang="de-DE">Beliebte Produkte</label>
+            <helpText>Select product SKUs to display under POPULAR PRODUCTS</helpText>
+            <helpText lang="de-DE">Wählen Sie Produkt-SKUs für Beliebte Produkte aus</helpText>
+            <options>
+                <option>
+                    <id>SW-AG-001</id>
+                    <name>SW-AG-001 - Umarex Gauntlet 2 PCP .22 Caliber High-Power Air Rifle</name>
+                </option>
+                <option>
+                    <id>SW-AG-002</id>
+                    <name>SW-AG-002 - Crosman 1377 American Classic .177 Multi-Pump Pistol</name>
+                </option>
+                <option>
+                    <id>SW-AG-003</id>
+                    <name>SW-AG-003 - JSB Match Diabolo Exact Jumbo Heavy .22 Pellets (500 Ct)</name>
+                </option>
+                <option>
+                    <id>SW-AG-004</id>
+                    <name>SW-AG-004 - Hawke Vantage 3-9x40 AO Mil Dot Airgun Riflescope</name>
+                </option>
+                <option>
+                    <id>SW-AG-005</id>
+                    <name>SW-AG-005 - Air Venturi Nomad II Portable 4500 PSI PCP Compressor</name>
+                </option>
+                <option>
+                    <id>SW-AM-001</id>
+                    <name>SW-AM-001 - Federal American Eagle 9mm Luger 115gr FMJ (Box of 50)</name>
+                </option>
+                <option>
+                    <id>SW-AM-002</id>
+                    <name>SW-AM-002 - Winchester USA 5.56x45mm NATO 55gr FMJ (100 Round Pack)</name>
+                </option>
+                <option>
+                    <id>SW-AM-003</id>
+                    <name>SW-AM-003 - Hornady Precision Hunter 6.5 Creedmoor 143gr ELD-X (20 Rds)</name>
+                </option>
+                <option>
+                    <id>SW-AM-004</id>
+                    <name>SW-AM-004 - CCI Mini-Mag .22 LR 40gr CPRN (100 Rounds)</name>
+                </option>
+                <option>
+                    <id>SW-AM-005</id>
+                    <name>SW-AM-005 - Remington Premier STS Target 12 Gauge 2-3/4" #8 (25 Rds)</name>
+                </option>
+                <option>
+                    <id>SW-FA-001</id>
+                    <name>SW-FA-001 - Glock 19 Gen5 9mm Luger Pistol - 15 Round</name>
+                </option>
+                <option>
+                    <id>SW-FA-002</id>
+                    <name>SW-FA-002 - Ruger 10/22 Carbine .22 LR Autoloading Rifle</name>
+                </option>
+                <option>
+                    <id>SW-FA-003</id>
+                    <name>SW-FA-003 - Remington 870 Fieldmaster 12 Gauge Pump Shotgun</name>
+                </option>
+                <option>
+                    <id>SW-FA-004</id>
+                    <name>SW-FA-004 - Smith &amp; Wesson Model 686 .357 Magnum Revolver</name>
+                </option>
+                <option>
+                    <id>SW-FA-005</id>
+                    <name>SW-FA-005 - SIG Sauer MCX Spear-LT 5.56 NATO Tactical Rifle</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-001</id>
+                    <name>SW-FA-ACC-001 - Magpul PMAG 30 AR/M4 GEN M3 5.56x45mm Magazine</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-002</id>
+                    <name>SW-FA-ACC-002 - Streamlight TLR-1 HL 1000-Lumen Rail-Mounted Light</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-003</id>
+                    <name>SW-FA-ACC-003 - Vortex StrikeFire II Red Dot Sight - 4 MOA Red/Green</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-004</id>
+                    <name>SW-FA-ACC-004 - Magpul MS4 Dual QD Multi-Mission Weapon Sling Gen 2</name>
+                </option>
+                <option>
+                    <id>SW-FA-ACC-005</id>
+                    <name>SW-FA-ACC-005 - Magpul CTR Compact Carbine Stock Mil-Spec</name>
+                </option>
+                <option>
+                    <id>SW-SA-001</id>
+                    <name>SW-SA-001 - Walker's Razor Slim Electronic Hearing Protection Muffs</name>
+                </option>
+                <option>
+                    <id>SW-SA-002</id>
+                    <name>SW-SA-002 - Caldwell The Rock BR Adjustable Precision Shooting Rest</name>
+                </option>
+                <option>
+                    <id>SW-SA-003</id>
+                    <name>SW-SA-003 - Champion Heavy Duty Metal Target Stand</name>
+                </option>
+                <option>
+                    <id>SW-SA-004</id>
+                    <name>SW-SA-004 - 5.11 Tactical Range Ready Heavy-Duty 43L Gear Bag</name>
+                </option>
+                <option>
+                    <id>SW-SA-005</id>
+                    <name>SW-SA-005 - MTM Case-Gard 50-Round Flip-Top Rifle Ammo Box</name>
+                </option>
+                <option>
+                    <id>SW-SP-001</id>
+                    <name>SW-SP-001 - SilencerCo Omega 300 Multi-Caliber Suppressor - Black</name>
+                </option>
+                <option>
+                    <id>SW-SP-002</id>
+                    <name>SW-SP-002 - Dead Air Sandman-S 7.62mm QD Suppressor</name>
+                </option>
+                <option>
+                    <id>SW-SP-003</id>
+                    <name>SW-SP-003 - SureFire SOCOM556-RC2 Fast-Attach Suppressor - FDE</name>
+                </option>
+                <option>
+                    <id>SW-SP-004</id>
+                    <name>SW-SP-004 - Rugged Suppressors Obsidian 9 Modular 9mm Suppressor</name>
+                </option>
+                <option>
+                    <id>SW-SP-005</id>
+                    <name>SW-SP-005 - SilencerCo ASR Muzzle Brake 5/8x24 Thread Pitch</name>
+                </option>
+            </options>
+        </input-field>
+    </card>
+</config>
