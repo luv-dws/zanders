@@ -252,6 +252,56 @@
             }
         }
     }
+
+    .zanders-navbar-actions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        height: 60px;
+        padding-left: 1rem;
+        flex-shrink: 0;
+
+        .zanders-price-toggle-btn {
+            background-color: #991020 !important;
+            color: #FFFFFF !important;
+            border: none !important;
+            border-radius: 2px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            line-height: 1.2;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.15s ease, opacity 0.15s ease;
+
+            &:hover {
+                background-color: #820e1b !important;
+                color: #FFFFFF !important;
+            }
+
+            &:focus,
+            &:active {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.4);
+            }
+        }
+    }
+}
+
+// Global Product Price Visibility Toggle
+html.prices-hidden,
+body.prices-hidden,
+html.zanders-prices-hidden,
+body.zanders-prices-hidden {
+    .zanders-product-price,
+    .zanders-cat-price,
+    .product-price,
+    .product-detail-price,
+    .product-detail-price-container {
+        display: none !important;
+    }
 }
 
 // Floating Side Badges on Left Viewport Edge

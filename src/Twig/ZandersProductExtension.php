@@ -24,7 +24,28 @@ class ZandersProductExtension extends AbstractExtension
     {
         return [
             new TwigFunction('zanders_products_by_skus', $this->getProductsBySkus(...), ['needs_context' => true]),
+            new TwigFunction('zanders_get_products', $this->getProducts(...), ['needs_context' => true]),
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $twigContext
+     */
+    public function getProducts(array $twigContext, int $limit = 16): ProductCollection
+    {
+        $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
+        if (!$salesChannelContext instanceof SalesChannelContext) {
+            return new ProductCollection();
+        }
+
+        $criteria = new Criteria();
+        $criteria->setLimit($limit);
+        $criteria->addAssociation('cover.media');
+        $criteria->addAssociation('manufacturer');
+        $criteria->addAssociation('prices');
+
+        /** @var ProductCollection $products */
+        return $this->salesChannelProductRepository->search($criteria, $salesChannelContext)->getEntities();
     }
 
     /**

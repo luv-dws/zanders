@@ -1,0 +1,268 @@
+{# Age Verification Modal Component for Zanders Sporting Goods #}
+{% block component_age_verification_modal %}
+    {% set ageVerificationOptions = {
+        storageKey: 'zanders_age_verified',
+        cookieKey: 'zanders_age_verified',
+        cookieExpiryDays: 30,
+        redirectUrl: 'https://www.google.com'
+    } %}
+
+    <style>
+        .zanders-age-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 999999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease-in-out, visibility 0.25s ease-in-out;
+        }
+        .zanders-age-modal-backdrop.is-visible {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        html.zanders-age-verified .zanders-age-modal-backdrop {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+        .zanders-age-modal-dialog {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 3px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+            animation: zandersModalScaleIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        @keyframes zandersModalScaleIn {
+            from {
+                opacity: 0;
+                transform: translateY(-24px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .zanders-age-modal-content {
+            padding: 2.5rem 2.25rem 2.25rem;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        @media (max-width: 575.98px) {
+            .zanders-age-modal-content {
+                padding: 1.75rem 1.25rem 1.5rem;
+            }
+        }
+        .zanders-age-modal-logo-wrap {
+            margin-bottom: 1.25rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .zanders-age-modal-logo {
+            max-width: 175px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        .zanders-age-modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1f1f1f;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 1rem;
+            line-height: 1.3;
+        }
+        .zanders-age-modal-description {
+            font-size: 0.84375rem;
+            line-height: 1.55;
+            color: #444444;
+            margin: 0 0 1.25rem;
+        }
+        .zanders-age-modal-question {
+            font-size: 0.9375rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0 0 1.5rem;
+        }
+        .zanders-age-modal-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+        }
+        @media (max-width: 440px) {
+            .zanders-age-modal-actions {
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+            }
+        }
+        .zanders-age-modal-actions .zanders-age-btn {
+            width: 140px;
+            min-width: 140px;
+            max-width: 140px;
+            height: 38px;
+            min-height: 38px;
+            padding: 0.45rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+        @media (max-width: 440px) {
+            .zanders-age-modal-actions .zanders-age-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        .zanders-age-modal-actions .zanders-age-btn:focus-visible {
+            outline: 2px solid #991020;
+            outline-offset: 2px;
+        }
+        .zanders-age-modal-actions .zanders-age-btn-yes {
+            background-color: #991020;
+            border: 1px solid #991020;
+            color: #ffffff;
+        }
+        .zanders-age-modal-actions .zanders-age-btn-yes:hover,
+        .zanders-age-modal-actions .zanders-age-btn-yes:focus {
+            background-color: #7d0d1a;
+            border-color: #7d0d1a;
+            color: #ffffff;
+        }
+        .zanders-age-modal-actions .zanders-age-btn-no {
+            background-color: #ffffff;
+            border: 1px solid #991020;
+            color: #991020;
+        }
+        .zanders-age-modal-actions .zanders-age-btn-no:hover,
+        .zanders-age-modal-actions .zanders-age-btn-no:focus {
+            background-color: #fcf4f5;
+            border-color: #7d0d1a;
+            color: #7d0d1a;
+        }
+        .zanders-age-modal-denied {
+            padding: 1.25rem 1rem;
+            background-color: #fff1f2;
+            border: 1px solid #fecdd3;
+            border-radius: 4px;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+        }
+        .zanders-age-modal-denied.d-none {
+            display: none !important;
+        }
+        .zanders-age-modal-denied-icon {
+            color: #991020;
+        }
+        .zanders-age-modal-denied-message {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #9f1239;
+            margin: 0;
+            line-height: 1.45;
+        }
+        .zanders-age-modal-denied-message span {
+            font-size: 0.8125rem;
+            font-weight: 400;
+            color: #be123c;
+            display: inline-block;
+            margin-top: 0.25rem;
+        }
+        body.zanders-age-modal-open,
+        html.zanders-age-modal-open {
+            overflow: hidden !important;
+            height: 100% !important;
+        }
+    </style>
+
+    <div class="zanders-age-modal-backdrop"
+         id="zandersAgeVerificationModal"
+         data-age-verification-modal="true"
+         data-age-verification-modal-options="{{ ageVerificationOptions|json_encode }}"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="zandersAgeVerificationTitle"
+         aria-describedby="zandersAgeVerificationDesc"
+         aria-hidden="true"
+         style="display: none;">
+        <div class="zanders-age-modal-dialog">
+            <div class="zanders-age-modal-content" data-age-verification-content>
+                {% block component_age_verification_modal_logo %}
+                    <div class="zanders-age-modal-logo-wrap">
+                        <img src="{{ asset('assets/zanders-logo.png', 'theme') }}"
+                             alt="ZANDERS America's Distribution Company Since 1962"
+                             class="zanders-age-modal-logo"
+                             onerror="this.onerror=null; this.src='/assets/zanders-logo.png';">
+                    </div>
+                {% endblock %}
+
+                {% block component_age_verification_modal_title %}
+                    <h2 id="zandersAgeVerificationTitle" class="zanders-age-modal-title">
+                        VERIFY YOUR AGE
+                    </h2>
+                {% endblock %}
+
+                {% block component_age_verification_modal_description %}
+                    <p id="zandersAgeVerificationDesc" class="zanders-age-modal-description">
+                        Certain states prohibit advertising or marketing of firearms, ammunition, and related firearm components to minors. We'd like to ensure that you're 18 years of age or older before allowing you to shop our site.
+                    </p>
+                {% endblock %}
+
+                {% block component_age_verification_modal_question %}
+                    <p class="zanders-age-modal-question">
+                        Are you 18 years of age or older?
+                    </p>
+                {% endblock %}
+
+                {% block component_age_verification_modal_actions %}
+                    <div class="zanders-age-modal-actions">
+                        <button type="button"
+                                class="btn zanders-age-btn zanders-age-btn-yes"
+                                data-age-verification-confirm
+                                aria-label="Yes, I am 18 years of age or older">
+                            YES
+                        </button>
+                        <button type="button"
+                                class="btn zanders-age-btn zanders-age-btn-no"
+                                data-age-verification-reject
+                                aria-label="No, I am under 18 years of age">
+                            NO
+                        </button>
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

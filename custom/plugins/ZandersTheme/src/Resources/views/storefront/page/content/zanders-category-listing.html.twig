@@ -3,6 +3,7 @@
 {% set listing = slot ? slot.data.listing : null %}
 {% set products = listing ? listing.entities : [] %}
 {% set categoryName = page.category.translated.name|default('Category') %}
+{% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
 
 <div class="zanders-category-page-wrapper">
     <div class="zanders-category-container">
@@ -104,9 +105,11 @@
                         {% set price = product.calculatedPrice.unitPrice %}
                         {% set msrp = (price * 1.35)|round(2) %}
                         {% set upc = product.ean ?: product.customFields.upc ?: ('747115' ~ loop.index ~ '436491') %}
-                        {% set available = product.availableStock ?: product.stock ?: 2 %}
+                        {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
+                        {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
+                        {% set stockQty = availableStock > 0 ? availableStock : 0 %}
 
-                        <div class="zanders-cat-product-card card h-100">
+                        <div class="zanders-cat-product-card card h-100{% if not isAvailable %} is-out-of-stock{% endif %}" data-in-stock="{{ isAvailable ? '1' : '0' }}">
                             <a href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
                                class="zanders-cat-product-link"
                                title="{{ product.translated.name }}">
@@ -131,28 +134,31 @@
                                 <div class="zanders-cat-details">
                                     <h2 class="zanders-cat-name">{{ product.translated.name }}</h2>
                                     
-                                    <div class="zanders-cat-meta">
-                                        <div class="zanders-meta-item">
-                                            <span class="zanders-meta-label">Item Number:</span>
-                                            <span class="zanders-meta-val">{{ product.productNumber }}</span>
+                                    <div class="zanders-cat-meta" style="text-align: center; font-size: 0.75rem; line-height: 1.5; margin-bottom: 0.5rem;">
+                                        <div class="zanders-meta-item" style="margin-bottom: 2px;">
+                                            <span class="zanders-meta-label" style="color: #64748b; font-weight: 400;">Item Number:</span>
+                                            <span class="zanders-meta-val" style="color: #000000 !important; font-weight: 700;">{{ product.productNumber }}</span>
                                         </div>
-                                        <div class="zanders-meta-item">
-                                            <span class="zanders-meta-label">UPC:</span>
-                                            <span class="zanders-meta-val">{{ upc }}</span>
+                                        <div class="zanders-meta-item" style="margin-bottom: 2px;">
+                                            <span class="zanders-meta-label" style="color: #64748b; font-weight: 400;">UPC:</span>
+                                            <span class="zanders-meta-val" style="color: #000000 !important; font-weight: 700;">{{ upc }}</span>
                                         </div>
-                                        <div class="zanders-meta-item">
-                                            <span class="zanders-meta-label">Available:</span>
-                                            <span class="zanders-meta-val">{{ available }}</span>
+                                        <div class="zanders-meta-item" style="margin-bottom: 2px;">
+                                            <span class="zanders-meta-label" style="color: #64748b; font-weight: 400;">Available:</span>
+                                            {% if isUserLoggedIn %}
+                                                <span class="zanders-meta-val zanders-stock-val{% if not isAvailable %} is-out-of-stock{% endif %}" style="color: #000000 !important; font-weight: 700;">{{ stockQty }}</span>
+                                            {% else %}
+                                                {% if isAvailable %}
+                                                    <span class="zanders-meta-val zanders-stock-val" style="color: #000000 !important; font-weight: 700;">In Stock</span>
+                                                {% else %}
+                                                    <span class="zanders-meta-val is-out-of-stock" style="color: #000000 !important; font-weight: 700;">Out of Stock</span>
+                                                {% endif %}
+                                            {% endif %}
                                         </div>
                                     </div>
 
-                                    <div class="zanders-cat-price">
+                                    <div class="zanders-cat-price" style="font-size: 1.125rem; font-weight: 700; color: #991020; text-align: center; margin-top: auto; padding-top: 0.25rem;">
                                         {{ price|currency }}
-                                    </div>
-
-                                    <div class="zanders-cat-msrp-row">
-                                        <span class="zanders-msrp-item">MSRP: {{ msrp|currency }}</span>
-                                        <span class="zanders-msrp-item">MAP: {{ price|currency }}</span>
                                     </div>
                                 </div>
                             </a>

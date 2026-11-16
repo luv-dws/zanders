@@ -1,0 +1,77 @@
+{% sw_extends '@Storefront/storefront/component/delivery-information.html.twig' %}
+
+{% block component_delivery_information_available %}
+    {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
+    {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
+    {% set stockQty = availableStock > 0 ? availableStock : 0 %}
+
+    {% if not feature('JSON_LD_DATA') %}
+        <link itemprop="availability" href="https://schema.org/InStock">
+    {% endif %}
+    <p class="delivery-information delivery-available" style="color: #000000;">
+        <span class="delivery-status-indicator bg-success"></span>
+        <span class="delivery-stock-label" style="font-weight: 700; color: #000000;">
+            {% if isUserLoggedIn %}
+                {{ stockQty }} in stock
+            {% else %}
+                In Stock
+            {% endif %}
+        </span>
+        {% if product.deliveryTime %}
+            <span class="delivery-time-text">
+                ({{ 'detail.deliveryTimeAvailable'|trans({'%name%': product.deliveryTime.translation('name')})|sw_sanitize }})
+            </span>
+        {% endif %}
+    </p>
+{% endblock %}
+
+{% block component_delivery_information_soldout %}
+    {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
+    {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
+    {% set stockQty = availableStock > 0 ? availableStock : 0 %}
+
+    {% if not feature('JSON_LD_DATA') %}
+        <link itemprop="availability" href="https://schema.org/OutOfStock">
+    {% endif %}
+    <p class="delivery-information delivery-soldout" style="color: #000000;">
+        <span class="delivery-status-indicator bg-danger"></span>
+        <span class="delivery-stock-label" style="font-weight: 700; color: #000000;">
+            {% if isUserLoggedIn %}
+                {{ stockQty }} in stock
+            {% else %}
+                Out of Stock
+            {% endif %}
+        </span>
+    </p>
+{% endblock %}
+
+{% block component_delivery_information_default %}
+    {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
+    {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
+    {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
+    {% set stockQty = availableStock > 0 ? availableStock : 0 %}
+
+    {% if isAvailable %}
+        <p class="delivery-information delivery-available" style="color: #000000;">
+            <span class="delivery-status-indicator bg-success"></span>
+            <span class="delivery-stock-label" style="font-weight: 700; color: #000000;">
+                {% if isUserLoggedIn %}
+                    {{ stockQty }} in stock
+                {% else %}
+                    In Stock
+                {% endif %}
+            </span>
+        </p>
+    {% else %}
+        <p class="delivery-information delivery-soldout" style="color: #000000;">
+            <span class="delivery-status-indicator bg-danger"></span>
+            <span class="delivery-stock-label" style="font-weight: 700; color: #000000;">
+                {% if isUserLoggedIn %}
+                    {{ stockQty }} in stock
+                {% else %}
+                    Out of Stock
+                {% endif %}
+            </span>
+        </p>
+    {% endif %}
+{% endblock %}

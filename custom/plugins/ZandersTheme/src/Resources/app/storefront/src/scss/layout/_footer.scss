@@ -1,16 +1,292 @@
-// Footer Layout Styles
+// Zanders Footer Layout Styles
 
+.footer-main.zanders-footer-main,
 .footer-main {
-    background-color: $zanders-secondary;
-    color: $zanders-white;
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    background-color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    color: inherit;
 
-    a {
-        color: $zanders-gray-300;
+    .container {
+        max-width: 100% !important;
+        padding: 0 !important;
+    }
+}
 
-        &:hover {
-            color: $zanders-white;
+.zanders-footer {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+}
+
+// ----------------------------------------------------
+// 1. TOP SECTION (4 Columns: Company, Resources, Contact, Logo)
+// ----------------------------------------------------
+.zanders-footer-top {
+    background-color: #f0f0f0;
+    padding: 2.75rem 0 3rem 0;
+    border-top: 1px solid #e5e5e5;
+    width: 100%;
+
+    .zanders-container-fluid {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 0 24px;
+
+        @media (max-width: 767.98px) {
+            padding: 0 16px;
         }
     }
+}
+
+.zanders-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 2rem 1.5rem;
+
+    @media (max-width: 991.98px) {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem;
+    }
+
+    @media (max-width: 575.98px) {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
+    }
+}
+
+.zanders-footer-col {
+    min-width: 0;
+
+    &.zanders-footer-company-col {
+        flex: 0 0 160px;
+    }
+
+    &.zanders-footer-resources-col {
+        flex: 0 0 160px;
+    }
+
+    &.zanders-footer-contact-col {
+        flex: 0 0 280px;
+
+        @media (max-width: 1199.98px) {
+            flex: 0 0 240px;
+        }
+    }
+
+    &.zanders-footer-logo-col {
+        flex: 0 0 270px;
+        margin-left: auto;
+
+        @media (max-width: 991.98px) {
+            margin-left: 0;
+        }
+    }
+}
+
+.zanders-footer-col-title {
+    font-size: 0.9375rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 1.125rem;
+    line-height: 1.2;
+}
+
+.zanders-footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.zanders-footer-item {
+    font-size: 0.84375rem;
+    color: #555555;
+    line-height: 1.85;
+    margin-bottom: 0.15rem;
+    cursor: default;
+    user-select: text;
+}
+
+// Contact column styling
+.zanders-footer-contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+    padding-top: 0.25rem;
+}
+
+.zanders-footer-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.zanders-footer-icon-circle {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    border: 1.5px solid #991020;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+    svg {
+        display: block;
+    }
+}
+
+.zanders-footer-contact-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.zanders-footer-phone-number {
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.2px;
+    line-height: 1.2;
+    cursor: default;
+}
+
+.zanders-footer-hours-days {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1.25;
+    margin-bottom: 1px;
+}
+
+.zanders-footer-hours-time {
+    font-size: 0.84375rem;
+    font-weight: 400;
+    color: #444444;
+    line-height: 1.25;
+}
+
+// Logo column styling
+.zanders-footer-logo-wrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    @media (max-width: 991.98px) {
+        justify-content: flex-start;
+    }
+}
+
+.zanders-footer-logo-img {
+    max-width: 250px;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
+
+// ----------------------------------------------------
+// 2. BOTTOM SECTION (Red Bar with Social & Legal/Copyright)
+// ----------------------------------------------------
+.zanders-footer-bottom {
+    background-color: #991020;
+    padding: 0.875rem 0;
+    color: #ffffff;
+    width: 100%;
+
+    .zanders-container-fluid {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 0 24px;
+
+        @media (max-width: 767.98px) {
+            padding: 0 16px;
+        }
+    }
+}
+
+.zanders-footer-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+
+    @media (max-width: 991.98px) {
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        gap: 0.625rem;
+    }
+}
+
+.zanders-footer-bottom-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    @media (max-width: 991.98px) {
+        justify-content: center;
+    }
+}
+
+.zanders-footer-stay-connected {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    cursor: default;
+}
+
+.zanders-footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.zanders-footer-social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    cursor: default;
+    line-height: 1;
+
+    svg {
+        display: block;
+    }
+}
+
+.zanders-footer-bottom-right {
+    text-align: right;
+
+    @media (max-width: 991.98px) {
+        text-align: center;
+    }
+}
+
+.zanders-footer-copyright {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 2px;
+    line-height: 1.3;
+    cursor: default;
+}
+
+.zanders-footer-disclaimer {
+    font-size: 0.71875rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.3;
+    cursor: default;
 }

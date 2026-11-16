@@ -13,8 +13,8 @@
                             "helpText": "Select product SKUs for Zanders Daily Specials"
                         },
                         "popular-products": {
-                            "label": "POPULAR PRODUCTS",
-                            "helpText": "Select product SKUs for POPULAR PRODUCTS"
+                            "label": "Popular Products",
+                            "helpText": "Select product SKUs for Popular Products"
                         }
                     }
                 }

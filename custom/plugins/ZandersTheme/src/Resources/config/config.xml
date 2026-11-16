@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+<?xml version='1.0' encoding='UTF-8'?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
     <card>
         <title>Featured Products Configuration</title>
         <title lang="de-DE">Ausgewählte Produkte Konfiguration</title>
@@ -137,9 +136,9 @@
 
         <input-field type="multi-select">
             <name>popularProducts</name>
-            <label>POPULAR PRODUCTS</label>
+            <label>Popular Products</label>
             <label lang="de-DE">Beliebte Produkte</label>
-            <helpText>Select product SKUs to display under POPULAR PRODUCTS</helpText>
+            <helpText>Select product SKUs to display under Popular Products</helpText>
             <helpText lang="de-DE">Wählen Sie Produkt-SKUs für Beliebte Produkte aus</helpText>
             <options>
                 <option>

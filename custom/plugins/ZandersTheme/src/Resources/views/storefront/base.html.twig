@@ -1,5 +1,21 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 
+{% block base_head %}
+    {{ parent() }}
+    <script>
+        (function() {
+            try {
+                if (localStorage.getItem('zanders_hide_prices') === 'true') {
+                    document.documentElement.classList.add('prices-hidden', 'zanders-prices-hidden');
+                }
+                if (localStorage.getItem('zanders_age_verified') === 'true' || document.cookie.indexOf('zanders_age_verified=true') !== -1) {
+                    document.documentElement.classList.add('zanders-age-verified');
+                }
+            } catch (e) {}
+        })();
+    </script>
+{% endblock %}
+
 {% block base_body_inner %}
     <aside class="zanders-floating-finders" aria-label="Quick Finders">
         <a href="#firearms-finder" class="zanders-floating-tab zanders-tab-firearms" title="Firearms Finder">
@@ -17,5 +33,7 @@
     </aside>
 
     {{ parent() }}
+
+    {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
 {% endblock %}
 
