@@ -1,0 +1,594 @@
+// ============================================================
+// Zanders Product Detail Page Styles
+// Matching reference layout with permanently expanded catalog
+// ============================================================
+
+.zanders-product-detail-wrapper {
+    background-color: #ffffff;
+    padding-top: 1rem;
+    padding-bottom: 3.5rem;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937;
+}
+
+// ── Top Section (Sidebar Space + Product Main Content) ────────
+.zanders-pd-top-section {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+
+    @media (max-width: 991.98px) {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+
+// 240px space reserved for the permanently expanded Catalog dropdown
+.zanders-pd-sidebar-space {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    flex-shrink: 0;
+    min-height: 640px;
+
+    @media (max-width: 991.98px) {
+        display: none;
+    }
+}
+
+// Main content container beside the Catalog dropdown
+.zanders-pd-main-content {
+    flex: 1 1 0%;
+    min-width: 0;
+}
+
+// ── Breadcrumb ──────────────────────────────────────────────
+.zanders-pd-breadcrumb {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-bottom: 1.25rem;
+    line-height: 1.4;
+
+    .zanders-pd-breadcrumb-link {
+        color: #64748b;
+        text-decoration: none;
+
+        &:hover {
+            color: #991020;
+        }
+    }
+
+    .zanders-pd-breadcrumb-sep {
+        margin: 0 6px;
+        color: #94a3b8;
+    }
+
+    .zanders-pd-breadcrumb-current {
+        color: #991020;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+}
+
+// ── Product Grid: 2 Columns (Gallery + Buy Box) ─────────────
+.zanders-pd-product-grid {
+    display: grid;
+    grid-template-columns: 460px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+
+    @media (max-width: 1200px) {
+        grid-template-columns: 380px minmax(0, 1fr);
+        gap: 20px;
+    }
+
+    @media (max-width: 767.98px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+// ── Left Column: Gallery ─────────────────────────────────────
+.zanders-pd-gallery-col {
+    display: flex;
+    flex-direction: column;
+
+    .zanders-pd-actions-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 16px;
+        margin-bottom: 8px;
+        font-size: 0.6875rem;
+
+        .zanders-pd-action-link {
+            color: #991020;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 600;
+
+            &:hover {
+                text-decoration: underline;
+                color: #7d0d1a;
+            }
+
+            .zanders-action-icon {
+                flex-shrink: 0;
+            }
+        }
+    }
+
+    .zanders-pd-main-image-box {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 2px;
+        height: 320px;
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 14px;
+        overflow: hidden;
+
+        .zanders-pd-main-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .zanders-pd-no-image {
+            color: #94a3b8;
+            font-size: 0.8125rem;
+        }
+    }
+
+    .zanders-pd-thumbnails-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+
+        .zanders-pd-thumb-box {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 2px;
+            height: 130px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: border-color 0.15s ease;
+            overflow: hidden;
+
+            &:hover,
+            &.is-active {
+                border-color: #991020;
+            }
+
+            .zanders-pd-thumb-img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                display: block;
+            }
+        }
+    }
+}
+
+// ── Right Column: Buy Box / Product Details ──────────────────
+.zanders-pd-buybox-col {
+    display: flex;
+    flex-direction: column;
+
+    .zanders-pd-title {
+        font-size: 1.125rem;
+        font-weight: 800;
+        color: #111827;
+        text-transform: uppercase;
+        line-height: 1.35;
+        margin-bottom: 8px;
+        letter-spacing: -0.2px;
+    }
+
+    .zanders-pd-meta-row {
+        font-size: 0.6875rem;
+        line-height: 1.4;
+        margin-bottom: 4px;
+
+        .zanders-pd-label {
+            color: #1f2937;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        .zanders-pd-val {
+            color: #1f2937;
+            font-weight: 600;
+
+            &.zanders-pd-stock-val {
+                color: #991020;
+                font-weight: 700;
+            }
+        }
+    }
+
+    .zanders-pd-price-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin: 12px 0 16px 0;
+        max-width: 320px;
+
+        .zanders-pd-current-price {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #991020;
+            line-height: 1;
+        }
+
+        .zanders-pd-msrp {
+            font-size: 0.8125rem;
+            font-weight: 700;
+            color: #991020;
+            line-height: 1;
+
+            .zanders-pd-msrp-val {
+                font-weight: 700;
+            }
+        }
+    }
+
+    // Buy Form: Qty + Add to Cart
+    .zanders-pd-buy-form {
+        margin-bottom: 16px;
+
+        .zanders-pd-action-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .zanders-pd-qty-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            .zanders-pd-qty-label {
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #374151;
+                margin: 0;
+            }
+
+            .zanders-pd-qty-input {
+                width: 44px;
+                height: 34px;
+                border: 1px solid #d1d5db;
+                border-radius: 2px;
+                text-align: center;
+                font-size: 0.875rem;
+                font-weight: 600;
+                color: #111827;
+                padding: 0;
+                outline: none;
+                box-shadow: none;
+                -moz-appearance: textfield;
+
+                &::-webkit-outer-spin-button,
+                &::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                    margin: 0;
+                }
+
+                &:focus {
+                    border-color: #991020;
+                    outline: none;
+                    box-shadow: none;
+                }
+            }
+        }
+
+        .zanders-pd-add-to-cart-btn {
+            background-color: #991020;
+            color: #ffffff;
+            border: none;
+            border-radius: 2px;
+            height: 34px;
+            padding: 0 32px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.15s ease;
+
+            &:hover:not(:disabled) {
+                background-color: #7d0d1a;
+            }
+
+            &:active:not(:disabled) {
+                background-color: #670b15;
+            }
+
+            &.is-disabled,
+            &:disabled {
+                background-color: #94a3b8;
+                cursor: not-allowed;
+                opacity: 0.7;
+            }
+        }
+    }
+
+    // ── Quick Overview (Static) ──
+    .zanders-pd-overview-card {
+        margin-bottom: 14px;
+
+        .zanders-pd-card-header {
+            background-color: #f1f3f6;
+            padding: 7px 12px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .zanders-pd-card-body {
+            padding: 8px 12px;
+
+            .zanders-pd-overview-text {
+                font-size: 0.6875rem;
+                font-weight: 600;
+                color: #374151;
+                margin: 0;
+                line-height: 1.4;
+                text-transform: uppercase;
+            }
+        }
+    }
+
+    // ── Features (Dynamic Description) ──
+    .zanders-pd-features-card {
+        margin-bottom: 14px;
+
+        .zanders-pd-features-header {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            color: #1f2937;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+
+        .zanders-pd-features-body {
+            font-size: 0.6875rem;
+            color: #374151;
+            line-height: 1.55;
+
+            p {
+                font-size: 0.6875rem;
+                color: #374151;
+                line-height: 1.55;
+                margin-bottom: 6px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            ul, ol {
+                padding-left: 1.1rem;
+                margin-bottom: 6px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+
+            li {
+                font-size: 0.6875rem;
+                color: #374151;
+                line-height: 1.55;
+                margin-bottom: 2px;
+            }
+
+            .zanders-pd-features-list {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+
+                li {
+                    font-size: 0.6875rem;
+                    color: #374151;
+                    line-height: 1.55;
+                    margin-bottom: 2px;
+                }
+            }
+        }
+    }
+
+    // ── Button: Create Customer Quote ──
+    .zanders-pd-quote-wrapper {
+        margin-bottom: 12px;
+
+        .zanders-pd-quote-btn {
+            background-color: #343434;
+            color: #ffffff;
+            border: none;
+            border-radius: 2px;
+            padding: 8px 16px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+
+            &:hover {
+                background-color: #222222;
+            }
+        }
+    }
+
+    // ── Warning Box: California Prop 65 ──
+    .zanders-pd-warning-box {
+        background-color: #fffbeb;
+        border: 1px solid #fde047;
+        border-radius: 2px;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        max-width: 380px;
+
+        .zanders-pd-warning-icon {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .zanders-pd-warning-content {
+            font-size: 0.6875rem;
+            color: #1f2937;
+
+            strong {
+                color: #1f2937;
+                margin-right: 4px;
+            }
+
+            .zanders-pd-warning-link {
+                color: #1f2937;
+                font-weight: 700;
+                text-decoration: underline;
+
+                &:hover {
+                    color: #991020;
+                }
+            }
+        }
+    }
+
+    // ── Button: Email to a Friend ──
+    .zanders-pd-email-wrapper {
+        margin-bottom: 20px;
+
+        .zanders-pd-email-btn {
+            background-color: #343434;
+            color: #ffffff;
+            border: none;
+            border-radius: 2px;
+            padding: 8px 16px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+
+            &:hover {
+                background-color: #222222;
+            }
+        }
+    }
+}
+
+// ── Bottom Section: ADDITIONAL INFORMATION ───────────────────
+.zanders-pd-additional-info {
+    width: 100%;
+    padding-top: 1.5rem;
+    margin-top: 1rem;
+
+    .zanders-pd-additional-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #991020;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .zanders-pd-additional-divider {
+        height: 2px;
+        background-color: #991020;
+        margin-bottom: 0;
+        width: 100%;
+    }
+
+    .zanders-pd-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0;
+
+        .zanders-pd-info-row {
+            border-bottom: 1px solid #e5e7eb;
+
+            &:nth-child(even) {
+                background-color: #f2f4f7;
+            }
+
+            &:nth-child(odd) {
+                background-color: #ffffff;
+            }
+
+            .zanders-pd-info-label {
+                width: 320px;
+                min-width: 260px;
+                padding: 9px 16px;
+                font-size: 0.6875rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                color: #1f2937;
+                letter-spacing: 0.3px;
+                vertical-align: top;
+                text-align: left;
+            }
+
+            .zanders-pd-info-value {
+                padding: 9px 16px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: #1f2937;
+                vertical-align: top;
+            }
+
+            .zanders-pd-mfr-link {
+                color: #991020;
+                font-weight: 700;
+                text-decoration: none;
+                display: inline-block;
+                margin-bottom: 2px;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .zanders-pd-mfr-address {
+                font-size: 0.75rem;
+                color: #1f2937;
+                line-height: 1.45;
+                margin-bottom: 2px;
+                font-weight: normal;
+            }
+
+            .zanders-pd-mfr-website {
+                color: #991020;
+                font-size: 0.75rem;
+                font-weight: 600;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,703 @@
+// Product Comparison Styles (Drawer, Popup, Bottom Dock, Buttons & Cards)
+
+// Header compare button
+.zanders-header-compare-btn {
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: #111111;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.15s ease;
+
+    &:hover {
+        color: #991020;
+
+        .zanders-compare-circle {
+            border-color: #991020;
+            color: #991020;
+        }
+    }
+
+    .zanders-compare-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1.5px solid #111111;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #111111;
+        background: transparent;
+        position: relative;
+        transition: all 0.15s ease;
+    }
+
+    .zanders-compare-count-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background-color: #991020;
+        color: #FFFFFF;
+        font-size: 11px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+
+    .zanders-compare-header-label {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+        color: #111111;
+    }
+}
+
+// Card Compare Button (Listing & Homepage cards)
+.zanders-card-compare-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+
+    &:hover {
+        color: #991020;
+        border-color: #991020;
+        transform: scale(1.08);
+        box-shadow: 0 3px 8px rgba(153, 16, 32, 0.2);
+    }
+
+    &.is-active,
+    &.is-in-compare {
+        background-color: #991020;
+        border-color: #991020;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(153, 16, 32, 0.35);
+
+        svg {
+            stroke: #ffffff;
+            fill: rgba(255, 255, 255, 0.2);
+        }
+
+        &:hover {
+            background-color: #7d0d1a;
+            border-color: #7d0d1a;
+        }
+    }
+
+    .zanders-card-compare-tooltip {
+        display: none;
+    }
+}
+
+// Product Detail Page Compare Button
+.zanders-compare-action-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #991020;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: color 0.15s ease, transform 0.15s ease;
+
+    &:hover {
+        color: #7d0d1a;
+        text-decoration: underline;
+    }
+
+    &.is-active,
+    &.is-in-compare {
+        color: #059669;
+
+        svg {
+            stroke: #059669;
+            fill: rgba(5, 150, 105, 0.15);
+        }
+
+        &:hover {
+            color: #047857;
+        }
+    }
+
+    svg {
+        flex-shrink: 0;
+    }
+}
+
+// Compare Backdrop
+.zanders-compare-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 1060;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+
+    &.is-visible {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+// Compare Drawer / Modal Dialog
+.zanders-compare-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 95%;
+    max-width: 1280px;
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 6px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.28);
+    z-index: 1070;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, visibility 0.3s ease;
+
+    &.is-open {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    // Modal Header
+    .zanders-compare-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 18px 24px;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+
+        .zanders-compare-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .zanders-compare-title {
+                margin: 0;
+                font-size: 1.125rem;
+                font-weight: 700;
+                color: #0f172a;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .zanders-compare-badge-pill {
+                background: #e2e8f0;
+                color: #334155;
+                font-size: 0.75rem;
+                font-weight: 600;
+                padding: 3px 8px;
+                border-radius: 12px;
+            }
+        }
+
+        .zanders-compare-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            .zanders-compare-clear-btn {
+                background: transparent;
+                border: none;
+                color: #64748b;
+                font-size: 0.8125rem;
+                font-weight: 600;
+                cursor: pointer;
+                padding: 4px 8px;
+                border-radius: 4px;
+                transition: color 0.15s ease, background-color 0.15s ease;
+
+                &:hover {
+                    color: #991020;
+                    background: #fee2e2;
+                }
+            }
+
+            .zanders-compare-close-btn {
+                background: transparent;
+                border: none;
+                color: #64748b;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: background-color 0.15s ease, color 0.15s ease;
+
+                &:hover {
+                    background-color: #e2e8f0;
+                    color: #0f172a;
+                }
+            }
+        }
+    }
+
+    // Modal Body
+    .zanders-compare-modal-body {
+        padding: 24px;
+        overflow-y: auto;
+        overflow-x: auto;
+        flex: 1 1 auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    // Empty State
+    .zanders-compare-empty {
+        text-align: center;
+        padding: 48px 24px;
+
+        .zanders-compare-empty-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+
+        p {
+            color: #64748b;
+            max-width: 440px;
+            margin: 0 auto 20px;
+            font-size: 0.9375rem;
+            line-height: 1.5;
+        }
+
+        .zanders-compare-browse-btn {
+            background-color: #991020;
+            color: #ffffff;
+            border: none;
+            padding: 10px 24px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+
+            &:hover {
+                background-color: #7d0d1a;
+            }
+        }
+    }
+
+    // Comparison Table
+    .zanders-compare-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .zanders-compare-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: 820px;
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .zanders-compare-attr-col {
+            width: 170px;
+            min-width: 170px;
+            max-width: 170px;
+            text-align: left;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475569;
+            background: #f8fafc;
+            border-right: 1px solid #e2e8f0;
+            position: sticky;
+            left: 0;
+            z-index: 2;
+        }
+
+        .zanders-compare-prod-col {
+            min-width: 180px;
+            max-width: 220px;
+            position: relative;
+            background: #ffffff;
+            border-right: 1px solid #f1f5f9;
+
+            &:last-child {
+                border-right: none;
+            }
+        }
+
+        // Top Row: Product Card overview in table
+        .zanders-compare-item-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+
+            .zanders-compare-item-remove {
+                position: absolute;
+                top: 0;
+                right: 0;
+                background: #f1f5f9;
+                border: none;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                color: #64748b;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.15s ease;
+
+                &:hover {
+                    background: #fee2e2;
+                    color: #991020;
+                }
+            }
+
+            .zanders-compare-item-img-link {
+                display: block;
+                width: 120px;
+                height: 120px;
+                margin-bottom: 10px;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+            }
+
+            .zanders-compare-item-title-link {
+                color: #0f172a;
+                font-size: 0.875rem;
+                font-weight: 700;
+                text-decoration: none;
+                line-height: 1.35;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                margin-bottom: 4px;
+
+                &:hover {
+                    color: #991020;
+                    text-decoration: underline;
+                }
+            }
+        }
+
+        .zanders-compare-price-val {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #991020;
+        }
+
+        .zanders-compare-stock-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+
+            &.is-in-stock {
+                background: #dcfce7;
+                color: #166534;
+            }
+
+            &.is-out-of-stock {
+                background: #fee2e2;
+                color: #991020;
+            }
+        }
+
+        .zanders-compare-btn-view {
+            background-color: #991020;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 7px 16px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            border-radius: 3px;
+            display: inline-block;
+            transition: background-color 0.15s ease;
+
+            &:hover {
+                background-color: #7d0d1a;
+                color: #ffffff;
+            }
+        }
+    }
+
+    // Modal Footer
+    .zanders-compare-modal-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 24px;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+        font-size: 0.8125rem;
+        color: #64748b;
+
+        .zanders-compare-footer-actions {
+            display: flex;
+            gap: 12px;
+
+            button {
+                font-size: 0.8125rem;
+                font-weight: 600;
+                padding: 6px 14px;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+
+            .btn-clear-compare {
+                background: transparent;
+                border: 1px solid #cbd5e1;
+                color: #475569;
+
+                &:hover {
+                    border-color: #991020;
+                    color: #991020;
+                }
+            }
+
+            .btn-close-compare {
+                background: #334155;
+                border: 1px solid #334155;
+                color: #ffffff;
+
+                &:hover {
+                    background: #1e293b;
+                }
+            }
+        }
+    }
+}
+
+// Compare Toast Notifications
+.zanders-compare-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    max-width: 520px;
+    min-width: 320px;
+    transform: translateY(24px) scale(0.96);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, visibility 0.25s ease, bottom 0.25s ease;
+    backdrop-filter: blur(8px);
+
+    &.is-visible {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .zanders-toast-icon-wrap {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .zanders-toast-content {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .zanders-toast-title {
+        color: #ffffff;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        line-height: 1.25;
+    }
+
+    .zanders-toast-message {
+        color: #94a3b8;
+        font-size: 0.75rem;
+        line-height: 1.35;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 260px;
+    }
+
+    .zanders-toast-actions {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-left: 4px;
+    }
+
+    .zanders-toast-action-btn {
+        background: #991020 !important;
+        color: #ffffff !important;
+        border: none !important;
+        outline: none !important;
+        padding: 7px 14px !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.4px !important;
+        border-radius: 4px !important;
+        cursor: pointer !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+        white-space: nowrap !important;
+        box-shadow: 0 2px 6px rgba(153, 16, 32, 0.35) !important;
+        text-decoration: none !important;
+        transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease !important;
+
+        &:hover {
+            background: #7d0d1a !important;
+            color: #ffffff !important;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(153, 16, 32, 0.45) !important;
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    .zanders-toast-close {
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        color: #94a3b8 !important;
+        cursor: pointer !important;
+        width: 26px !important;
+        height: 26px !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        transition: color 0.15s ease, background-color 0.15s ease !important;
+
+        &:hover {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.15) !important;
+        }
+    }
+
+    &.is-warning {
+        border-color: rgba(234, 179, 8, 0.4);
+    }
+
+    &.is-info {
+        border-color: rgba(148, 163, 184, 0.3);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .zanders-compare-toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+        max-width: calc(100% - 32px);
+        min-width: 0;
+        padding: 10px 14px;
+        gap: 10px;
+
+        .zanders-toast-message {
+            max-width: 140px;
+        }
+    }
+}
+
+// Prevent body scroll when compare modal is open
+body.zanders-compare-open {
+    overflow: hidden !important;
+}
+
+// Responsive adjustments
+@media (max-width: 767.98px) {
+    .zanders-compare-modal {
+        width: 100%;
+        max-width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        top: 0;
+        left: 0;
+        transform: translateY(100%);
+
+        &.is-open {
+            transform: translateY(0);
+        }
+    }
+}

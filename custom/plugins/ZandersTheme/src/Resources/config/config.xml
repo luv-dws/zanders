@@ -264,4 +264,45 @@
             </options>
         </input-field>
     </card>
+
+    <card>
+        <title>Low Stock Email Alert Configuration</title>
+        <title lang="de-DE">Niedriger Lagerbestand E-Mail-Benachrichtigung</title>
+
+        <input-field type="bool">
+            <name>lowStockAlertEnabled</name>
+            <label>Enable Low Stock Alert</label>
+            <label lang="de-DE">Niedrigen Lagerbestand-Alarm aktivieren</label>
+            <defaultValue>true</defaultValue>
+            <helpText>Automatically send an email notification to the site administrator when product inventory drops below the configured threshold.</helpText>
+            <helpText lang="de-DE">Sendet automatisch eine E-Mail-Benachrichtigung an den Administrator, wenn der Lagerbestand unter den Schwellenwert fällt.</helpText>
+        </input-field>
+
+        <input-field type="int">
+            <name>lowStockThreshold</name>
+            <label>Low Stock Threshold</label>
+            <label lang="de-DE">Schwellenwert für niedrigen Lagerbestand</label>
+            <defaultValue>5</defaultValue>
+            <helpText>Alert will be triggered when product inventory drops to or below this threshold value.</helpText>
+            <helpText lang="de-DE">Der Alarm wird ausgelöst, wenn der Lagerbestand diesen Wert erreicht oder unterschreitet.</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>lowStockNotificationEmail</name>
+            <label>Recipient Email Address for Low Stock Alerts</label>
+            <label lang="de-DE">Empfänger-E-Mail-Adresse für Niedrigen-Lagerbestand-Alarm</label>
+            <placeholder>admin@example.com</placeholder>
+            <helpText>Alert emails will ONLY be sent to this configured email address. If left blank or invalid, no alert emails will be sent.</helpText>
+            <helpText lang="de-DE">Warn-E-Mails werden NUR an diese konfigurierte E-Mail-Adresse gesendet. Wenn leer oder ungültig, werden keine Warnungen gesendet.</helpText>
+        </input-field>
+
+        <input-field type="text">
+            <name>lowStockEmailSubject</name>
+            <label>Alert Email Subject</label>
+            <label lang="de-DE">E-Mail-Betreff für Benachrichtigung</label>
+            <defaultValue>[Low Stock Alert] Product inventory running low</defaultValue>
+            <helpText>Subject line for low stock alert emails.</helpText>
+            <helpText lang="de-DE">Betreffzeile für Warn-E-Mails bei niedrigem Lagerbestand.</helpText>
+        </input-field>
+    </card>
 </config>

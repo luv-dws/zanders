@@ -1,0 +1,454 @@
+{% sw_extends '@Storefront/storefront/page/content/product-detail.html.twig' %}
+
+{# Replace entire main content with custom product detail layout #}
+{% block base_main_inner %}
+    {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
+    {% set product = page.product %}
+    {% set mainImage = product.cover.media ?? null %}
+    {% set allMedia = product.media ?? null %}
+    {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
+    {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
+    {% set detailPrice = product.calculatedPrice %}
+    {% if product.calculatedPrices|length == 1 %}
+        {% set detailPrice = product.calculatedPrices.first %}
+    {% endif %}
+    {% set formattedPrice = isUserLoggedIn ? detailPrice.unitPrice|currency : 'Login to View' %}
+
+    <style>
+        .zanders-btn-login-price {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #991020;
+            color: #ffffff !important;
+            border: 1px solid #991020;
+            border-radius: 3px;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            text-decoration: none !important;
+            padding: 0.6rem 1.25rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+        .zanders-btn-login-price:hover {
+            background-color: #7d0d1a;
+            border-color: #7d0d1a;
+            color: #ffffff !important;
+            box-shadow: 0 3px 6px rgba(153, 16, 32, 0.2);
+            transform: translateY(-1px);
+        }
+        .zanders-btn-login-price:active {
+            background-color: #670b15;
+            transform: translateY(0);
+        }
+        .zanders-pd-btn-login-price {
+            width: auto;
+            min-width: 220px;
+            height: 38px;
+            min-height: 38px;
+            font-size: 0.8125rem;
+            padding: 0 20px;
+        }
+    </style>
+
+    <script>
+        document.body.classList.add(
+            "is-active-route-frontend-detail-page",
+            "zanders-has-open-catalog",
+        );
+    </script>
+
+    <div class="zanders-product-detail-wrapper">
+        <div class="zanders-container-fluid">
+
+            <div class="zanders-pd-top-section">
+
+                <div class="zanders-pd-sidebar-space" aria-hidden="true"></div>
+
+                <div class="zanders-pd-main-content">
+                    <nav class="zanders-pd-breadcrumb" aria-label="breadcrumb">
+                        <a href="{{ path('frontend.home.page') }}" class="zanders-pd-breadcrumb-link">Home</a>
+                        <span class="zanders-pd-breadcrumb-sep">/</span>
+                        {% if product.seoCategory %}
+                            <a href="{{ category_url(product.seoCategory) }}" class="zanders-pd-breadcrumb-link">{{ product.seoCategory.translated.name }}</a>
+                            <span class="zanders-pd-breadcrumb-sep">/</span>
+                        {% endif %}
+                        <span class="zanders-pd-breadcrumb-current">{{ product.translated.name }}</span>
+                    </nav>
+
+                    <div class="zanders-pd-product-grid">
+
+                        <div class="zanders-pd-gallery-col">
+
+                            <div class="zanders-pd-actions-row">
+                                <button
+                                    type="button"
+                                    class="zanders-pd-action-link zanders-compare-action-btn"
+                                    data-compare-btn
+                                    data-product-id="{{ product.id }}"
+                                    data-product-name="{{ product.translated.name|e('html_attr') }}"
+                                    data-product-sku="{{ product.productNumber|e('html_attr') }}"
+                                    data-product-upc="{{ (product.ean ?: product.customFields.upc ?: '')|e('html_attr') }}"
+                                    data-product-brand="{{ (product.manufacturer ? product.manufacturer.translated.name : '')|e('html_attr') }}"
+                                    data-product-price="{{ formattedPrice|e('html_attr') }}"
+                                    data-product-image="{{ mainImage ? mainImage.url : '' }}"
+                                    data-product-url="{{ seoUrl('frontend.detail.page', {productId: product.id}) }}"
+                                    data-product-stock="{{ availableStock >= 50 ? '50+ In Stock' : (availableStock > 0 ? availableStock ~ ' In Stock' : 'Out of Stock') }}"
+                                    data-product-in-stock="{{ isAvailable ? '1' : '0' }}"
+                                    title="Add to Compare"
+                                    aria-label="Add to Compare"
+                                >
+                                    <svg class="zanders-action-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                        <path d="M9 9h6M9 12h6M9 15h4"/>
+                                    </svg>
+                                    <span class="zanders-compare-btn-text">Add to Compare</span>
+                                </button>
+                            </div>
+
+                            {% set mainImage = product.cover.media ?? null %}
+                            {% set allMedia = product.media ?? null %}
+
+                            <div class="zanders-pd-main-image-box">
+                                {% if mainImage %}
+                                    <img
+                                        src="{{ mainImage.url }}"
+                                        alt="{{ product.translated.name }}"
+                                        class="zanders-pd-main-img"
+                                        id="zanders-main-product-image"
+                                    >
+                                {% else %}
+                                    <div class="zanders-pd-no-image">
+                                        <span>No Image Available</span>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {% if allMedia and allMedia|length > 1 %}
+                                <div class="zanders-pd-thumbnails-row">
+                                    {% for mediaItem in allMedia %}
+                                        {% if mediaItem.media %}
+                                            <div
+                                                class="zanders-pd-thumb-box{% if loop.first %} is-active{% endif %}"
+                                                onclick="
+                                                     document.getElementById('zanders-main-product-image').src='{{ mediaItem.media.url }}';
+                                                     document.querySelectorAll('.zanders-pd-thumb-box').forEach(function(el){el.classList.remove('is-active');});
+                                                     this.classList.add('is-active');
+                                                 "
+                                            >
+                                                <img
+                                                    src="{{ mediaItem.media.url }}"
+                                                    alt="{{ mediaItem.media.translated.alt ?? product.translated.name }}"
+                                                    class="zanders-pd-thumb-img"
+                                                >
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="zanders-pd-buybox-col">
+
+                            <h1 class="zanders-pd-title">{{ product.translated.name }}</h1>
+
+                            {% if product.productNumber %}
+                                <div class="zanders-pd-meta-row zanders-pd-item-row">
+                                    <span class="zanders-pd-label">ITEM NUMBER:</span>
+                                    <span class="zanders-pd-val">{{ product.productNumber }}</span>
+                                </div>
+                            {% endif %}
+
+                            {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
+                            <div class="zanders-pd-meta-row zanders-pd-stock-row">
+                                <span class="zanders-pd-label">AVAILABLE:</span>
+                                <span class="zanders-pd-val zanders-pd-stock-val">
+                                    {% if availableStock >= 50 %}
+                                        50+
+                                    {% elseif availableStock > 0 %}
+                                        {{ availableStock }}
+                                    {% else %}
+                                        Out of Stock
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            {% set price = product.calculatedPrice %}
+                            {% if product.calculatedPrices|length == 1 %}
+                                {% set price = product.calculatedPrices.first %}
+                            {% endif %}
+                            {% set unitPrice = price.unitPrice|currency %}
+                            {% set hasMsrp = price.listPrice and price.listPrice.price > price.unitPrice %}
+
+                            {% if isUserLoggedIn %}
+                                <div class="zanders-pd-price-row">
+                                    <span class="zanders-pd-current-price">{{ unitPrice }}</span>
+                                    {% if hasMsrp %}
+                                        <span class="zanders-pd-msrp">MSRP: <span class="zanders-pd-msrp-val">{{ price.listPrice.price|currency }}</span></span>
+                                    {% endif %}
+                                </div>
+
+                                {# Buy Form: Qty + Add to Cart #}
+                                {% if product.active %}
+                                    {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
+                                    <form
+                                        action="{{ path('frontend.checkout.line-item.add') }}"
+                                        method="post"
+                                        class="zanders-pd-buy-form"
+                                        data-add-to-cart="true"
+                                    >
+
+                                        <input type="hidden" name="redirectTo" value="frontend.detail.page">
+                                        <input
+                                            type="hidden"
+                                            name="redirectParameters"
+                                            data-redirect-parameters="true"
+                                            value="{{ {productId: product.id}|json_encode }}"
+                                        >
+                                        <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                                        <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                                        <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                                        <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                                        <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
+                                        <input type="hidden" name="product-name" value="{{ product.translated.name }}">
+                                        <input type="hidden" name="brand-name" value="{{ product.manufacturer ? product.manufacturer.getName() : '' }}">
+
+                                        <div class="zanders-pd-action-bar">
+                                            <div class="zanders-pd-qty-group">
+                                                <label for="zandersQtyInput" class="zanders-pd-qty-label">Qty:</label>
+                                                <input
+                                                    type="number"
+                                                    id="zandersQtyInput"
+                                                    name="lineItems[{{ product.id }}][quantity]"
+                                                    class="zanders-pd-qty-input"
+                                                    min="{{ product.minPurchase|default(1) }}"
+                                                    max="{{ product.calculatedMaxPurchase|default(100) }}"
+                                                    step="{{ product.purchaseSteps|default(1) }}"
+                                                    value="{{ product.minPurchase|default(1) }}"
+                                                >
+                                            </div>
+
+                                            {% if buyable %}
+                                                <button type="submit" class="zanders-pd-add-to-cart-btn">
+                                                    ADD TO CART
+                                                </button>
+                                            {% else %}
+                                                <button type="button" class="zanders-pd-add-to-cart-btn is-disabled" disabled>
+                                                    OUT OF STOCK
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                <div class="zanders-pd-login-price-wrap" style="margin: 16px 0 20px 0;">
+                                    <a
+                                        href="{{ path('frontend.account.login.page') }}"
+                                        class="btn zanders-btn-login-price zanders-pd-btn-login-price"
+                                        title="Please Login to View Price"
+                                    >
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        </svg>
+                                        <span>Please Login to View Price</span>
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            {# ── Section: Quick Overview (Static content) ── #}
+                            <div class="zanders-pd-overview-card">
+                                <div class="zanders-pd-card-header">
+                                    QUICK OVERVIEW
+                                </div>
+                                <div class="zanders-pd-card-body">
+                                    <p class="zanders-pd-overview-text">{{ product.translated.name }}</p>
+                                </div>
+                            </div>
+
+                            {# ── Section: Features (Dynamic Product Description) ── #}
+                            {% set productDescription = product.translated.description|default(product.description)|default('') %}
+                            {% if productDescription %}
+                                <div class="zanders-pd-features-card">
+                                    <div class="zanders-pd-features-header">
+                                        FEATURES:
+                                    </div>
+                                    <div class="zanders-pd-features-body">
+                                        {% if '<' in productDescription and '>' in productDescription %}
+                                            {{ productDescription|raw }}
+                                        {% else %}
+                                            {{ productDescription|nl2br }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {# ── Button: Create Customer Quote (Static) ── #}
+                            <div class="zanders-pd-quote-wrapper">
+                                <button type="button" class="zanders-pd-quote-btn">
+                                    CREATE CUSTOMER QUOTE
+                                </button>
+                            </div>
+
+                            {# ── Warning Box: California Prop 65 (Static) ── #}
+                            <div class="zanders-pd-warning-box">
+                                <div class="zanders-pd-warning-icon">
+                                    <svg width="22" height="20" viewBox="0 0 24 24" fill="#f59e0b">
+                                        <path d="M12 2L1 21h22L12 2zm0 3.5L20.5 19h-17L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+                                    </svg>
+                                </div>
+                                <div class="zanders-pd-warning-content">
+                                    <strong>WARNING:</strong>
+                                    <a href="https://www.p65warnings.ca.gov/" target="_blank" rel="noopener" class="zanders-pd-warning-link">California Prop 65 Warning</a>
+                                </div>
+                            </div>
+
+                            {# ── Button: Email to a Friend (Static) ── #}
+                            <div class="zanders-pd-email-wrapper">
+                                <button type="button" class="zanders-pd-email-btn">
+                                    EMAIL TO A FRIEND
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {# ── Bottom Section: ADDITIONAL INFORMATION (Dynamic from Existing Data) ── #}
+            {% set upcValue = product.ean ?: product.customFields.upc|default(null) %}
+            {% set hasAdditionalInfo = product.manufacturer 
+                or product.manufacturerNumber 
+                or upcValue 
+                or (product.weight and product.weight > 0) 
+                or (product.height and product.height > 0) 
+                or (product.width and product.width > 0) 
+                or (product.length and product.length > 0) 
+                or (product.sortedProperties and product.sortedProperties|length > 0) 
+                or (product.customFields and product.customFields|length > 0)
+                or product.releaseDate
+                or product.deliveryTime %}
+
+            {% if hasAdditionalInfo %}
+                <section class="zanders-pd-additional-info" aria-labelledby="zanders-additional-info-title">
+                    <h2 id="zanders-additional-info-title" class="zanders-pd-additional-title">
+                        ADDITIONAL INFORMATION
+                    </h2>
+                    <div class="zanders-pd-additional-divider"></div>
+
+                    <table class="zanders-pd-info-table">
+                        <tbody>
+
+                            {% if product.manufacturer %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Manufacturer</th>
+                                    <td class="zanders-pd-info-value">
+                                        <span class="zanders-pd-mfr-link">{{ product.manufacturer.translated.name }}</span>
+                                        {% if product.manufacturer.translated.description %}
+                                            <div class="zanders-pd-mfr-address">
+                                                {{ product.manufacturer.translated.description|striptags('<br><p>')|raw }}
+                                            </div>
+                                        {% endif %}
+                                        {% if product.manufacturer.link %}
+                                            <a href="{{ product.manufacturer.link }}" target="_blank" rel="noopener" class="zanders-pd-mfr-website">
+                                                {{ product.manufacturer.link|replace({'https://': '', 'http://': ''}) }}
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+
+                            {% if product.manufacturerNumber %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Manufacturer Part Number</th>
+                                    <td class="zanders-pd-info-value">{{ product.manufacturerNumber }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if upcValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">UPC</th>
+                                    <td class="zanders-pd-info-value">{{ upcValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if (product.height and product.height > 0) or (product.width and product.width > 0) or (product.length and product.length > 0) %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">PACKAGING DIMENSIONS (H X W X L)</th>
+                                    <td class="zanders-pd-info-value">
+                                        {{ product.height|default('—') }} X {{ product.width|default('—') }} X {{ product.length|default('—') }}
+                                    </td>
+                                </tr>
+                            {% endif %}
+
+                            {% if product.weight and product.weight > 0 %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">WEIGHT IN POUNDS</th>
+                                    <td class="zanders-pd-info-value">{{ product.weight }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if product.releaseDate %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">RELEASE DATE</th>
+                                    <td class="zanders-pd-info-value">{{ product.releaseDate|format_date('medium') }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if product.deliveryTime %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">DELIVERY TIME</th>
+                                    <td class="zanders-pd-info-value">{{ product.deliveryTime.translated.name }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if product.sortedProperties %}
+                                {% for group in product.sortedProperties %}
+                                    {% set groupNameUpper = group.translated.name|upper|trim %}
+                                    {% if groupNameUpper not in ['UPC', 'EAN', 'MANUFACTURER PART NUMBER', 'MPN'] %}
+                                        {% set optionValues = group.options|map(option => "#{option.translated.name}")|join(', ') %}
+                                        {% if optionValues %}
+                                            <tr class="zanders-pd-info-row">
+                                                <th scope="row" class="zanders-pd-info-label">{{ group.translated.name|upper }}</th>
+                                                <td class="zanders-pd-info-value">{{ optionValues }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if product.customFields %}
+                                {% for key, value in product.customFields %}
+                                    {% set fieldLabel = key|replace({'custom_': '', '_': ' '})|upper|trim %}
+                                    {% if fieldLabel not in ['UPC', 'EAN', 'MPN', 'MANUFACTURER PART NUMBER'] %}
+                                        {% if value is not null and value is not empty and value is not same as false %}
+                                            <tr class="zanders-pd-info-row">
+                                                <th scope="row" class="zanders-pd-info-label">{{ fieldLabel }}</th>
+                                                <td class="zanders-pd-info-value">
+                                                    {% if value is iterable %}
+                                                        {{ value|join(', ') }}
+                                                    {% elseif value is same as true %}
+                                                        Y
+                                                    {% else %}
+                                                        {{ value }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                        </tbody>
+                    </table>
+                </section>
+            {% endif %}
+
+        </div>{# /zanders-container-fluid #}
+    </div>{# /zanders-product-detail-wrapper #}
+{% endblock %}

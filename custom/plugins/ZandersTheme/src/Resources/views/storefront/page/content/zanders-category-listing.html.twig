@@ -1,4 +1,94 @@
 {# Zanders Category Listing Page #}
+<style>
+    .zanders-cat-qty-input,
+    .zanders-product-qty-input {
+        border: none !important;
+        border-bottom: 1px solid #000000 !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        border-radius: 0 !important;
+        width: 50px !important;
+        height: 26px !important;
+        text-align: center !important;
+        font-size: 1rem !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        -moz-appearance: textfield !important;
+    }
+    .zanders-cat-qty-input:focus,
+    .zanders-product-qty-input:focus {
+        border: none !important;
+        border-bottom: 1px solid #000000 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    .zanders-cat-qty-input::-webkit-outer-spin-button,
+    .zanders-cat-qty-input::-webkit-inner-spin-button,
+    .zanders-product-qty-input::-webkit-outer-spin-button,
+    .zanders-product-qty-input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+    .zanders-cat-login-price-wrap,
+    .zanders-product-login-price-wrap {
+        width: 100%;
+        margin-top: auto;
+        padding-top: 0.625rem;
+        padding-bottom: 0.125rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .zanders-btn-login-price {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        max-width: 90%;
+        height: 32px;
+        min-height: 32px;
+        background-color: #991020;
+        color: #ffffff !important;
+        border: 1px solid #991020;
+        border-radius: 3px;
+        font-size: 0.715rem;
+        font-weight: 700;
+        letter-spacing: 0.35px;
+        text-transform: uppercase;
+        text-decoration: none !important;
+        white-space: nowrap;
+        line-height: 1;
+        padding: 0 14px;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .zanders-btn-login-price svg {
+        width: 13px;
+        height: 13px;
+        margin-right: 6px;
+        flex-shrink: 0;
+    }
+    .zanders-btn-login-price:hover {
+        background-color: #7d0d1a;
+        border-color: #7d0d1a;
+        color: #ffffff !important;
+        box-shadow: 0 3px 6px rgba(153, 16, 32, 0.22);
+        transform: translateY(-1px);
+    }
+    .zanders-btn-login-price:active {
+        background-color: #670b15;
+        transform: translateY(0);
+    }
+    @media (max-width: 400px) {
+        .zanders-btn-login-price {
+            font-size: 0.68rem;
+            padding: 0 8px;
+            max-width: 100%;
+        }
+    }
+</style>
 {% set slot = page.cmsPage ? page.cmsPage.getFirstElementOfType('product-listing') : null %}
 {% set listing = slot ? slot.data.listing : null %}
 {% set products = listing ? listing.entities : [] %}
@@ -110,6 +200,28 @@
                         {% set stockQty = availableStock > 0 ? availableStock : 0 %}
 
                         <div class="zanders-cat-product-card card h-100{% if not isAvailable %} is-out-of-stock{% endif %}" data-in-stock="{{ isAvailable ? '1' : '0' }}">
+                            <button type="button"
+                                    class="zanders-card-compare-btn"
+                                    data-compare-btn
+                                    data-product-id="{{ product.id }}"
+                                    data-product-name="{{ product.translated.name|e('html_attr') }}"
+                                    data-product-sku="{{ product.productNumber|e('html_attr') }}"
+                                    data-product-upc="{{ upc|e('html_attr') }}"
+                                    data-product-brand="{{ (product.manufacturer ? product.manufacturer.translated.name : '')|e('html_attr') }}"
+                                    data-product-price="{{ isUserLoggedIn ? (price|currency|e('html_attr')) : 'Login to View' }}"
+                                    data-product-image="{{ cover ? cover.url : '' }}"
+                                    data-product-url="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
+                                    data-product-stock="{{ isAvailable ? (isUserLoggedIn ? stockQty ~ ' In Stock' : 'In Stock') : 'Out of Stock' }}"
+                                    data-product-in-stock="{{ isAvailable ? '1' : '0' }}"
+                                    title="Add to Compare"
+                                    aria-label="Add to Compare">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <path d="M9 9h6M9 12h6M9 15h4"/>
+                                </svg>
+                                <span class="zanders-card-compare-tooltip">Compare</span>
+                            </button>
+
                             <a href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
                                class="zanders-cat-product-link"
                                title="{{ product.translated.name }}">
@@ -157,11 +269,65 @@
                                         </div>
                                     </div>
 
-                                    <div class="zanders-cat-price" style="font-size: 1.125rem; font-weight: 700; color: #991020; text-align: center; margin-top: auto; padding-top: 0.25rem;">
-                                        {{ price|currency }}
-                                    </div>
+                                    {% if isUserLoggedIn %}
+                                        <div class="zanders-cat-price" style="font-size: 1.125rem; font-weight: 700; color: #991020; text-align: center; margin-top: auto; padding-top: 0.25rem;">
+                                            {{ price|currency }}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </a>
+
+                            {% if isUserLoggedIn %}
+                                <form action="{{ path('frontend.checkout.line-item.add') }}"
+                                      method="post"
+                                      class="zanders-cat-buy-form buy-widget"
+                                      data-add-to-cart="true">
+
+                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                                    <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
+                                    <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                                    <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                                    <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                                    <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                                    <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
+                                    <input type="hidden" name="product-name" value="{{ product.translated.name }}">
+                                    <input type="hidden" name="brand-name" value="{{ product.manufacturer ? product.manufacturer.getName() : '' }}">
+
+                                    <div class="zanders-cat-qty-container">
+                                        <label for="qty-cat-{{ product.id }}" class="zanders-cat-qty-label">Qty:</label>
+                                        <input type="number"
+                                               id="qty-cat-{{ product.id }}"
+                                               name="lineItems[{{ product.id }}][quantity]"
+                                               class="zanders-cat-qty-input"
+                                               value="{{ product.minPurchase|default(1) }}"
+                                               min="{{ product.minPurchase|default(1) }}"
+                                               max="{{ product.calculatedMaxPurchase|default(100) }}"
+                                               step="{{ product.purchaseSteps|default(1) }}"
+                                               aria-label="Quantity"
+                                               style="border: none !important; border-bottom: 1px solid #000000 !important; outline: none !important; box-shadow: none !important; width: 50px !important; height: 26px !important; text-align: center !important; font-size: 1rem !important; font-weight: 700 !important; background: transparent !important; border-radius: 0 !important; padding: 0 !important; color: #000000 !important; -webkit-appearance: none !important; -moz-appearance: textfield !important;"
+                                               oninput="if(this.value && this.value < 1) this.value = 1;">
+                                    </div>
+
+                                    <button type="submit"
+                                            class="btn btn-buy zanders-btn-add-to-cart"
+                                            title="ADD TO CART"
+                                            aria-label="ADD TO CART"{% if not isAvailable %} disabled{% endif %}>
+                                        ADD TO CART
+                                    </button>
+                                </form>
+                            {% else %}
+                                <div class="zanders-cat-login-price-wrap">
+                                    <a href="{{ path('frontend.account.login.page') }}"
+                                       class="btn zanders-btn-login-price"
+                                       title="Please Login to View Price">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
+                                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                        </svg>
+                                        <span>Please Login to View Price</span>
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     {% else %}
                         <div class="zanders-category-empty-alert alert alert-info w-100">

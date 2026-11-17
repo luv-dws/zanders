@@ -20,6 +20,23 @@
         {% block layout_header_actions %}
             <div class="col-auto header-actions-col">
                 <div class="d-flex align-items-center">
+                    <div class="header-compare me-2 me-md-3" data-compare-widget="true">
+                        <button type="button"
+                                class="zanders-header-compare-btn d-flex align-items-center text-decoration-none"
+                                data-compare-open-btn
+                                title="Product Comparison"
+                                aria-label="Product Comparison">
+                            <span class="zanders-compare-circle position-relative">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <path d="M9 9h6M9 12h6M9 15h4"/>
+                                </svg>
+                                <span class="zanders-compare-count-badge" data-compare-badge style="display: none;">0</span>
+                            </span>
+                            <span class="zanders-compare-header-label d-none d-lg-inline ms-2">Compare</span>
+                        </button>
+                    </div>
+
                     {% block layout_header_actions_cart %}
                         <div class="header-cart" data-off-canvas-cart="true">
                             <a class="header-cart-btn zanders-cart-link d-flex align-items-center text-decoration-none"

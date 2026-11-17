@@ -37,11 +37,14 @@
         }
     }
 
-    // On homepage desktop, keep Catalog dropdown open by default (matching reference website)
+    // On homepage and product detail page desktop, keep Catalog dropdown open by default (matching reference website)
     @media (min-width: 992px) {
-        .is-active-route-frontend-home-page & {
+        .is-active-route-frontend-home-page &,
+        .is-active-route-frontend-detail-page &,
+        .zanders-has-open-catalog & {
             .zanders-catalog-dropdown-menu {
                 display: block;
+                box-shadow: none;
             }
 
             .zanders-catalog-dropdown-wrapper.is-closed .zanders-catalog-dropdown-menu {

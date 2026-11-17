@@ -35,3 +35,53 @@
         color: $zanders-white;
     }
 }
+
+.zanders-btn-login-price {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    max-width: 90%;
+    height: 32px;
+    min-height: 32px;
+    padding: 0 14px;
+    background-color: #991020;
+    color: #ffffff !important;
+    border: 1px solid #991020;
+    border-radius: 3px;
+    font-size: 0.715rem;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    white-space: nowrap;
+    line-height: 1;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    svg {
+        width: 13px;
+        height: 13px;
+        margin-right: 6px;
+        flex-shrink: 0;
+    }
+
+    &:hover {
+        background-color: #7d0d1a;
+        border-color: #7d0d1a;
+        color: #ffffff !important;
+        box-shadow: 0 3px 6px rgba(153, 16, 32, 0.22);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        background-color: #670b15;
+        transform: translateY(0);
+    }
+
+    @media (max-width: 400px) {
+        font-size: 0.68rem;
+        padding: 0 8px;
+        max-width: 100%;
+    }
+}
