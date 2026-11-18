@@ -1,0 +1,12 @@
+{% sw_extends '@Storefront/storefront/component/product/card/action.html.twig' %}
+
+{% block component_product_box_action_buy %}
+    {% set isRestricted = zanders_is_product_restricted(product) %}
+    {% if isRestricted %}
+        <div class="zanders-card-restriction-notice alert alert-warning small p-2 mb-0" role="alert" style="font-size: 0.8rem; font-weight: 600;">
+            {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+        </div>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

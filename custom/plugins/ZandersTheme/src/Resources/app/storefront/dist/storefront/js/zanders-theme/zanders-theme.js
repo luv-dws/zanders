@@ -767,7 +767,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.classList.remove('prices-hidden', 'zanders-prices-hidden');
         }
 
-        const priceElements = document.querySelectorAll('.zanders-product-price, .zanders-cat-price, .product-price, .product-detail-price, .product-detail-price-container, .zanders-compare-price-val');
+        const priceElements = document.querySelectorAll('.zanders-product-price, .zanders-cat-price, .product-price, .product-detail-price, .product-detail-price-container, .zanders-compare-price-val, .zanders-cross-price-row');
         priceElements.forEach(el => {
             el.style.display = hide ? 'none' : '';
         });
@@ -797,4 +797,102 @@ document.addEventListener('DOMContentLoaded', () => {
             setPriceVisibility(!currentlyHidden);
         });
     });
+
+    // Cross-Selling Slider & Out-of-Stock Filter
+    function initCrossSellingSliders() {
+        const sliders = document.querySelectorAll('[data-zanders-cross-selling="true"]');
+        sliders.forEach(slider => {
+            if (slider.dataset.jsInitialized === 'true') return;
+            slider.dataset.jsInitialized = 'true';
+
+            const track = slider.querySelector('[data-cross-track="true"]');
+            const prevBtn = slider.querySelector('[data-cross-prev="true"]');
+            const nextBtn = slider.querySelector('[data-cross-next="true"]');
+
+            if (!track) return;
+
+            function getScrollStep() {
+                const firstCard = track.querySelector('.zanders-cross-slide-item');
+                if (firstCard) {
+                    return firstCard.offsetWidth + 16;
+                }
+                return 260;
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+                });
+            }
+
+            // Wishlist toggle
+            const wishlistBtns = slider.querySelectorAll('.zanders-cross-wishlist-btn');
+            wishlistBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('is-active');
+                });
+            });
+        });
+    }
+
+    initCrossSellingSliders();
+
+    // Product Warning Modal
+    function initProductWarningModal() {
+        const modal = document.getElementById('zandersWarningModal');
+        if (!modal) return;
+
+        const openBtns = document.querySelectorAll('[data-warning-modal-open="true"]');
+        const closeBtns = modal.querySelectorAll('[data-warning-modal-close="true"]');
+
+        function openModal() {
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        openBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openModal();
+            });
+        });
+
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+                closeModal();
+            }
+        });
+    }
+
+    initProductWarningModal();
 });

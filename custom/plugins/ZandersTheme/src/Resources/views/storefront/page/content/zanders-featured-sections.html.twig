@@ -90,7 +90,7 @@
     }
 </style>
 
-{% macro product_card(product, isUserLoggedIn = false) %}
+{% macro product_card(product, isUserLoggedIn = false, context = null) %}
     {% set name = product.translated.name|default(product.name) %}
     {% set sku = product.productNumber %}
     {% set upc = product.ean ?: product.customFields.upc ?: ('747115' ~ loop.index ~ '436491') %}
@@ -174,43 +174,50 @@
             </a>
 
             {% if isLoggedIn %}
-                <form action="{{ path('frontend.checkout.line-item.add') }}"
-                      method="post"
-                      class="zanders-product-buy-form buy-widget"
-                      data-add-to-cart="true">
-
-                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                    <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
-                    <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
-                    <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
-                    <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
-                    <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
-                    <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
-                    <input type="hidden" name="product-name" value="{{ name }}">
-                    <input type="hidden" name="brand-name" value="{{ product.manufacturer ? product.manufacturer.getName() : '' }}">
-
-                    <div class="zanders-product-qty-container">
-                        <label for="qty-feat-{{ product.id }}" class="zanders-product-qty-label">Qty:</label>
-                        <input type="number"
-                               id="qty-feat-{{ product.id }}"
-                               name="lineItems[{{ product.id }}][quantity]"
-                               class="zanders-product-qty-input"
-                               value="{{ product.minPurchase|default(1) }}"
-                               min="{{ product.minPurchase|default(1) }}"
-                               max="{{ product.calculatedMaxPurchase|default(100) }}"
-                               step="{{ product.purchaseSteps|default(1) }}"
-                               aria-label="Quantity"
-                               style="border: none !important; border-bottom: 1px solid #000000 !important; outline: none !important; box-shadow: none !important; width: 50px !important; height: 26px !important; text-align: center !important; font-size: 1rem !important; font-weight: 700 !important; background: transparent !important; border-radius: 0 !important; padding: 0 !important; color: #000000 !important; -webkit-appearance: none !important; -moz-appearance: textfield !important;"
-                               oninput="if(this.value && this.value < 1) this.value = 1;">
+                {% set isRestricted = zanders_is_product_restricted(product, context) %}
+                {% if isRestricted %}
+                    <div class="zanders-featured-restriction-notice alert alert-warning small p-2 mb-0" role="alert" style="font-size: 0.8rem; font-weight: 600;">
+                        {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
                     </div>
+                {% else %}
+                    <form action="{{ path('frontend.checkout.line-item.add') }}"
+                          method="post"
+                          class="zanders-product-buy-form buy-widget"
+                          data-add-to-cart="true">
 
-                    <button type="submit"
-                            class="btn btn-buy zanders-btn-add-to-cart"
-                            title="ADD TO CART"
-                            aria-label="ADD TO CART"{% if not isAvailable %} disabled{% endif %}>
-                        ADD TO CART
-                    </button>
-                </form>
+                        <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                        <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
+                        <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                        <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                        <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                        <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                        <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
+                        <input type="hidden" name="product-name" value="{{ name }}">
+                        <input type="hidden" name="brand-name" value="{{ product.manufacturer ? product.manufacturer.getName() : '' }}">
+
+                        <div class="zanders-product-qty-container">
+                            <label for="qty-feat-{{ product.id }}" class="zanders-product-qty-label">Qty:</label>
+                            <input type="number"
+                                   id="qty-feat-{{ product.id }}"
+                                   name="lineItems[{{ product.id }}][quantity]"
+                                   class="zanders-product-qty-input"
+                                   value="{{ product.minPurchase|default(1) }}"
+                                   min="{{ product.minPurchase|default(1) }}"
+                                   max="{{ product.calculatedMaxPurchase|default(100) }}"
+                                   step="{{ product.purchaseSteps|default(1) }}"
+                                   aria-label="Quantity"
+                                   style="border: none !important; border-bottom: 1px solid #000000 !important; outline: none !important; box-shadow: none !important; width: 50px !important; height: 26px !important; text-align: center !important; font-size: 1rem !important; font-weight: 700 !important; background: transparent !important; border-radius: 0 !important; padding: 0 !important; color: #000000 !important; -webkit-appearance: none !important; -moz-appearance: textfield !important;"
+                                   oninput="if(this.value && this.value < 1) this.value = 1;">
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-buy zanders-btn-add-to-cart"
+                                title="ADD TO CART"
+                                aria-label="ADD TO CART"{% if not isAvailable %} disabled{% endif %}>
+                            ADD TO CART
+                        </button>
+                    </form>
+                {% endif %}
             {% else %}
                 <div class="zanders-product-login-price-wrap">
                     <a href="{{ path('frontend.account.login.page') }}"
@@ -275,7 +282,7 @@
             <section class="zanders-featured-section zanders-brand-products-section" aria-label="Featured Products Grid">
                 <div class="zanders-featured-grid">
                     {% for product in featuredProducts|slice(0, 16) %}
-                        {{ _self.product_card(product, isUserLoggedIn) }}
+                        {{ _self.product_card(product, isUserLoggedIn, context) }}
                     {% endfor %}
                 </div>
             </section>
@@ -291,7 +298,7 @@
 
                 <div class="zanders-featured-grid">
                     {% for product in dailySpecialsProducts %}
-                        {{ _self.product_card(product, isUserLoggedIn) }}
+                        {{ _self.product_card(product, isUserLoggedIn, context) }}
                     {% endfor %}
                 </div>
             </section>
@@ -307,7 +314,7 @@
 
                 <div class="zanders-featured-grid">
                     {% for product in popularProducts %}
-                        {{ _self.product_card(product, isUserLoggedIn) }}
+                        {{ _self.product_card(product, isUserLoggedIn, context) }}
                     {% endfor %}
                 </div>
             </section>

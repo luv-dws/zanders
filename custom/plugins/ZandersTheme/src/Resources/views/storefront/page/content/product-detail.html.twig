@@ -51,6 +51,149 @@
             font-size: 0.8125rem;
             padding: 0 20px;
         }
+
+        /* ── Warning Box & Modal ── */
+        .zanders-pd-warning-box {
+            background-color: #fbf5e6;
+            border: 1px solid #d9b85c;
+            border-radius: 2px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+            margin-bottom: 14px;
+            width: 100%;
+            max-width: 440px;
+            box-sizing: border-box;
+        }
+        .zanders-pd-warning-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .zanders-pd-warning-content {
+            font-size: 0.8125rem;
+            color: #000000;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .zanders-pd-warning-label {
+            color: #000000;
+            font-weight: 800;
+        }
+        .zanders-pd-warning-link {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            color: #000000;
+            font-weight: 700;
+            font-size: 0.8125rem;
+            text-decoration: underline;
+            cursor: pointer;
+            text-align: left;
+            transition: color 0.15s ease;
+        }
+        .zanders-pd-warning-link:hover {
+            color: #991020;
+        }
+        .zanders-warning-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.55);
+            z-index: 99999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            box-sizing: border-box;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        .zanders-warning-modal-backdrop.is-open {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        .zanders-warning-modal-dialog {
+            position: relative;
+            background-color: #ffffff;
+            border-radius: 2px;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+            max-width: 530px;
+            width: 100%;
+            padding: 24px 28px 24px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            box-sizing: border-box;
+            animation: zandersWarningScaleIn 0.22s ease-out;
+        }
+        @keyframes zandersWarningScaleIn {
+            from {
+                opacity: 0;
+                transform: translateY(-16px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .zanders-warning-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            background: transparent;
+            border: none;
+            padding: 4px;
+            cursor: pointer;
+            color: #6b7280;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s ease;
+            line-height: 1;
+        }
+        .zanders-warning-modal-close:hover {
+            color: #111827;
+        }
+        .zanders-warning-modal-icon {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .zanders-warning-modal-content {
+            flex-grow: 1;
+            padding-right: 12px;
+        }
+        .zanders-warning-modal-text {
+            margin: 0;
+            font-size: 0.8125rem;
+            line-height: 1.5;
+            color: #1f2937;
+        }
+        .zanders-warning-modal-text strong {
+            color: #111827;
+            font-weight: 700;
+        }
+        .zanders-warning-link {
+            color: #991020;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .zanders-warning-link:hover {
+            text-decoration: underline;
+        }
     </style>
 
     <script>
@@ -58,6 +201,61 @@
             "is-active-route-frontend-detail-page",
             "zanders-has-open-catalog",
         );
+
+        (function() {
+            function initWarningModal() {
+                const modal = document.getElementById('zandersWarningModal');
+                if (!modal) return;
+
+                const openBtns = document.querySelectorAll('[data-warning-modal-open="true"]');
+                const closeBtns = modal.querySelectorAll('[data-warning-modal-close="true"]');
+
+                function openModal() {
+                    modal.classList.add('is-open');
+                    modal.setAttribute('aria-hidden', 'false');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeModal() {
+                    modal.classList.remove('is-open');
+                    modal.setAttribute('aria-hidden', 'true');
+                    document.body.style.overflow = '';
+                }
+
+                openBtns.forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        openModal();
+                    });
+                });
+
+                closeBtns.forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        closeModal();
+                    });
+                });
+
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeModal();
+                    }
+                });
+
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+                        closeModal();
+                    }
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initWarningModal);
+            } else {
+                initWarningModal();
+            }
+        })();
     </script>
 
     <div class="zanders-product-detail-wrapper">
@@ -191,7 +389,12 @@
                                 </div>
 
                                 {# Buy Form: Qty + Add to Cart #}
-                                {% if product.active %}
+                                {% set isRestricted = zanders_is_product_restricted(product) %}
+                                {% if isRestricted %}
+                                    <div class="zanders-pd-restriction-notice alert alert-warning" role="alert" style="margin-top: 15px; font-weight: 600;">
+                                        {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                                    </div>
+                                {% elseif product.active %}
                                     {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
                                     <form
                                         action="{{ path('frontend.checkout.line-item.add') }}"
@@ -292,18 +495,130 @@
                                 </button>
                             </div>
 
-                            {# ── Warning Box: California Prop 65 (Static) ── #}
-                            <div class="zanders-pd-warning-box">
-                                <div class="zanders-pd-warning-icon">
-                                    <svg width="22" height="20" viewBox="0 0 24 24" fill="#f59e0b">
-                                        <path d="M12 2L1 21h22L12 2zm0 3.5L20.5 19h-17L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
-                                    </svg>
+                            {# ── Warning Box & Modal: Product Warning Information ── #}
+                            {% set pCustomFields = product.translated.customFields ?: product.customFields %}
+                            {% set warningField = null %}
+                            {% set warningTitle = 'California Prop 65 Warning' %}
+
+                            {% if pCustomFields %}
+                                {% set possibleKeys = [
+                                    'custom_product_warning_information',
+                                    'product_warning_information',
+                                    'productWarningInformation',
+                                    'custom_warning_information',
+                                    'warning_information',
+                                    'warningInformation',
+                                    'custom_product_warning',
+                                    'product_warning',
+                                    'productWarning',
+                                    'custom_warning',
+                                    'warning',
+                                    'prop_65_warning',
+                                    'prop65_warning',
+                                    'prop_65',
+                                    'prop65',
+                                    'custom_prop_65'
+                                ] %}
+                                {% for key in possibleKeys %}
+                                    {% if warningField is null and pCustomFields[key] is defined and pCustomFields[key] is not empty %}
+                                        {% set warningField = pCustomFields[key] %}
+                                    {% endif %}
+                                {% endfor %}
+
+                                {# Dynamic fallback for any key containing 'warning' or 'prop65' #}
+                                {% if warningField is null %}
+                                    {% for k, v in pCustomFields %}
+                                        {% if warningField is null and ('warning' in k|lower or 'prop65' in k|lower or 'prop_65' in k|lower) and v is not empty %}
+                                            {% set warningField = v %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+
+                                {# Check for custom warning title #}
+                                {% set possibleTitleKeys = [
+                                    'custom_product_warning_title',
+                                    'product_warning_title',
+                                    'productWarningTitle',
+                                    'warning_title',
+                                    'warningTitle'
+                                ] %}
+                                {% for key in possibleTitleKeys %}
+                                    {% if pCustomFields[key] is defined and pCustomFields[key] is not empty %}
+                                        {% set warningTitle = pCustomFields[key] %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            {% set hasWarning = warningField is not null and warningField is not same as false and warningField is not empty %}
+
+                            {% if hasWarning %}
+                                {% set defaultWarningMessage = 'Discharging firearms in poorly ventilated areas, cleaning firearms, or handling ammunition may result in exposure to lead and other substances known to cause birth defects, reproductive harm, and other serious physical injury. Have adequate ventilation at all times. Wash hands thoroughly after exposure. For more information go to <a href="https://www.P65Warnings.ca.gov" target="_blank" rel="noopener" class="zanders-warning-link">www.P65Warnings.ca.gov</a>' %}
+                                {% set warningMessage = defaultWarningMessage %}
+
+                                {% if warningField is iterable %}
+                                    {% if warningField.title is defined and warningField.title is not empty %}
+                                        {% set warningTitle = warningField.title %}
+                                    {% endif %}
+                                    {% if warningField.message is defined and warningField.message is not empty %}
+                                        {% set warningMessage = warningField.message %}
+                                    {% elseif warningField.warning is defined and warningField.warning is not empty %}
+                                        {% set warningMessage = warningField.warning %}
+                                    {% endif %}
+                                {% elseif warningField is same as(true) %}
+                                    {% set warningMessage = defaultWarningMessage %}
+                                {% elseif warningField is string and warningField|length > 0 %}
+                                    {% if warningField|length > 60 %}
+                                        {% set warningMessage = warningField %}
+                                    {% else %}
+                                        {% set warningTitle = warningField %}
+                                        {% set warningMessage = defaultWarningMessage %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if 'www.P65Warnings.ca.gov' in warningMessage and not ('<a' in warningMessage) %}
+                                    {% set warningMessage = warningMessage|replace({'www.P65Warnings.ca.gov': '<a href="https://www.P65Warnings.ca.gov" target="_blank" rel="noopener" class="zanders-warning-link">www.P65Warnings.ca.gov</a>'}) %}
+                                {% endif %}
+
+                                <div class="zanders-pd-warning-box">
+                                    <div class="zanders-pd-warning-icon">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <path d="M12 2.5L1.5 21H22.5L12 2.5Z" fill="#F59E0B" stroke="#000000" stroke-width="1.6" stroke-linejoin="round"/>
+                                            <path d="M12 8.5V14" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                                            <circle cx="12" cy="17.5" r="1.2" fill="#000000"/>
+                                        </svg>
+                                    </div>
+                                    <div class="zanders-pd-warning-content">
+                                        <strong class="zanders-pd-warning-label">WARNING:</strong>
+                                        <button type="button" class="zanders-pd-warning-link" data-warning-modal-open="true" aria-haspopup="dialog">
+                                            {{ warningTitle }}
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="zanders-pd-warning-content">
-                                    <strong>WARNING:</strong>
-                                    <a href="https://www.p65warnings.ca.gov/" target="_blank" rel="noopener" class="zanders-pd-warning-link">California Prop 65 Warning</a>
+
+                                {# ── Warning Popup Modal ── #}
+                                <div class="zanders-warning-modal-backdrop" id="zandersWarningModal" aria-hidden="true" role="dialog" aria-modal="true">
+                                    <div class="zanders-warning-modal-dialog">
+                                        <button type="button" class="zanders-warning-modal-close" data-warning-modal-close="true" aria-label="Close warning">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                            </svg>
+                                        </button>
+                                        <div class="zanders-warning-modal-icon">
+                                            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                                <path d="M12 2.5L1.5 21H22.5L12 2.5Z" fill="#F59E0B" stroke="#000000" stroke-width="1.6" stroke-linejoin="round"/>
+                                                <path d="M12 8.5V14" stroke="#000000" stroke-width="2" stroke-linecap="round"/>
+                                                <circle cx="12" cy="17.5" r="1.2" fill="#000000"/>
+                                            </svg>
+                                        </div>
+                                        <div class="zanders-warning-modal-content">
+                                            <p class="zanders-warning-modal-text">
+                                                <strong>WARNING:</strong> {{ warningMessage|raw }}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            {% endif %}
 
                             {# ── Button: Email to a Friend (Static) ── #}
                             <div class="zanders-pd-email-wrapper">
@@ -446,6 +761,33 @@
 
                         </tbody>
                     </table>
+                </section>
+            {% endif %}
+
+            {# ── Cross-Selling Section ── #}
+            {% set hasCrossSellingSlot = false %}
+            {% if page.cmsPage %}
+                {% for section in page.cmsPage.sections %}
+                    {% for block in section.blocks %}
+                        {% for slot in block.slots %}
+                            {% if slot.type == 'cross-selling' %}
+                                {% set hasCrossSellingSlot = true %}
+                                <section class="zanders-pd-cross-selling mt-5 mb-5" aria-label="Cross Selling">
+                                    {% sw_include '@Storefront/storefront/element/cms-element-cross-selling.html.twig' with {
+                                        element: slot
+                                    } %}
+                                </section>
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                {% endfor %}
+            {% endif %}
+
+            {% if not hasCrossSellingSlot %}
+                <section class="zanders-pd-cross-selling mt-5 mb-5" aria-label="Cross Selling">
+                    {% sw_include '@Storefront/storefront/element/cms-element-cross-selling.html.twig' with {
+                        fallbackProduct: product
+                    } %}
                 </section>
             {% endif %}
 

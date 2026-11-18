@@ -1,0 +1,10 @@
+{
+    "zanders": {
+        "restriction": {
+            "notAvailable": "This product is not available in your shipping region."
+        }
+    },
+    "checkout": {
+        "product-region-restricted": "This product is not available in your shipping region."
+    }
+}
