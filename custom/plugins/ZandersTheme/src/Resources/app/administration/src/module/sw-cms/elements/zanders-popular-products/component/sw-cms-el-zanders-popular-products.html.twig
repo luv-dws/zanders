@@ -1,0 +1,15 @@
+{% block sw_cms_element_zanders_popular_products %}
+<div class="sw-cms-el-zanders-popular-products">
+    <div class="sw-cms-el-zanders-popular-products__header">
+        <h3 class="sw-cms-el-zanders-popular-products__title">POPULAR PRODUCTS</h3>
+        <div class="sw-cms-el-zanders-popular-products__line"></div>
+    </div>
+    <div class="sw-cms-el-zanders-popular-products__slider-preview">
+        <div class="sw-cms-el-zanders-popular-products__item" v-for="i in 4" :key="i">
+            <div class="sw-cms-el-zanders-popular-products__img-placeholder"></div>
+            <div class="sw-cms-el-zanders-popular-products__text-placeholder"></div>
+            <div class="sw-cms-el-zanders-popular-products__price-placeholder"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

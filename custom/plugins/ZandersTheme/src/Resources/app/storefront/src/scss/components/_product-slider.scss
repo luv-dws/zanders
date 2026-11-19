@@ -1,0 +1,200 @@
+// =============================================================================
+// Zanders Product Slider & Dynamic CMS Elements (Figma Matching)
+// =============================================================================
+
+// Quantity Inputs
+.zanders-cat-qty-input,
+.zanders-product-qty-input {
+    border: none !important;
+    border-bottom: 1px solid #000000 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    width: 50px !important;
+    height: 26px !important;
+    text-align: center !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: textfield !important;
+
+    &:focus {
+        border: none !important;
+        border-bottom: 1px solid #000000 !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+}
+
+// "Please Login to View Price" Button & Wrapper
+.zanders-product-login-price-wrap,
+.zanders-cat-login-price-wrap {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 0.625rem;
+    padding-bottom: 0.125rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.zanders-btn-login-price {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    max-width: 90%;
+    height: 32px;
+    min-height: 32px;
+    background-color: #991020;
+    color: #ffffff !important;
+    border: 1px solid #991020;
+    border-radius: 3px;
+    font-size: 0.715rem;
+    font-weight: 700;
+    letter-spacing: 0.35px;
+    text-transform: uppercase;
+    text-decoration: none !important;
+    white-space: nowrap;
+    line-height: 1;
+    padding: 0 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    svg {
+        width: 13px;
+        height: 13px;
+        margin-right: 6px;
+        flex-shrink: 0;
+    }
+
+    &:hover {
+        background-color: #7d0d1a;
+        border-color: #7d0d1a;
+        color: #ffffff !important;
+        box-shadow: 0 3px 6px rgba(153, 16, 32, 0.22);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        background-color: #670b15;
+        transform: translateY(0);
+    }
+
+    @media (max-width: 400px) {
+        font-size: 0.68rem;
+        padding: 0 8px;
+        max-width: 100%;
+    }
+}
+
+// Product Slider Container & Layout
+.zanders-product-slider {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.5rem;
+
+    .product-slider-container {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .product-slider-item {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        padding: 0 0.5rem;
+        box-sizing: border-box;
+
+        .zanders-product-card {
+            width: 100%;
+            height: 100%;
+        }
+    }
+
+    // Slider Navigation Arrows
+    .product-slider-controls-container {
+        position: absolute;
+        top: -46px;
+        right: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        z-index: 5;
+    }
+
+    .base-slider-controls {
+        display: flex;
+        gap: 6px;
+    }
+
+    .product-slider-controls-prev,
+    .product-slider-controls-next {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #ffffff;
+        border: 1px solid #dce0e5;
+        border-radius: 3px;
+        color: #000000;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+        svg {
+            stroke: currentColor;
+            transition: stroke 0.2s ease;
+        }
+
+        &:hover {
+            background-color: #991020;
+            border-color: #991020;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(153, 16, 32, 0.2);
+
+            svg {
+                stroke: #ffffff;
+            }
+        }
+
+        &:active {
+            background-color: #7d0d1a;
+            border-color: #7d0d1a;
+        }
+
+        &[disabled],
+        &.tns-slider-control--disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+            background-color: #f8fafc;
+            border-color: #e2e8f0;
+            color: #94a3b8;
+        }
+    }
+}
+
+// Section styling for CMS elements
+.cms-element-zanders-daily-specials,
+.cms-element-zanders-popular-products {
+    position: relative;
+    width: 100%;
+    margin-bottom: 2.75rem;
+
+    .zanders-featured-header {
+        position: relative;
+        padding-right: 80px; // Leave room for slider arrows in header
+    }
+}

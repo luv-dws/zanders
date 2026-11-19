@@ -1,0 +1,15 @@
+{% block sw_cms_element_zanders_daily_specials %}
+<div class="sw-cms-el-zanders-daily-specials">
+    <div class="sw-cms-el-zanders-daily-specials__header">
+        <h3 class="sw-cms-el-zanders-daily-specials__title">ZANDERS DAILY SPECIALS</h3>
+        <div class="sw-cms-el-zanders-daily-specials__line"></div>
+    </div>
+    <div class="sw-cms-el-zanders-daily-specials__slider-preview">
+        <div class="sw-cms-el-zanders-daily-specials__item" v-for="i in 4" :key="i">
+            <div class="sw-cms-el-zanders-daily-specials__img-placeholder"></div>
+            <div class="sw-cms-el-zanders-daily-specials__text-placeholder"></div>
+            <div class="sw-cms-el-zanders-daily-specials__price-placeholder"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}

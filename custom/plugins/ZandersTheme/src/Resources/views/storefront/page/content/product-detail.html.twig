@@ -390,9 +390,14 @@
 
                                 {# Buy Form: Qty + Add to Cart #}
                                 {% set isRestricted = zanders_is_product_restricted(product) %}
-                                {% if isRestricted %}
+                                {% set canPurchase = zanders_can_customer_purchase() %}
+                                {% if isRestricted or not canPurchase %}
                                     <div class="zanders-pd-restriction-notice alert alert-warning" role="alert" style="margin-top: 15px; font-weight: 600;">
-                                        {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                                        {% if not canPurchase %}
+                                            {{ zanders_purchase_restriction_reason()|sw_sanitize }}
+                                        {% else %}
+                                            {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                                        {% endif %}
                                     </div>
                                 {% elseif product.active %}
                                     {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
@@ -496,88 +501,12 @@
                             </div>
 
                             {# ── Warning Box & Modal: Product Warning Information ── #}
-                            {% set pCustomFields = product.translated.customFields ?: product.customFields %}
-                            {% set warningField = null %}
-                            {% set warningTitle = 'California Prop 65 Warning' %}
+                            {% set warningFields = product.translated.customFields ?: product.customFields %}
+                            {% set warningEnabled = warningFields.zanders_warning_enabled|default(false) %}
+                            {% set warningTitle = warningFields.zanders_warning_title|default('Product Warning') %}
+                            {% set warningMessage = warningFields.zanders_warning_message|default('') %}
 
-                            {% if pCustomFields %}
-                                {% set possibleKeys = [
-                                    'custom_product_warning_information',
-                                    'product_warning_information',
-                                    'productWarningInformation',
-                                    'custom_warning_information',
-                                    'warning_information',
-                                    'warningInformation',
-                                    'custom_product_warning',
-                                    'product_warning',
-                                    'productWarning',
-                                    'custom_warning',
-                                    'warning',
-                                    'prop_65_warning',
-                                    'prop65_warning',
-                                    'prop_65',
-                                    'prop65',
-                                    'custom_prop_65'
-                                ] %}
-                                {% for key in possibleKeys %}
-                                    {% if warningField is null and pCustomFields[key] is defined and pCustomFields[key] is not empty %}
-                                        {% set warningField = pCustomFields[key] %}
-                                    {% endif %}
-                                {% endfor %}
-
-                                {# Dynamic fallback for any key containing 'warning' or 'prop65' #}
-                                {% if warningField is null %}
-                                    {% for k, v in pCustomFields %}
-                                        {% if warningField is null and ('warning' in k|lower or 'prop65' in k|lower or 'prop_65' in k|lower) and v is not empty %}
-                                            {% set warningField = v %}
-                                        {% endif %}
-                                    {% endfor %}
-                                {% endif %}
-
-                                {# Check for custom warning title #}
-                                {% set possibleTitleKeys = [
-                                    'custom_product_warning_title',
-                                    'product_warning_title',
-                                    'productWarningTitle',
-                                    'warning_title',
-                                    'warningTitle'
-                                ] %}
-                                {% for key in possibleTitleKeys %}
-                                    {% if pCustomFields[key] is defined and pCustomFields[key] is not empty %}
-                                        {% set warningTitle = pCustomFields[key] %}
-                                    {% endif %}
-                                {% endfor %}
-                            {% endif %}
-
-                            {% set hasWarning = warningField is not null and warningField is not same as false and warningField is not empty %}
-
-                            {% if hasWarning %}
-                                {% set defaultWarningMessage = 'Discharging firearms in poorly ventilated areas, cleaning firearms, or handling ammunition may result in exposure to lead and other substances known to cause birth defects, reproductive harm, and other serious physical injury. Have adequate ventilation at all times. Wash hands thoroughly after exposure. For more information go to <a href="https://www.P65Warnings.ca.gov" target="_blank" rel="noopener" class="zanders-warning-link">www.P65Warnings.ca.gov</a>' %}
-                                {% set warningMessage = defaultWarningMessage %}
-
-                                {% if warningField is iterable %}
-                                    {% if warningField.title is defined and warningField.title is not empty %}
-                                        {% set warningTitle = warningField.title %}
-                                    {% endif %}
-                                    {% if warningField.message is defined and warningField.message is not empty %}
-                                        {% set warningMessage = warningField.message %}
-                                    {% elseif warningField.warning is defined and warningField.warning is not empty %}
-                                        {% set warningMessage = warningField.warning %}
-                                    {% endif %}
-                                {% elseif warningField is same as(true) %}
-                                    {% set warningMessage = defaultWarningMessage %}
-                                {% elseif warningField is string and warningField|length > 0 %}
-                                    {% if warningField|length > 60 %}
-                                        {% set warningMessage = warningField %}
-                                    {% else %}
-                                        {% set warningTitle = warningField %}
-                                        {% set warningMessage = defaultWarningMessage %}
-                                    {% endif %}
-                                {% endif %}
-
-                                {% if 'www.P65Warnings.ca.gov' in warningMessage and not ('<a' in warningMessage) %}
-                                    {% set warningMessage = warningMessage|replace({'www.P65Warnings.ca.gov': '<a href="https://www.P65Warnings.ca.gov" target="_blank" rel="noopener" class="zanders-warning-link">www.P65Warnings.ca.gov</a>'}) %}
-                                {% endif %}
+                            {% if warningEnabled and warningMessage is not empty %}
 
                                 <div class="zanders-pd-warning-box">
                                     <div class="zanders-pd-warning-icon">
@@ -590,7 +519,7 @@
                                     <div class="zanders-pd-warning-content">
                                         <strong class="zanders-pd-warning-label">WARNING:</strong>
                                         <button type="button" class="zanders-pd-warning-link" data-warning-modal-open="true" aria-haspopup="dialog">
-                                            {{ warningTitle }}
+                                            {{ warningTitle|sw_sanitize }}
                                         </button>
                                     </div>
                                 </div>
@@ -613,7 +542,7 @@
                                         </div>
                                         <div class="zanders-warning-modal-content">
                                             <p class="zanders-warning-modal-text">
-                                                <strong>WARNING:</strong> {{ warningMessage|raw }}
+                                                <strong>WARNING:</strong> {{ warningMessage|sw_sanitize }}
                                             </p>
                                         </div>
                                     </div>

@@ -25,18 +25,26 @@
             <argument type="service" id="product.repository" on-invalid="null"/>
         </service>
 
+        <service id="ZandersTheme\Service\ProductPurchaseRestrictionService" public="true">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="order.repository"/>
+        </service>
+
         <service id="ZandersTheme\Cart\ProductRegionCartValidator" public="true">
             <argument type="service" id="ZandersTheme\Service\ProductRegionRestrictionService"/>
+            <argument type="service" id="ZandersTheme\Service\ProductPurchaseRestrictionService"/>
             <tag name="shopware.cart.validator"/>
         </service>
 
         <service id="ZandersTheme\Subscriber\ProductRestrictionCartSubscriber" public="true">
             <argument type="service" id="ZandersTheme\Service\ProductRegionRestrictionService"/>
+            <argument type="service" id="ZandersTheme\Service\ProductPurchaseRestrictionService"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
         <service id="ZandersTheme\Twig\ProductRestrictionTwigExtension" public="true">
             <argument type="service" id="ZandersTheme\Service\ProductRegionRestrictionService"/>
+            <argument type="service" id="ZandersTheme\Service\ProductPurchaseRestrictionService"/>
             <argument type="service" id="request_stack" on-invalid="null"/>
             <tag name="twig.extension"/>
         </service>
@@ -47,6 +55,43 @@
             <argument type="service" id="Shopware\Core\Checkout\Cart\SalesChannel\CartService" on-invalid="null"/>
             <argument type="service" id="customer_address.repository" on-invalid="null"/>
             <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="ZandersTheme\Subscriber\ProductStockFilterSubscriber">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="ZandersTheme\Controller\OrderPrintController" public="true">
+            <argument type="service" id="order.repository"/>
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <!-- Dynamic Product Service (Category, Product Stream & Config Resolver) -->
+        <service id="ZandersTheme\Service\ZandersDynamicProductService" public="true">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="sales_channel.product.repository"/>
+            <argument type="service" id="Shopware\Core\Content\ProductStream\Service\ProductStreamBuilder"/>
+            <argument type="service" id="logger" on-invalid="null"/>
+        </service>
+
+        <!-- Twig Extension for Dynamic Product Sliders -->
+        <service id="ZandersTheme\Twig\ZandersDynamicProductTwigExtension" public="true">
+            <argument type="service" id="ZandersTheme\Service\ZandersDynamicProductService"/>
+            <tag name="twig.extension"/>
+        </service>
+
+        <!-- CMS Element Resolvers for Daily Specials and Popular Products -->
+        <service id="ZandersTheme\Content\Cms\DataResolver\DailySpecialsCmsElementResolver" public="true">
+            <argument type="service" id="ZandersTheme\Service\ZandersDynamicProductService"/>
+            <tag name="shopware.cms.data_resolver"/>
+        </service>
+
+        <service id="ZandersTheme\Content\Cms\DataResolver\PopularProductsCmsElementResolver" public="true">
+            <argument type="service" id="ZandersTheme\Service\ZandersDynamicProductService"/>
+            <tag name="shopware.cms.data_resolver"/>
         </service>
     </services>
 </container>

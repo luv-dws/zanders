@@ -1,10 +1,25 @@
 {
     "zanders": {
+        "dailySpecials": {
+            "title": "ZANDERS DAILY SPECIALS"
+        },
+        "popularProducts": {
+            "title": "POPULAR PRODUCTS"
+        },
         "restriction": {
             "notAvailable": "This product is not available in your shipping region."
         }
     },
     "checkout": {
         "product-region-restricted": "This product is not available in your shipping region."
+    },
+    "account": {
+        "dashboard": "DASHBOARD",
+        "accountInformation": "ACCOUNT INFORMATION",
+        "addressBook": "ADDRESS BOOK",
+        "orderPrintOrder": "Print Order",
+        "orderPrintInvoice": "Print Invoice",
+        "orderInvoicePending": "Invoice Pending",
+        "orderAction": "Action"
     }
 }

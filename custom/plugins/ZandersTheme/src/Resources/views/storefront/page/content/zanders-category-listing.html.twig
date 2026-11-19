@@ -279,9 +279,14 @@
 
                             {% if isUserLoggedIn %}
                                 {% set isRestricted = zanders_is_product_restricted(product, context) %}
-                                {% if isRestricted %}
+                                {% set canPurchase = zanders_can_customer_purchase(context) %}
+                                {% if isRestricted or not canPurchase %}
                                     <div class="zanders-cat-restriction-notice alert alert-warning small p-2 mb-0" role="alert" style="font-size: 0.8rem; font-weight: 600;">
-                                        {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                                        {% if not canPurchase %}
+                                            {{ zanders_purchase_restriction_reason(context)|sw_sanitize }}
+                                        {% else %}
+                                            {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                                        {% endif %}
                                     </div>
                                 {% else %}
                                     <form action="{{ path('frontend.checkout.line-item.add') }}"

@@ -1,0 +1,3 @@
+zanders_theme.controllers:
+    resource: ../../Controller/**/*Controller.php
+    type: attribute

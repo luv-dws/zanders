@@ -7,13 +7,16 @@ use Shopware\Core\Checkout\Cart\LineItem\LineItem;
 use Shopware\Core\Framework\Log\Package;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use ZandersTheme\Cart\Error\ProductRegionRestrictionError;
+use ZandersTheme\Cart\Error\ProductPurchaseRestrictionError;
 use ZandersTheme\Service\ProductRegionRestrictionService;
+use ZandersTheme\Service\ProductPurchaseRestrictionService;
 
 #[Package('checkout')]
 class ProductRestrictionCartSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly ProductRegionRestrictionService $restrictionService
+        private readonly ProductRegionRestrictionService $restrictionService,
+        private readonly ProductPurchaseRestrictionService $purchaseRestrictionService
     ) {
     }
 
@@ -37,6 +40,21 @@ class ProductRestrictionCartSubscriber implements EventSubscriberInterface
         }
 
         $context = $event->getSalesChannelContext();
+        if ($this->purchaseRestrictionService->isPurchaseRestricted($context)) {
+            $cart = $event->getCart();
+            $cart->getLineItems()->removeElement($lineItem);
+            if ($cart->has($lineItem->getId())) {
+                $cart->getLineItems()->remove($lineItem->getId());
+            }
+            $cart->addErrors(
+                new ProductPurchaseRestrictionError(
+                    $productId,
+                    (string) ($lineItem->getLabel() ?? 'Product')
+                )
+            );
+            return;
+        }
+
         if (!$this->restrictionService->isProductRestricted($productId, $context)) {
             return;
         }

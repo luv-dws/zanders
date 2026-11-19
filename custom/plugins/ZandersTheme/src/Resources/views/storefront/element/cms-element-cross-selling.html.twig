@@ -74,9 +74,14 @@
                         {# Left: Add to cart button #}
                         <div class="zanders-cross-cart-wrap">
                             {% set isRestricted = zanders_is_product_restricted(product) %}
-                            {% if isRestricted %}
+                            {% set canPurchase = zanders_can_customer_purchase() %}
+                            {% if isRestricted or not canPurchase %}
                                 <div class="zanders-cross-restriction-notice alert alert-warning small p-1 mb-0" role="alert" style="font-size: 0.75rem; font-weight: 600;">
-                                    {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                                    {% if not canPurchase %}
+                                        {{ zanders_purchase_restriction_reason()|sw_sanitize }}
+                                    {% else %}
+                                        {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                                    {% endif %}
                                 </div>
                             {% elseif isUserLoggedIn %}
                                 <form action="{{ path('frontend.checkout.line-item.add') }}"

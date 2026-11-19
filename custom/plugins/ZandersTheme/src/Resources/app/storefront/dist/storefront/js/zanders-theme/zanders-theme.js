@@ -672,6 +672,124 @@ class ProductComparePlugin extends PluginBase {
     }
 }
 
+class OrderPrintPlugin extends PluginBase {
+    init() {
+        setTimeout(() => {
+            window.print();
+        }, 350);
+    }
+}
+
+function printInvoiceUrl(url, buttonEl) {
+    if (!url) return;
+
+    let originalContent = '';
+    if (buttonEl) {
+        originalContent = buttonEl.innerHTML;
+        buttonEl.classList.add('disabled', 'is-printing');
+        buttonEl.style.pointerEvents = 'none';
+    }
+
+    const restoreButton = () => {
+        if (buttonEl) {
+            buttonEl.classList.remove('disabled', 'is-printing');
+            buttonEl.style.pointerEvents = '';
+            buttonEl.innerHTML = originalContent;
+        }
+    };
+
+    // Remove any previously created print iframe
+    let iframe = document.getElementById('zanders-invoice-print-frame');
+    if (iframe) {
+        iframe.remove();
+    }
+
+    iframe = document.createElement('iframe');
+    iframe.id = 'zanders-invoice-print-frame';
+    iframe.setAttribute('style', 'visibility: hidden; position: fixed; right: 0; bottom: 0; width: 0; height: 0; border: 0;');
+    document.body.appendChild(iframe);
+
+    let printed = false;
+    const executePrint = (targetFrame, blobUrl) => {
+        if (printed) return;
+        printed = true;
+
+        try {
+            targetFrame.focus();
+            if (targetFrame.contentWindow) {
+                targetFrame.contentWindow.focus();
+                targetFrame.contentWindow.print();
+            } else {
+                throw new Error('No contentWindow available');
+            }
+        } catch (err) {
+            console.warn('[ZandersTheme] iframe.print() direct invocation failed, using print window fallback:', err);
+            const printWin = window.open(blobUrl || url, '_blank');
+            if (printWin) {
+                printWin.addEventListener('load', () => {
+                    setTimeout(() => printWin.print(), 350);
+                }, true);
+            }
+        } finally {
+            setTimeout(() => {
+                restoreButton();
+                if (blobUrl) {
+                    URL.revokeObjectURL(blobUrl);
+                }
+            }, 1000);
+        }
+    };
+
+    // Fetch the PDF binary via same-origin credentials, then mount to blob URL for fast memory loading
+    fetch(url, { credentials: 'same-origin' })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('HTTP error ' + response.status);
+            }
+            return response.blob();
+        })
+        .then(blob => {
+            const blobUrl = URL.createObjectURL(blob);
+            iframe.onload = () => {
+                setTimeout(() => executePrint(iframe, blobUrl), 400);
+            };
+            iframe.src = blobUrl;
+
+            // Safety timeout in case onload event is delayed by native plugin
+            setTimeout(() => {
+                if (!printed) {
+                    executePrint(iframe, blobUrl);
+                }
+            }, 3000);
+        })
+        .catch(err => {
+            console.warn('[ZandersTheme] Fetch blob failed, falling back to direct iframe src:', err);
+            iframe.onload = () => {
+                setTimeout(() => executePrint(iframe, null), 500);
+            };
+            iframe.src = url;
+
+            setTimeout(() => {
+                if (!printed) {
+                    executePrint(iframe, null);
+                }
+            }, 3500);
+        });
+}
+
+class OrderInvoicePrintPlugin extends PluginBase {
+    init() {
+        this.el.addEventListener('click', this.onPrintInvoice.bind(this));
+    }
+
+    onPrintInvoice(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const url = this.el.getAttribute('href') || this.el.dataset.printInvoiceUrl;
+        printInvoiceUrl(url, this.el);
+    }
+}
+
 // Register into Shopware's native PluginManager
 if (typeof window !== 'undefined' && window.PluginManager) {
     window.PluginManager.register(
@@ -684,16 +802,46 @@ if (typeof window !== 'undefined' && window.PluginManager) {
         ProductComparePlugin,
         '[data-compare-drawer]'
     );
+    window.PluginManager.register(
+        'OrderPrint',
+        OrderPrintPlugin,
+        '[data-order-print-page]'
+    );
+    window.PluginManager.register(
+        'OrderInvoicePrint',
+        OrderInvoicePrintPlugin,
+        '[data-print-invoice]'
+    );
 }
 
 // Export for module systems or global access
 if (typeof window !== 'undefined') {
     window.AgeVerificationModalPlugin = AgeVerificationModalPlugin;
     window.ProductComparePlugin = ProductComparePlugin;
+    window.OrderPrintPlugin = OrderPrintPlugin;
+    window.OrderInvoicePrintPlugin = OrderInvoicePrintPlugin;
+    window.printInvoiceUrl = printInvoiceUrl;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     console.info('[ZandersTheme] Storefront JavaScript initialized.');
+
+    // Global delegated listener for Print Invoice buttons / links
+    document.addEventListener('click', (e) => {
+        const invoiceBtn = e.target.closest('[data-print-invoice], .order-print-invoice-btn, .order-print-invoice-action-link');
+        if (invoiceBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const url = invoiceBtn.getAttribute('href') || invoiceBtn.dataset.printInvoiceUrl;
+            printInvoiceUrl(url, invoiceBtn);
+        }
+    });
+
+    // Auto-trigger print on order print page
+    const printPageEl = document.querySelector('[data-order-print-page]');
+    if (printPageEl) {
+        new OrderPrintPlugin(printPageEl);
+    }
 
     // Product Compare Direct Initialization
     const compareDrawerEl = document.querySelector('[data-compare-drawer]') || document.body;

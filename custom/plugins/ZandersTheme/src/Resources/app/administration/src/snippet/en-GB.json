@@ -4,19 +4,6 @@
             "default": {
                 "themeColors": {
                     "label": "Theme Colors"
-                },
-                "featuredProducts": {
-                    "label": "Featured Product Sections",
-                    "default": {
-                        "zanders-daily-specials": {
-                            "label": "Zanders Daily Specials",
-                            "helpText": "Select product SKUs for Zanders Daily Specials"
-                        },
-                        "popular-products": {
-                            "label": "Popular Products",
-                            "helpText": "Select product SKUs for Popular Products"
-                        }
-                    }
                 }
             }
         }

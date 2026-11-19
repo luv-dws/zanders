@@ -1,0 +1,26 @@
+.sw-cms-preview-zanders-popular-products {
+    padding: 10px;
+    width: 100%;
+    background: #ffffff;
+
+    .preview-header {
+        font-size: 11px;
+        font-weight: 700;
+        color: #991020;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+
+    .preview-cards {
+        display: flex;
+        gap: 8px;
+
+        .preview-card {
+            flex: 1;
+            height: 45px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+        }
+    }
+}

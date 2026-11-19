@@ -10,11 +10,13 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use ZandersTheme\Service\ProductRegionRestrictionService;
+use ZandersTheme\Service\ProductPurchaseRestrictionService;
 
 class ProductRestrictionTwigExtension extends AbstractExtension
 {
     public function __construct(
         private readonly ProductRegionRestrictionService $restrictionService,
+        private readonly ProductPurchaseRestrictionService $purchaseRestrictionService,
         private readonly ?RequestStack $requestStack = null
     ) {
     }
@@ -25,6 +27,16 @@ class ProductRestrictionTwigExtension extends AbstractExtension
             new TwigFunction(
                 'zanders_is_product_restricted',
                 $this->isProductRestricted(...),
+                ['needs_context' => true]
+            ),
+            new TwigFunction(
+                'zanders_can_customer_purchase',
+                $this->canCustomerPurchase(...),
+                ['needs_context' => true]
+            ),
+            new TwigFunction(
+                'zanders_purchase_restriction_reason',
+                $this->getPurchaseRestrictionReason(...),
                 ['needs_context' => true]
             ),
         ];
@@ -67,5 +79,51 @@ class ProductRestrictionTwigExtension extends AbstractExtension
         }
 
         return false;
+    }
+
+    public function canCustomerPurchase(
+        array $twigContext,
+        ?SalesChannelContext $salesChannelContext = null
+    ): bool {
+        if (!$salesChannelContext instanceof SalesChannelContext) {
+            $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
+        }
+
+        if (!$salesChannelContext instanceof SalesChannelContext && $this->requestStack !== null) {
+            $request = $this->requestStack->getMainRequest() ?? $this->requestStack->getCurrentRequest();
+            $requestContext = $request?->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
+            if ($requestContext instanceof SalesChannelContext) {
+                $salesChannelContext = $requestContext;
+            }
+        }
+
+        if (!$salesChannelContext instanceof SalesChannelContext) {
+            return false;
+        }
+
+        return !$this->purchaseRestrictionService->isPurchaseRestricted($salesChannelContext);
+    }
+
+    public function getPurchaseRestrictionReason(
+        array $twigContext,
+        ?SalesChannelContext $salesChannelContext = null
+    ): string {
+        if (!$salesChannelContext instanceof SalesChannelContext) {
+            $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
+        }
+
+        if (!$salesChannelContext instanceof SalesChannelContext && $this->requestStack !== null) {
+            $request = $this->requestStack->getMainRequest() ?? $this->requestStack->getCurrentRequest();
+            $requestContext = $request?->attributes->get(PlatformRequest::ATTRIBUTE_SALES_CHANNEL_CONTEXT_OBJECT);
+            if ($requestContext instanceof SalesChannelContext) {
+                $salesChannelContext = $requestContext;
+            }
+        }
+
+        if (!$salesChannelContext instanceof SalesChannelContext) {
+            return 'Account eligibility could not be verified.';
+        }
+
+        return $this->purchaseRestrictionService->getRestrictionReason($salesChannelContext);
     }
 }

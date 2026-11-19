@@ -1,0 +1,150 @@
+{% sw_extends '@Storefront/storefront/page/account/index.html.twig' %}
+
+{% block page_account_overview_welcome %}
+    <div class="zanders-account-header">
+        <h1 class="zanders-account-main-title">MY ACCOUNT</h1>
+        <div class="zanders-account-title-divider"></div>
+    </div>
+{% endblock %}
+
+{% block page_account_overview_main %}
+    <div class="zanders-account-section">
+        <div class="zanders-account-section-header">
+            <h2 class="zanders-account-section-title">ACCOUNT INFORMATION</h2>
+            <div class="zanders-account-section-divider"></div>
+        </div>
+
+        <div class="row g-3 zanders-account-cards-row">
+            {# Contact Information Card #}
+            <div class="col-12 col-md-6">
+                <div class="zanders-account-card zanders-card-contact">
+                    <div class="zanders-account-card-body">
+                        <div class="d-flex align-items-start">
+                            <div class="zanders-account-avatar">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6c757d" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div class="zanders-account-contact-details">
+                                <h3 class="zanders-card-heading">Contact Information</h3>
+                                <div class="zanders-contact-name">
+                                    {% if context.customer.company %}
+                                        {{ context.customer.company|upper }}
+                                    {% else %}
+                                        {{ (context.customer.firstName ~ ' ' ~ context.customer.lastName)|upper }}
+                                    {% endif %}
+                                </div>
+                                <div class="zanders-contact-email">
+                                    {{ context.customer.email|decodeIdnEmail }}
+                                </div>
+                                <div class="zanders-contact-actions">
+                                    <a href="{{ path('frontend.account.profile.page') }}" class="zanders-account-arrow-link">
+                                        <span>EDIT</span>
+                                        <span class="zanders-arrow">&rarr;</span>
+                                    </a>
+                                    <a href="{{ path('frontend.account.profile.page') }}" class="zanders-account-arrow-link">
+                                        <span>CHANGE PASSWORD</span>
+                                        <span class="zanders-arrow">&rarr;</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Customer Info Card #}
+            <div class="col-12 col-md-6">
+                <div class="zanders-account-card zanders-card-customer">
+                    <div class="zanders-account-card-body">
+                        <h3 class="zanders-card-heading">Customer Info</h3>
+                        <div class="zanders-customer-number-line">
+                            <span class="zanders-customer-number-label">Customer Number:</span>
+                            <span class="zanders-customer-number-value">{{ context.customer.customerNumber }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_account_overview_newsletter %}
+    {# Removed from dashboard to match reference design #}
+{% endblock %}
+
+{% block page_account_overview_addresses_include %}
+    <div class="zanders-account-section zanders-account-address-book">
+        <div class="zanders-account-section-header">
+            <h2 class="zanders-account-section-title-clean">Address Book</h2>
+        </div>
+
+        <div class="row g-3 zanders-account-cards-row">
+            {# Billing Address Card #}
+            <div class="col-12 col-md-6">
+                <div class="zanders-account-card zanders-card-address">
+                    <div class="zanders-account-card-body">
+                        <h3 class="zanders-card-heading">Default Billing Address</h3>
+                        <div class="zanders-address-details">
+                            {% set billingAddress = context.customer.defaultBillingAddress %}
+                            {% if billingAddress %}
+                                {% if billingAddress.company %}
+                                    <div class="zanders-address-line">{{ billingAddress.company|upper }}</div>
+                                {% else %}
+                                    <div class="zanders-address-line">{{ (billingAddress.firstName ~ ' ' ~ billingAddress.lastName)|upper }}</div>
+                                {% endif %}
+                                <div class="zanders-address-line">{{ billingAddress.street|upper }}</div>
+                                <div class="zanders-address-line">
+                                    {{ billingAddress.city|upper }}{% if billingAddress.countryState %}, {{ billingAddress.countryState.translated.name }}{% endif %}{% if billingAddress.zipcode %}, {{ billingAddress.zipcode }}{% endif %}
+                                </div>
+                                <div class="zanders-address-line">{{ billingAddress.country.translated.name }}</div>
+                                {% if billingAddress.phoneNumber %}
+                                    <div class="zanders-address-line">T: {{ billingAddress.phoneNumber }}</div>
+                                {% endif %}
+                            {% else %}
+                                <div class="text-muted">{{ 'account.overviewNoBillingAddress'|trans|sw_sanitize }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Shipping Address Card #}
+            <div class="col-12 col-md-6">
+                <div class="zanders-account-card zanders-card-address">
+                    <div class="zanders-account-card-body">
+                        <h3 class="zanders-card-heading">Default Shipping Address</h3>
+                        <div class="zanders-address-details">
+                            {% set shippingAddress = context.customer.defaultShippingAddress %}
+                            {% if not shippingAddress and context.customer.defaultBillingAddress %}
+                                {% set shippingAddress = context.customer.defaultBillingAddress %}
+                            {% endif %}
+                            {% if shippingAddress %}
+                                {% if shippingAddress.company %}
+                                    <div class="zanders-address-line">{{ shippingAddress.company|upper }}</div>
+                                {% else %}
+                                    <div class="zanders-address-line">{{ (shippingAddress.firstName ~ ' ' ~ shippingAddress.lastName)|upper }}</div>
+                                {% endif %}
+                                <div class="zanders-address-line">{{ shippingAddress.street|upper }}</div>
+                                <div class="zanders-address-line">
+                                    {{ shippingAddress.city|upper }}{% if shippingAddress.countryState %}, {{ shippingAddress.countryState.translated.name }}{% endif %}{% if shippingAddress.zipcode %}, {{ shippingAddress.zipcode }}{% endif %}
+                                </div>
+                                <div class="zanders-address-line">{{ shippingAddress.country.translated.name }}</div>
+                                {% if shippingAddress.phoneNumber %}
+                                    <div class="zanders-address-line">T: {{ shippingAddress.phoneNumber }}</div>
+                                {% endif %}
+                            {% else %}
+                                <div class="text-muted">{{ 'account.overviewNoShippingAddress'|trans|sw_sanitize }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_account_overview_newest_order %}
+    {# Removed from dashboard to match reference design #}
+{% endblock %}
