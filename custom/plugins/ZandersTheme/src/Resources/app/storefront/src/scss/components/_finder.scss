@@ -1,0 +1,435 @@
+// Zanders Product Finder Drawer Styles (Matching Reference Screenshot)
+
+// Backdrop overlay
+.zanders-finder-drawer-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.55);
+    z-index: 10500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.28s ease, visibility 0.28s ease;
+
+    &.is-visible {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+}
+
+// Left Slide-Out Drawer
+.zanders-finder-drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 285px;
+    max-width: 90vw;
+    height: 100vh;
+    background-color: #ffffff;
+    z-index: 10501;
+    box-shadow: 4px 0 25px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    .is-visible & {
+        transform: translateX(0);
+    }
+}
+
+// Drawer Header
+.zanders-finder-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px 14px 18px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #f0f0f0;
+
+    .zanders-finder-drawer-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #111111;
+        margin: 0;
+        line-height: 1.2;
+        letter-spacing: 0.2px;
+    }
+
+    // Red square close button with white 'X' (matching reference screenshot)
+    .zanders-finder-drawer-close {
+        width: 28px;
+        height: 28px;
+        background-color: #991020;
+        color: #ffffff;
+        border: none;
+        border-radius: 0;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background-color: #7d0d1a;
+            color: #ffffff;
+        }
+
+        svg {
+            stroke: #ffffff;
+        }
+    }
+}
+
+// Drawer Form
+.zanders-finder-drawer-form {
+    padding: 16px 18px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+// Selects Container
+.zanders-finder-selects-container {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.zanders-finder-select-wrapper {
+    width: 100%;
+
+    .zanders-finder-select {
+        width: 100%;
+        height: 35px;
+        padding: 6px 10px;
+        font-size: 0.8125rem;
+        color: #222222;
+        background-color: #ffffff;
+        border: 1px solid #8c8c8c;
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+        &:focus {
+            border-color: #991020;
+            box-shadow: 0 0 0 1px #991020;
+        }
+
+        option {
+            font-size: 0.8125rem;
+            color: #222222;
+            padding: 4px 6px;
+        }
+    }
+}
+
+// Matching Items Row
+.zanders-finder-matching-row {
+    margin-top: 14px;
+    margin-bottom: 14px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: #111111;
+
+    .zanders-finder-matching-label {
+        margin-right: 4px;
+    }
+
+    .zanders-finder-matching-val {
+        color: #111111;
+    }
+}
+
+// Action Buttons Row (SEARCH and RESET ALL)
+.zanders-finder-actions-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+
+    .zanders-finder-btn-search,
+    .zanders-finder-btn-reset {
+        background-color: #991020;
+        color: #ffffff;
+        border: none;
+        border-radius: 2px;
+        font-size: 0.8125rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 7px 18px;
+        text-transform: uppercase;
+        cursor: pointer;
+        line-height: 1.2;
+        transition: background-color 0.15s ease, transform 0.1s ease;
+
+        &:hover {
+            background-color: #7d0d1a;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(0);
+        }
+    }
+
+    .zanders-finder-btn-search {
+        min-width: 82px;
+    }
+
+    .zanders-finder-btn-reset {
+        min-width: 95px;
+    }
+}
+
+// Body lock when drawer is active
+body.zanders-finder-drawer-open {
+    overflow: hidden !important;
+}
+
+// -------------------------------------------------------------
+// Dedicated Finder Page Styles (/finder)
+// -------------------------------------------------------------
+.zanders-finder-page-wrapper {
+    padding: 1.5rem 0 3rem;
+}
+
+.zanders-finder-hero-banner {
+    background: linear-gradient(135deg, #111111 0%, #222222 100%);
+    color: #ffffff;
+    padding: 2rem 2.25rem;
+    border-radius: 4px;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #991020;
+
+    .zanders-finder-main-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        margin: 0 0 0.5rem;
+        color: #ffffff;
+    }
+
+    .zanders-finder-main-desc {
+        font-size: 0.9375rem;
+        color: #cbd5e1;
+        margin: 0;
+        max-width: 700px;
+    }
+}
+
+.zanders-finder-filter-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.zanders-finder-filter-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 1.25rem;
+
+    @media (max-width: 991px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 576px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.zanders-finder-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .zanders-finder-col-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #333333;
+        letter-spacing: 0.3px;
+        margin: 0;
+    }
+
+    .zanders-finder-col-select,
+    .zanders-finder-col-input {
+        height: 38px;
+        font-size: 0.84rem;
+        border: 1px solid #cbd5e1;
+        border-radius: 3px;
+        padding: 6px 12px;
+
+        &:focus {
+            border-color: #991020;
+            box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.15);
+        }
+    }
+}
+
+.zanders-finder-filter-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
+
+    .zanders-finder-filter-toggles {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .zanders-finder-price-inline {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+
+        .zanders-finder-price-label {
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .zanders-finder-price-input {
+            width: 70px;
+            height: 32px;
+            padding: 4px 8px;
+            font-size: 0.8125rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .zanders-finder-price-sep {
+            color: #94a3b8;
+        }
+    }
+
+    .zanders-finder-filter-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .zanders-finder-btn-clear {
+            font-size: 0.8125rem;
+            color: #64748b;
+            text-decoration: underline;
+            padding: 0.5rem 0.75rem;
+
+            &:hover {
+                color: #991020;
+            }
+        }
+
+        .zanders-finder-btn-apply {
+            background-color: #991020;
+            border: 1px solid #991020;
+            color: #ffffff;
+            font-size: 0.8125rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 0.6rem 1.5rem;
+            border-radius: 3px;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+
+            &:hover {
+                background-color: #7d0d1a;
+                border-color: #7d0d1a;
+                color: #ffffff;
+                transform: translateY(-1px);
+            }
+        }
+    }
+}
+
+// Active Filter Chips
+.zanders-finder-active-chips {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1rem;
+
+    .zanders-chips-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    .zanders-filter-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background-color: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 20px;
+        padding: 4px 10px;
+        font-size: 0.78rem;
+        color: #334155;
+
+        strong {
+            color: #0f172a;
+        }
+
+        .chip-remove {
+            color: #991020;
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1;
+            text-decoration: none;
+            padding: 0 2px;
+
+            &:hover {
+                color: #7d0d1a;
+            }
+        }
+    }
+}
+
+.zanders-finder-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    .zanders-page-btn {
+        background-color: #ffffff;
+        border: 1px solid #cbd5e1;
+        color: #334155;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        padding: 0.4rem 1rem;
+        border-radius: 3px;
+
+        &:hover {
+            background-color: #f8fafc;
+            border-color: #991020;
+            color: #991020;
+        }
+    }
+
+    .zanders-page-indicator {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: #64748b;
+    }
+}

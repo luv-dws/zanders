@@ -90,10 +90,14 @@
     }
 </style>
 {% set slot = page.cmsPage ? page.cmsPage.getFirstElementOfType('product-listing') : null %}
-{% set listing = slot ? slot.data.listing : null %}
+{% set listing = listingOverride is defined ? listingOverride : (slot ? slot.data.listing : null) %}
 {% set products = listing ? listing.entities : [] %}
-{% set categoryName = page.category.translated.name|default('Category') %}
+{% set categoryName = categoryNameOverride is defined ? categoryNameOverride : page.category.translated.name|default('Category') %}
+{% set breadcrumbLabel = breadcrumbLabelOverride is defined ? breadcrumbLabelOverride : categoryName %}
 {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
+{% set isSearchResults = isSearchResults|default(false) %}
+{% set startItem = isSearchResults and listing and listing.total > 0 ? ((listing.page - 1) * listing.limit + 1) : (products|length > 0 ? 1 : 0) %}
+{% set endItem = isSearchResults and listing and listing.total > 0 ? (startItem + products|length - 1) : products|length %}
 
 <div class="zanders-category-page-wrapper">
     <div class="zanders-category-container">
@@ -107,7 +111,7 @@
                 <nav class="zanders-category-breadcrumb" aria-label="breadcrumb">
                     <a href="{{ path('frontend.home.page') }}" class="zanders-breadcrumb-link">Home</a>
                     <span class="zanders-breadcrumb-separator">/</span>
-                    <span class="zanders-breadcrumb-current">{{ categoryName }}</span>
+                    <span class="zanders-breadcrumb-current">{{ breadcrumbLabel }}</span>
                 </nav>
 
                 {# Category Heading #}
@@ -117,20 +121,34 @@
                 <div class="zanders-category-toolbar">
                     <div class="zanders-toolbar-row-top">
                         <div class="zanders-toolbar-items-count">
-                            Items 1-{{ products|length }} Of {{ listing ? listing.total : products|length }}
+                            Items {{ startItem }}-{{ endItem }} Of {{ listing ? listing.total : products|length }}
                         </div>
                         <div class="zanders-toolbar-pagination">
                             <span class="zanders-page-label">Page:</span>
-                            <span class="zanders-page-arrow">&lt;</span>
-                            <span class="zanders-page-num is-active">1</span>
-                            <span class="zanders-page-arrow">&gt;</span>
+                            {% if isSearchResults and listing %}
+                                {% if listing.page > 1 %}
+                                    <a href="{{ path('frontend.search.page', { search: page.searchTerm, p: listing.page - 1, order: listing.sorting, limit: listing.limit }) }}" class="zanders-page-arrow" aria-label="Previous page">&lt;</a>
+                                {% else %}
+                                    <span class="zanders-page-arrow">&lt;</span>
+                                {% endif %}
+                                <span class="zanders-page-num is-active">{{ listing.page }}</span>
+                                {% if listing.page * listing.limit < listing.total %}
+                                    <a href="{{ path('frontend.search.page', { search: page.searchTerm, p: listing.page + 1, order: listing.sorting, limit: listing.limit }) }}" class="zanders-page-arrow" aria-label="Next page">&gt;</a>
+                                {% else %}
+                                    <span class="zanders-page-arrow">&gt;</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="zanders-page-arrow">&lt;</span>
+                                <span class="zanders-page-num is-active">1</span>
+                                <span class="zanders-page-arrow">&gt;</span>
+                            {% endif %}
                         </div>
                         <div class="zanders-toolbar-per-page">
                             <label for="zandersShowPerPage" class="zanders-per-page-label">Show:</label>
-                            <select id="zandersShowPerPage" class="zanders-per-page-select">
-                                <option value="15" selected>15 per page</option>
-                                <option value="30">30 per page</option>
-                                <option value="60">60 per page</option>
+                            <select id="zandersShowPerPage" class="zanders-per-page-select"{% if isSearchResults %} onchange="var params = new URLSearchParams(window.location.search); params.set('limit', this.value); params.set('p', '1'); window.location.search = params.toString();"{% endif %}>
+                                <option value="15"{% if not isSearchResults or listing.limit == 15 %} selected{% endif %}>15 per page</option>
+                                <option value="30"{% if isSearchResults and listing.limit == 30 %} selected{% endif %}>30 per page</option>
+                                <option value="60"{% if isSearchResults and listing.limit == 60 %} selected{% endif %}>60 per page</option>
                             </select>
                         </div>
                     </div>
@@ -176,7 +194,7 @@
 
                         <div class="zanders-toolbar-sorting">
                             <label for="zandersSortBy" class="zanders-sort-label">Sort By:</label>
-                            <select id="zandersSortBy" class="zanders-sort-select" onchange="if(this.value){window.location.search = '?order=' + this.value;}">
+                            <select id="zandersSortBy" class="zanders-sort-select"{% if isSearchResults %} onchange="var params = new URLSearchParams(window.location.search); params.set('order', this.value); params.set('p', '1'); window.location.search = params.toString();"{% else %} onchange="if(this.value){window.location.search = '?order=' + this.value;}"{% endif %}>
                                 <option value="price-asc"{% if listing and listing.sorting == 'price-asc' %} selected{% endif %}>Price</option>
                                 <option value="name-asc"{% if listing and listing.sorting == 'name-asc' %} selected{% endif %}>Name A-Z</option>
                                 <option value="name-desc"{% if listing and listing.sorting == 'name-desc' %} selected{% endif %}>Name Z-A</option>
@@ -194,7 +212,7 @@
                         {% set cover = product.cover.media %}
                         {% set price = product.calculatedPrice.unitPrice %}
                         {% set msrp = (price * 1.35)|round(2) %}
-                        {% set upc = product.ean ?: product.customFields.upc ?: ('747115' ~ loop.index ~ '436491') %}
+                        {% set upc = product.ean ?: ('747115' ~ loop.index ~ '436491') %}
                         {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
                         {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
                         {% set stockQty = availableStock > 0 ? availableStock : 0 %}
@@ -305,15 +323,19 @@
                                         <input type="hidden" name="brand-name" value="{{ product.manufacturer ? product.manufacturer.getName() : '' }}">
 
                                         <div class="zanders-cat-qty-container">
+                                            {% set quantityAdjustment = zanders_quantity_adjustment(product) %}
+                                            {% set quantityFrom = quantityAdjustment.from|default(product.minPurchase|default(1)) %}
+                                            {% set quantityTo = quantityAdjustment.to|default(product.calculatedMaxPurchase|default(100)) %}
+                                            {% set quantityStep = quantityAdjustment.step|default(product.purchaseSteps|default(1)) %}
                                             <label for="qty-cat-{{ product.id }}" class="zanders-cat-qty-label">Qty:</label>
                                             <input type="number"
                                                    id="qty-cat-{{ product.id }}"
                                                    name="lineItems[{{ product.id }}][quantity]"
                                                    class="zanders-cat-qty-input"
-                                                   value="{{ product.minPurchase|default(1) }}"
-                                                   min="{{ product.minPurchase|default(1) }}"
-                                                   max="{{ product.calculatedMaxPurchase|default(100) }}"
-                                                   step="{{ product.purchaseSteps|default(1) }}"
+                                                   value="{{ quantityFrom }}"
+                                                   min="{{ quantityFrom }}"
+                                                   max="{{ quantityTo }}"
+                                                   step="{{ quantityStep }}"
                                                    aria-label="Quantity"
                                                    style="border: none !important; border-bottom: 1px solid #000000 !important; outline: none !important; box-shadow: none !important; width: 50px !important; height: 26px !important; text-align: center !important; font-size: 1rem !important; font-weight: 700 !important; background: transparent !important; border-radius: 0 !important; padding: 0 !important; color: #000000 !important; -webkit-appearance: none !important; -moz-appearance: textfield !important;"
                                                    oninput="if(this.value && this.value < 1) this.value = 1;">
@@ -343,7 +365,11 @@
                         </div>
                     {% else %}
                         <div class="zanders-category-empty-alert alert alert-info w-100">
-                            No products found in this category.
+                            {% if isSearchResults|default(false) %}
+                                {{ 'listing.emptyResultMessage'|trans|sw_sanitize }}
+                            {% else %}
+                                No products found in this category.
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>

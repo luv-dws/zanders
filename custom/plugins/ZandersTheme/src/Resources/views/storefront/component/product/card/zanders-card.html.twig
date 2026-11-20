@@ -1,6 +1,6 @@
 {% set name = product.translated.name|default(product.name) %}
 {% set sku = product.productNumber %}
-{% set upc = product.ean ?: product.customFields.upc ?: ('747115' ~ loop.index ~ '436491') %}
+{% set upc = product.ean ?: ('747115' ~ loop.index ~ '436491') %}
 {% set price = product.calculatedPrice.unitPrice %}
 {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
 {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
@@ -8,6 +8,10 @@
 {% set isLoggedIn = isUserLoggedIn is same as(true) or (context.customer is defined and context.customer and not context.customer.guest) %}
 {% set cover = product.cover ? product.cover.media : null %}
 {% set prod_url = seoUrl('frontend.detail.page', { productId: product.id }) %}
+{% set quantityAdjustment = zanders_quantity_adjustment(product) %}
+{% set quantityFrom = quantityAdjustment.from|default(product.minPurchase|default(1)) %}
+{% set quantityTo = quantityAdjustment.to|default(product.calculatedMaxPurchase|default(100)) %}
+{% set quantityStep = quantityAdjustment.step|default(product.purchaseSteps|default(1)) %}
 
 <div class="zanders-product-card card h-100{% if not isAvailable %} is-out-of-stock{% endif %}" data-in-stock="{{ isAvailable ? '1' : '0' }}">
     <button type="button"
@@ -111,10 +115,10 @@
                            id="qty-feat-{{ product.id }}"
                            name="lineItems[{{ product.id }}][quantity]"
                            class="zanders-product-qty-input"
-                           value="{{ product.minPurchase|default(1) }}"
-                           min="{{ product.minPurchase|default(1) }}"
-                           max="{{ product.calculatedMaxPurchase|default(100) }}"
-                           step="{{ product.purchaseSteps|default(1) }}"
+                           value="{{ quantityFrom }}"
+                           min="{{ quantityFrom }}"
+                           max="{{ quantityTo }}"
+                           step="{{ quantityStep }}"
                            aria-label="Quantity"
                            oninput="if(this.value && this.value < 1) this.value = 1;">
                 </div>

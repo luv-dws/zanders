@@ -17,18 +17,19 @@
 {% endblock %}
 
 {% block base_body_inner %}
-    <aside class="zanders-floating-finders" aria-label="Quick Finders">
-        <a href="#firearms-finder" class="zanders-floating-tab zanders-tab-firearms" title="Firearms Finder">
+    <aside class="zanders-floating-finders" aria-label="Product Finder">
+        <a href="{{ path('frontend.zanders.finder') }}"
+           class="zanders-floating-tab zanders-tab-product-finder"
+           data-finder-drawer-trigger="true"
+           title="Product Finder"
+           aria-label="Open Product Finder">
             <span class="zanders-tab-icon">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
             </span>
-            <span class="zanders-tab-text">Firearms Finder</span>
-        </a>
-        <a href="#ammo-finder" class="zanders-floating-tab zanders-tab-ammo" title="Ammo Finder">
-            <span class="zanders-tab-icon">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="8" y1="10" x2="16" y2="10"></line><line x1="8" y1="14" x2="12" y2="14"></line></svg>
-            </span>
-            <span class="zanders-tab-text">Ammo Finder</span>
+            <span class="zanders-tab-text">Product Finder</span>
         </a>
     </aside>
 
@@ -36,5 +37,6 @@
 
     {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
     {% sw_include '@Storefront/storefront/component/product-compare-drawer.html.twig' %}
+    {% sw_include '@Storefront/storefront/component/product-finder-modal.html.twig' %}
 {% endblock %}
 

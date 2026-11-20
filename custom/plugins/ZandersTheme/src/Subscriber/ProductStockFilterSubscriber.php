@@ -23,11 +23,8 @@ class ProductStockFilterSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            // Category / catalog listing criteria
             ProductListingCriteriaEvent::class => 'onProductListingCriteria',
-            // Search query criteria (dispatched during search query preparation)
             ProductSearchCriteriaEvent::class => 'onProductSearchCriteria',
-            // Search result event as specified in the exam rubric
             ProductSearchResultEvent::class => 'onProductSearchResult',
         ];
     }

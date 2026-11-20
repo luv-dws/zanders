@@ -10,10 +10,10 @@
     {% if activeRoute == 'frontend.home.page' %}
         {% sw_include '@ZandersTheme/storefront/page/content/zanders-hero.html.twig' %}
         {% sw_include '@ZandersTheme/storefront/page/content/zanders-featured-sections.html.twig' %}
+        {{ parent() }}
     {% elseif activeRoute == 'frontend.navigation.page' %}
         {% sw_include '@ZandersTheme/storefront/page/content/zanders-category-listing.html.twig' %}
     {% else %}
         {{ parent() }}
     {% endif %}
 {% endblock %}
-

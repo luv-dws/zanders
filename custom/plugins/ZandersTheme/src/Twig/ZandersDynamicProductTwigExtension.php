@@ -29,7 +29,7 @@ class ZandersDynamicProductTwigExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $twigContext
      */
-    public function getDailySpecials(array $twigContext, int $limit = 12): ProductCollection
+    public function getDailySpecials(array $twigContext, int $limit = 24): ProductCollection
     {
         $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
         if (!$salesChannelContext instanceof SalesChannelContext) {
@@ -42,7 +42,7 @@ class ZandersDynamicProductTwigExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $twigContext
      */
-    public function getPopularProducts(array $twigContext, int $limit = 12): ProductCollection
+    public function getPopularProducts(array $twigContext, int $limit = 24): ProductCollection
     {
         $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
         if (!$salesChannelContext instanceof SalesChannelContext) {
@@ -55,7 +55,7 @@ class ZandersDynamicProductTwigExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $twigContext
      */
-    public function getProductsByStream(array $twigContext, string $streamId, int $limit = 12): ProductCollection
+    public function getProductsByStream(array $twigContext, string $streamId, int $limit = 24): ProductCollection
     {
         $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
         if (!$salesChannelContext instanceof SalesChannelContext) {
@@ -68,7 +68,7 @@ class ZandersDynamicProductTwigExtension extends AbstractExtension
     /**
      * @param array<string, mixed> $twigContext
      */
-    public function getProductsByCategory(array $twigContext, string $categoryId, int $limit = 12): ProductCollection
+    public function getProductsByCategory(array $twigContext, string $categoryId, int $limit = 24): ProductCollection
     {
         $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
         if (!$salesChannelContext instanceof SalesChannelContext) {

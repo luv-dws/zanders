@@ -8,6 +8,16 @@
         },
         "restriction": {
             "notAvailable": "Dieses Produkt ist in Ihrer Versandregion nicht verfügbar."
+        },
+        "finder": {
+            "title": "PRODUKTFINDER",
+            "firearms": "Feuerwaffen-Finder",
+            "ammo": "Munitionsfinder",
+            "filterCatalog": "KATALOG FILTERN",
+            "make": "Hersteller / Marke",
+            "model": "Modell / Mechanik",
+            "year": "Jahr / Baujahr",
+            "caliber": "Kaliber / Spezifikation"
         }
     },
     "checkout": {

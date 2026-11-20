@@ -1,4 +1,4 @@
-{# Zanders Featured Homepage Sections (Brand Banners, 16-Product Brand Grid, Daily Specials & Popular Products Sliders) #}
+{# Zanders promotional banners and featured product grid; CMS blocks render the dynamic product sections. #}
 
 {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
 
@@ -45,10 +45,5 @@
             </section>
         {% endif %}
 
-        {# SECTION 2: ZANDERS DAILY SPECIALS (Dynamic CMS Slider Component) #}
-        {% sw_include '@Storefront/storefront/element/cms-element-zanders-daily-specials.html.twig' %}
-
-        {# SECTION 3: POPULAR PRODUCTS (Dynamic CMS Slider Component) #}
-        {% sw_include '@Storefront/storefront/element/cms-element-zanders-popular-products.html.twig' %}
     </div>
 </div>

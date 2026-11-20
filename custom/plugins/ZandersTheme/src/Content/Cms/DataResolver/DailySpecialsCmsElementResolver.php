@@ -33,7 +33,7 @@ class DailySpecialsCmsElementResolver extends AbstractCmsElementResolver
     public function enrich(CmsSlotEntity $slot, ResolverContext $resolverContext, ElementDataCollection $result): void
     {
         $salesChannelContext = $resolverContext->getSalesChannelContext();
-        $products = $this->dynamicProductService->getDailySpecials($salesChannelContext);
+        $products = $this->dynamicProductService->getDailySpecials($salesChannelContext, 24);
 
         $slider = new ProductSliderStruct();
         $slider->setProducts($products);

@@ -4,6 +4,10 @@
 {% block base_main_inner %}
     {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
     {% set product = page.product %}
+    {% set quantityAdjustment = zanders_quantity_adjustment(product) %}
+    {% set quantityFrom = quantityAdjustment.from|default(product.minPurchase|default(1)) %}
+    {% set quantityTo = quantityAdjustment.to|default(product.calculatedMaxPurchase|default(100)) %}
+    {% set quantityStep = quantityAdjustment.step|default(product.purchaseSteps|default(1)) %}
     {% set mainImage = product.cover.media ?? null %}
     {% set allMedia = product.media ?? null %}
     {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
@@ -288,7 +292,7 @@
                                     data-product-id="{{ product.id }}"
                                     data-product-name="{{ product.translated.name|e('html_attr') }}"
                                     data-product-sku="{{ product.productNumber|e('html_attr') }}"
-                                    data-product-upc="{{ (product.ean ?: product.customFields.upc ?: '')|e('html_attr') }}"
+                                    data-product-upc="{{ (product.ean ?: '')|e('html_attr') }}"
                                     data-product-brand="{{ (product.manufacturer ? product.manufacturer.translated.name : '')|e('html_attr') }}"
                                     data-product-price="{{ formattedPrice|e('html_attr') }}"
                                     data-product-image="{{ mainImage ? mainImage.url : '' }}"
@@ -431,10 +435,10 @@
                                                     id="zandersQtyInput"
                                                     name="lineItems[{{ product.id }}][quantity]"
                                                     class="zanders-pd-qty-input"
-                                                    min="{{ product.minPurchase|default(1) }}"
-                                                    max="{{ product.calculatedMaxPurchase|default(100) }}"
-                                                    step="{{ product.purchaseSteps|default(1) }}"
-                                                    value="{{ product.minPurchase|default(1) }}"
+                                                    min="{{ quantityFrom }}"
+                                                    max="{{ quantityTo }}"
+                                                    step="{{ quantityStep }}"
+                                                    value="{{ quantityFrom }}"
                                                 >
                                             </div>
 
@@ -564,17 +568,60 @@
 
             </div>
 
-            {# ── Bottom Section: ADDITIONAL INFORMATION (Dynamic from Existing Data) ── #}
-            {% set upcValue = product.ean ?: product.customFields.upc|default(null) %}
-            {% set hasAdditionalInfo = product.manufacturer 
-                or product.manufacturerNumber 
-                or upcValue 
-                or (product.weight and product.weight > 0) 
-                or (product.height and product.height > 0) 
-                or (product.width and product.width > 0) 
-                or (product.length and product.length > 0) 
-                or (product.sortedProperties and product.sortedProperties|length > 0) 
-                or (product.customFields and product.customFields|length > 0)
+            {# ── Bottom Section: ADDITIONAL INFORMATION ── #}
+            {% set customFields = product.translated.customFields|default(product.customFields)|default({}) %}
+            {% set upcValue = product.ean|default(null) %}
+
+            {# Build property group map for fast, reliable lookup #}
+            {% set propertyMap = {} %}
+            {% if product.sortedProperties %}
+                {% for group in product.sortedProperties %}
+                    {% set grpName = group.translated.name|default(group.name)|trim %}
+                    {% set optValues = group.options|map(option => option.translated.name|default(option.name))|join(', ') %}
+                    {% set propertyMap = propertyMap|merge({(grpName): optValues}) %}
+                {% endfor %}
+            {% elseif product.properties %}
+                {% for option in product.properties %}
+                    {% set grp = option.group %}
+                    {% if grp %}
+                        {% set grpName = grp.translated.name|default(grp.name)|trim %}
+                        {% set optName = option.translated.name|default(option.name) %}
+                        {% set propertyMap = propertyMap|merge({(grpName): optName}) %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            {% set sightsValue = propertyMap['Sights']|default(null) %}
+            {% set caliberValue = propertyMap['Caliber']|default(null) %}
+            {% set metalColorValue = propertyMap['Metal Color']|default(null) %}
+            {% set stockColorValue = propertyMap['Stock Color']|default(null) %}
+            {% set typeActionValue = propertyMap['Type Action']|default(null) %}
+            {% set metalFinishValue = propertyMap['Metal Finish']|default(null) %}
+            {% set stockMaterialValue = propertyMap['Stock Material']|default(null) %}
+
+            {% set barrelLengthValue = customFields.barrel_length is defined and customFields.barrel_length is not null and customFields.barrel_length != '' ? customFields.barrel_length ~ '"' : null %}
+            {% set rateOfTwistValue = customFields.rate_of_twist is defined and customFields.rate_of_twist is not null and customFields.rate_of_twist != '' ? customFields.rate_of_twist : null %}
+            {% set overallLengthValue = customFields.overall_length is defined and customFields.overall_length is not null and customFields.overall_length != '' ? customFields.overall_length ~ '"' : null %}
+            {% set magazineCapacityValue = customFields.magazine_capacity is defined and customFields.magazine_capacity is not null and customFields.magazine_capacity != '' ? customFields.magazine_capacity : null %}
+
+            {% set hasAdditionalInfo = product.manufacturer
+                or upcValue
+                or sightsValue
+                or (product.weight and product.weight > 0)
+                or caliberValue
+                or metalColorValue
+                or stockColorValue
+                or typeActionValue
+                or metalFinishValue
+                or barrelLengthValue
+                or rateOfTwistValue
+                or overallLengthValue
+                or stockMaterialValue
+                or (magazineCapacityValue is not null)
+                or product.manufacturerNumber
+                or (product.height and product.height > 0)
+                or (product.width and product.width > 0)
+                or (product.length and product.length > 0)
                 or product.releaseDate
                 or product.deliveryTime %}
 
@@ -592,7 +639,7 @@
                                 <tr class="zanders-pd-info-row">
                                     <th scope="row" class="zanders-pd-info-label">Manufacturer</th>
                                     <td class="zanders-pd-info-value">
-                                        <span class="zanders-pd-mfr-link">{{ product.manufacturer.translated.name }}</span>
+                                        <span class="zanders-pd-mfr-link">{{ product.manufacturer.translated.name|default(product.manufacturer.name) }}</span>
                                         {% if product.manufacturer.translated.description %}
                                             <div class="zanders-pd-mfr-address">
                                                 {{ product.manufacturer.translated.description|striptags('<br><p>')|raw }}
@@ -607,13 +654,6 @@
                                 </tr>
                             {% endif %}
 
-                            {% if product.manufacturerNumber %}
-                                <tr class="zanders-pd-info-row">
-                                    <th scope="row" class="zanders-pd-info-label">Manufacturer Part Number</th>
-                                    <td class="zanders-pd-info-value">{{ product.manufacturerNumber }}</td>
-                                </tr>
-                            {% endif %}
-
                             {% if upcValue %}
                                 <tr class="zanders-pd-info-row">
                                     <th scope="row" class="zanders-pd-info-label">UPC</th>
@@ -621,44 +661,128 @@
                                 </tr>
                             {% endif %}
 
-                            {% if (product.height and product.height > 0) or (product.width and product.width > 0) or (product.length and product.length > 0) %}
+                            {% if sightsValue %}
                                 <tr class="zanders-pd-info-row">
-                                    <th scope="row" class="zanders-pd-info-label">PACKAGING DIMENSIONS (H X W X L)</th>
-                                    <td class="zanders-pd-info-value">
-                                        {{ product.height|default('—') }} X {{ product.width|default('—') }} X {{ product.length|default('—') }}
-                                    </td>
+                                    <th scope="row" class="zanders-pd-info-label">Sights</th>
+                                    <td class="zanders-pd-info-value">{{ sightsValue }}</td>
                                 </tr>
                             {% endif %}
 
                             {% if product.weight and product.weight > 0 %}
                                 <tr class="zanders-pd-info-row">
-                                    <th scope="row" class="zanders-pd-info-label">WEIGHT IN POUNDS</th>
-                                    <td class="zanders-pd-info-value">{{ product.weight }}</td>
+                                    <th scope="row" class="zanders-pd-info-label">Weight</th>
+                                    <td class="zanders-pd-info-value">{{ product.weight + 0 }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if caliberValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Caliber</th>
+                                    <td class="zanders-pd-info-value">{{ caliberValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if metalColorValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Metal Color</th>
+                                    <td class="zanders-pd-info-value">{{ metalColorValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if stockColorValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Stock Color</th>
+                                    <td class="zanders-pd-info-value">{{ stockColorValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if typeActionValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Type Action</th>
+                                    <td class="zanders-pd-info-value">{{ typeActionValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if metalFinishValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Metal Finish</th>
+                                    <td class="zanders-pd-info-value">{{ metalFinishValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if barrelLengthValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Barrel Length</th>
+                                    <td class="zanders-pd-info-value">{{ barrelLengthValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if rateOfTwistValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Rate of Twist</th>
+                                    <td class="zanders-pd-info-value">{{ rateOfTwistValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if overallLengthValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Overall Length</th>
+                                    <td class="zanders-pd-info-value">{{ overallLengthValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if stockMaterialValue %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Stock Material</th>
+                                    <td class="zanders-pd-info-value">{{ stockMaterialValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if magazineCapacityValue is not null %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Magazine Capacity</th>
+                                    <td class="zanders-pd-info-value">{{ magazineCapacityValue }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if product.manufacturerNumber %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Manufacturer Part Number</th>
+                                    <td class="zanders-pd-info-value">{{ product.manufacturerNumber }}</td>
+                                </tr>
+                            {% endif %}
+
+                            {% if (product.height and product.height > 0) or (product.width and product.width > 0) or (product.length and product.length > 0) %}
+                                <tr class="zanders-pd-info-row">
+                                    <th scope="row" class="zanders-pd-info-label">Packaging Dimensions (H x W x L)</th>
+                                    <td class="zanders-pd-info-value">
+                                        {{ product.height|default('—') }} x {{ product.width|default('—') }} x {{ product.length|default('—') }}
+                                    </td>
                                 </tr>
                             {% endif %}
 
                             {% if product.releaseDate %}
                                 <tr class="zanders-pd-info-row">
-                                    <th scope="row" class="zanders-pd-info-label">RELEASE DATE</th>
+                                    <th scope="row" class="zanders-pd-info-label">Release Date</th>
                                     <td class="zanders-pd-info-value">{{ product.releaseDate|format_date('medium') }}</td>
                                 </tr>
                             {% endif %}
 
                             {% if product.deliveryTime %}
                                 <tr class="zanders-pd-info-row">
-                                    <th scope="row" class="zanders-pd-info-label">DELIVERY TIME</th>
+                                    <th scope="row" class="zanders-pd-info-label">Delivery Time</th>
                                     <td class="zanders-pd-info-value">{{ product.deliveryTime.translated.name }}</td>
                                 </tr>
                             {% endif %}
 
                             {% if product.sortedProperties %}
                                 {% for group in product.sortedProperties %}
-                                    {% set groupNameUpper = group.translated.name|upper|trim %}
-                                    {% if groupNameUpper not in ['UPC', 'EAN', 'MANUFACTURER PART NUMBER', 'MPN'] %}
-                                        {% set optionValues = group.options|map(option => "#{option.translated.name}")|join(', ') %}
+                                    {% set groupName = group.translated.name|default(group.name)|trim %}
+                                    {% if groupName not in ['Sights', 'Caliber', 'Metal Color', 'Stock Color', 'Type Action', 'Metal Finish', 'Stock Material', 'UPC', 'EAN', 'Manufacturer Part Number', 'MPN'] %}
+                                        {% set optionValues = group.options|map(option => option.translated.name|default(option.name))|join(', ') %}
                                         {% if optionValues %}
                                             <tr class="zanders-pd-info-row">
-                                                <th scope="row" class="zanders-pd-info-label">{{ group.translated.name|upper }}</th>
+                                                <th scope="row" class="zanders-pd-info-label">{{ groupName }}</th>
                                                 <td class="zanders-pd-info-value">{{ optionValues }}</td>
                                             </tr>
                                         {% endif %}
@@ -666,27 +790,25 @@
                                 {% endfor %}
                             {% endif %}
 
-                            {% if product.customFields %}
-                                {% for key, value in product.customFields %}
-                                    {% set fieldLabel = key|replace({'custom_': '', '_': ' '})|upper|trim %}
-                                    {% if fieldLabel not in ['UPC', 'EAN', 'MPN', 'MANUFACTURER PART NUMBER'] %}
-                                        {% if value is not null and value is not empty and value is not same as false %}
-                                            <tr class="zanders-pd-info-row">
-                                                <th scope="row" class="zanders-pd-info-label">{{ fieldLabel }}</th>
-                                                <td class="zanders-pd-info-value">
-                                                    {% if value is iterable %}
-                                                        {{ value|join(', ') }}
-                                                    {% elseif value is same as true %}
-                                                        Y
-                                                    {% else %}
-                                                        {{ value }}
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                        {% endif %}
+                            {% for key, value in customFields %}
+                                {% if key not in ['barrel_length', 'rate_of_twist', 'overall_length', 'magazine_capacity', 'upc', 'custom_upc', 'custom_weight', 'custom_sights', 'custom_caliber', 'custom_metal_color', 'custom_stock_color', 'custom_type_action', 'custom_metal_finish', 'custom_stock_material', 'custom_checkering', 'custom_detachable_magazine', 'custom_hinged_floorplate', 'custom_packaging_dimensions', 'custom_recoil_pad', 'custom_swivel_studs', 'custom_barrel_length', 'custom_rate_of_twist', 'custom_overall_length', 'custom_magazine_capacity', 'product_warning_title', 'product_warning_message', 'product_region_restriction_enabled', 'product_restricted_states'] %}
+                                    {% set fieldLabel = key|replace({'custom_': '', '_': ' '})|trim %}
+                                    {% if value is not null and value is not empty and value is not same as false %}
+                                        <tr class="zanders-pd-info-row">
+                                            <th scope="row" class="zanders-pd-info-label">{{ fieldLabel }}</th>
+                                            <td class="zanders-pd-info-value">
+                                                {% if value is iterable %}
+                                                    {{ value|join(', ') }}
+                                                {% elseif value is same as true %}
+                                                    Y
+                                                {% else %}
+                                                    {{ value }}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
                                     {% endif %}
-                                {% endfor %}
-                            {% endif %}
+                                {% endif %}
+                            {% endfor %}
 
                         </tbody>
                     </table>

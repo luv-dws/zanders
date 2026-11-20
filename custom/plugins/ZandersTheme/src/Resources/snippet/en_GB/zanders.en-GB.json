@@ -8,6 +8,16 @@
         },
         "restriction": {
             "notAvailable": "This product is not available in your shipping region."
+        },
+        "finder": {
+            "title": "PRODUCT FINDER",
+            "firearms": "Firearms Finder",
+            "ammo": "Ammo Finder",
+            "filterCatalog": "FILTER CATALOG",
+            "make": "Make / Brand",
+            "model": "Model / Action",
+            "year": "Year / Vintage",
+            "caliber": "Caliber / Spec"
         }
     },
     "checkout": {

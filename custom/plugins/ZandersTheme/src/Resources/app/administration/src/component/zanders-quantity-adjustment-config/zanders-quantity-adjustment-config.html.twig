@@ -1,0 +1,75 @@
+{% block zanders_quantity_adjustment_config %}
+<div class="zanders-quantity-adjustment-config">
+    <div class="zanders-quantity-adjustment-config__header">
+        <span>QTY FROM</span>
+        <span>QTY TO</span>
+        <span>Start From</span>
+        <span>Start To</span>
+        <span>String</span>
+        <span>Action</span>
+    </div>
+
+    <div
+        v-for="(rule, index) in rules"
+        :key="index"
+        class="zanders-quantity-adjustment-config__row"
+    >
+        <input
+            v-model="rule.qtyFrom"
+            class="zanders-quantity-adjustment-config__input"
+            type="number"
+            min="1"
+            aria-label="Qty From"
+            @input="emitRules"
+        >
+        <input
+            v-model="rule.qtyTo"
+            class="zanders-quantity-adjustment-config__input"
+            type="number"
+            min="1"
+            aria-label="Qty To"
+            @input="emitRules"
+        >
+        <input
+            v-model="rule.startFrom"
+            class="zanders-quantity-adjustment-config__input zanders-quantity-adjustment-config__date"
+            type="date"
+            aria-label="Start From"
+            @input="emitRules"
+        >
+        <input
+            v-model="rule.startTo"
+            class="zanders-quantity-adjustment-config__input zanders-quantity-adjustment-config__date"
+            type="date"
+            aria-label="Start To"
+            @input="emitRules"
+        >
+        <input
+            v-model="rule.display"
+            class="zanders-quantity-adjustment-config__input"
+            type="text"
+            aria-label="String"
+            @input="emitRules"
+        >
+        <mt-button
+            variant="secondary"
+            square
+            size="small"
+            @click="removeRule(index)"
+        >
+            <mt-icon
+                name="regular-trash"
+                size="16px"
+            />
+        </mt-button>
+    </div>
+
+    <mt-button
+        class="zanders-quantity-adjustment-config__add"
+        variant="secondary"
+        @click="addRule"
+    >
+        Add New
+    </mt-button>
+</div>
+{% endblock %}

@@ -790,6 +790,159 @@ class OrderInvoicePrintPlugin extends PluginBase {
     }
 }
 
+class ProductFinderPlugin extends PluginBase {
+    static options = {
+        backdropSelector: '#zandersFinderBackdrop',
+        drawerSelector: '#zandersFinderDrawer',
+        formSelector: '#zandersFinderDrawerForm',
+        closeBtnSelector: '[data-finder-close]',
+        triggerSelector: '[data-finder-drawer-trigger], [data-finder-modal-trigger]',
+        selectSelector: '[data-finder-filter-input]',
+        resetBtnSelector: '[data-finder-reset]',
+        matchingCountSelector: '[data-finder-matching-count]',
+        searchUrl: '/finder/search',
+        bodyOpenClass: 'zanders-finder-drawer-open',
+        visibleClass: 'is-visible',
+    };
+
+    constructor(el, options = {}) {
+        super(el, options, 'ProductFinder');
+    }
+
+    init() {
+        this._backdrop = document.querySelector(this.options.backdropSelector);
+        this._drawer = document.querySelector(this.options.drawerSelector);
+        this._form = document.querySelector(this.options.formSelector);
+        this._matchingCountEl = document.querySelector(this.options.matchingCountSelector);
+
+        this._registerEvents();
+    }
+
+    _registerEvents() {
+        document.addEventListener('click', (e) => {
+            const trigger = e.target.closest(this.options.triggerSelector);
+            if (trigger) {
+                e.preventDefault();
+                this.open();
+                return;
+            }
+
+            const closeBtn = e.target.closest(this.options.closeBtnSelector);
+            if (closeBtn) {
+                e.preventDefault();
+                this.close();
+                return;
+            }
+
+            if (this._backdrop && e.target === this._backdrop) {
+                e.preventDefault();
+                this.close();
+                return;
+            }
+
+            const resetBtn = e.target.closest(this.options.resetBtnSelector);
+            if (resetBtn && this._form) {
+                e.preventDefault();
+                this.resetFilters();
+                return;
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'Escape' || e.keyCode === 27) && this.isOpen()) {
+                e.preventDefault();
+                this.close();
+            }
+        });
+
+        if (this._form) {
+            const handleFilterChange = (e) => {
+                if (e.target && e.target.matches('select, input')) {
+                    this.updateMatchingCount();
+                }
+            };
+            this._form.addEventListener('change', handleFilterChange);
+            this._form.addEventListener('input', handleFilterChange);
+        }
+    }
+
+    open() {
+        if (!this._backdrop) return;
+        this._backdrop.classList.add(this.options.visibleClass);
+        this._backdrop.setAttribute('aria-hidden', 'false');
+        document.body.classList.add(this.options.bodyOpenClass);
+        this.updateMatchingCount();
+    }
+
+    close() {
+        if (!this._backdrop) return;
+        this._backdrop.classList.remove(this.options.visibleClass);
+        this._backdrop.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove(this.options.bodyOpenClass);
+    }
+
+    isOpen() {
+        return this._backdrop && this._backdrop.classList.contains(this.options.visibleClass);
+    }
+
+    resetFilters() {
+        if (!this._form) return;
+        const selects = this._form.querySelectorAll('select');
+        selects.forEach((select) => {
+            select.selectedIndex = 0;
+        });
+
+        const inputs = this._form.querySelectorAll('input:not([type="hidden"])');
+        inputs.forEach((input) => {
+            if (input.type === 'checkbox') {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
+        });
+
+        this.updateMatchingCount();
+    }
+
+    updateMatchingCount() {
+        if (!this._form || !this._matchingCountEl) return;
+        const formData = new FormData(this._form);
+        const params = new URLSearchParams(formData);
+        params.set('format', 'json');
+
+        const searchUrl = this._form.dataset.searchUrl || this.options.searchUrl || '/finder/search';
+
+        if (this._abortController) {
+            this._abortController.abort();
+        }
+        this._abortController = new AbortController();
+
+        fetch(`${searchUrl}?${params.toString()}`, {
+            signal: this._abortController.signal,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            },
+        })
+            .then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error ${res.status}`);
+                }
+                return res.json();
+            })
+            .then((data) => {
+                if (data && typeof data.total !== 'undefined') {
+                    this._matchingCountEl.textContent = Number(data.total).toLocaleString('en-US');
+                }
+            })
+            .catch((err) => {
+                if (err.name !== 'AbortError') {
+                    console.warn('[ZandersFinder] Count update failed:', err);
+                }
+            });
+    }
+}
+
 // Register into Shopware's native PluginManager
 if (typeof window !== 'undefined' && window.PluginManager) {
     window.PluginManager.register(
@@ -812,6 +965,11 @@ if (typeof window !== 'undefined' && window.PluginManager) {
         OrderInvoicePrintPlugin,
         '[data-print-invoice]'
     );
+    window.PluginManager.register(
+        'ProductFinder',
+        ProductFinderPlugin,
+        '[data-finder-drawer], [data-finder-modal]'
+    );
 }
 
 // Export for module systems or global access
@@ -820,11 +978,17 @@ if (typeof window !== 'undefined') {
     window.ProductComparePlugin = ProductComparePlugin;
     window.OrderPrintPlugin = OrderPrintPlugin;
     window.OrderInvoicePrintPlugin = OrderInvoicePrintPlugin;
+    window.ProductFinderPlugin = ProductFinderPlugin;
     window.printInvoiceUrl = printInvoiceUrl;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+const initStorefront = () => {
     console.info('[ZandersTheme] Storefront JavaScript initialized.');
+
+    // Product Finder Direct Initialization
+    if (!window.zandersFinderInstance) {
+        window.zandersFinderInstance = new ProductFinderPlugin(document.body);
+    }
 
     // Global delegated listener for Print Invoice buttons / links
     document.addEventListener('click', (e) => {
@@ -1043,4 +1207,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initProductWarningModal();
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStorefront);
+} else {
+    initStorefront();
+}

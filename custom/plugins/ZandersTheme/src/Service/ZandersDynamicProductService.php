@@ -28,12 +28,12 @@ class ZandersDynamicProductService
     ) {
     }
 
-    public function getDailySpecials(SalesChannelContext $context, int $limit = 12): ProductCollection
+    public function getDailySpecials(SalesChannelContext $context, int $limit = 24): ProductCollection
     {
         return $this->getProductsByConfig('dailySpecials', $context, $limit, 'zandersDailySpecials');
     }
 
-    public function getPopularProducts(SalesChannelContext $context, int $limit = 12): ProductCollection
+    public function getPopularProducts(SalesChannelContext $context, int $limit = 24): ProductCollection
     {
         return $this->getProductsByConfig('popularProducts', $context, $limit, 'popularProducts');
     }
@@ -41,7 +41,7 @@ class ZandersDynamicProductService
     public function getProductsByConfig(
         string $prefix,
         SalesChannelContext $context,
-        int $limit = 12,
+        int $limit = 24,
         ?string $legacyKey = null
     ): ProductCollection {
         $salesChannelId = $context->getSalesChannelId();
@@ -189,5 +189,6 @@ class ZandersDynamicProductService
         $criteria->addAssociation('cover.media');
         $criteria->addAssociation('manufacturer');
         $criteria->addAssociation('prices');
+        $criteria->addAssociation('properties.group');
     }
 }

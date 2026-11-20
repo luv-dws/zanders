@@ -32,7 +32,7 @@ class PopularProductsCmsElementResolver extends AbstractCmsElementResolver
     public function enrich(CmsSlotEntity $slot, ResolverContext $resolverContext, ElementDataCollection $result): void
     {
         $salesChannelContext = $resolverContext->getSalesChannelContext();
-        $products = $this->dynamicProductService->getPopularProducts($salesChannelContext);
+        $products = $this->dynamicProductService->getPopularProducts($salesChannelContext, 24);
 
         $slider = new ProductSliderStruct();
         $slider->setProducts($products);

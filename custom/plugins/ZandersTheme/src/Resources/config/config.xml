@@ -161,4 +161,12 @@
             <defaultValue>0</defaultValue>
         </input-field>
     </card>
+    <card>
+        <title>QTY Adjustment</title>
+        <title lang="de-DE">Mengenanpassung-Konfiguration</title>
+
+        <component name="zanders-quantity-adjustment-config">
+            <name>quantityAdjustmentRules</name>
+        </component>
+    </card>
 </config>

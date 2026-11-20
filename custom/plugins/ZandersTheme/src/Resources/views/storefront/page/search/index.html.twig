@@ -1,0 +1,17 @@
+{% sw_extends '@Storefront/storefront/page/search/index.html.twig' %}
+
+{% block page_search %}
+    {% set searchHeading = page.searchTerm
+        ? 'search.headline'|trans({
+            '%count%': page.listing.total,
+            '%searchTerm%': page.searchTerm,
+        })
+        : 'Search' %}
+
+    {% sw_include '@ZandersTheme/storefront/page/content/zanders-category-listing.html.twig' with {
+        listingOverride: page.listing,
+        categoryNameOverride: searchHeading,
+        breadcrumbLabelOverride: page.searchTerm|default('Search'),
+        isSearchResults: true,
+    } %}
+{% endblock %}
