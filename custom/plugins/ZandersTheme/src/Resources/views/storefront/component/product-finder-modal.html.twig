@@ -1,198 +1,213 @@
 {# Zanders Product Finder Slide-Out Left Drawer (Matching Reference Design) #}
-{% set filterOptions = filterOptions|default(null) %}
-{% set totalCount = filterOptions.totalCount|default(10000) %}
+{% block component_product_finder_modal %}
+    {% set filterOptions = filterOptions|default(null) %}
+    {% set totalCount = filterOptions.totalCount|default(10000) %}
 
-<div class="zanders-finder-drawer-backdrop" id="zandersFinderBackdrop" data-finder-backdrop="true" aria-hidden="true">
-    <aside class="zanders-finder-drawer" id="zandersFinderDrawer" data-finder-drawer="true" data-finder-modal="true" role="dialog" aria-modal="true" aria-labelledby="zandersFinderTitle">
-        {# Drawer Header #}
-        <div class="zanders-finder-drawer-header">
-            <h2 class="zanders-finder-drawer-title" id="zandersFinderTitle">Product Finder</h2>
-            <button type="button" class="zanders-finder-drawer-close" data-finder-close="true" aria-label="Close Product Finder">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </div>
-
-        {# Drawer Body & Form #}
-        <form action="{{ path('frontend.zanders.finder') }}"
-              method="get"
-              class="zanders-finder-drawer-form"
-              id="zandersFinderDrawerForm"
-              data-finder-form="true"
-              data-search-url="{{ path('frontend.zanders.finder.search') }}">
-
-            <div class="zanders-finder-selects-container">
-                {# 1. Select Manufacturer #}
-                <div class="zanders-finder-select-wrapper">
-                    <select name="make" class="zanders-finder-select" data-finder-filter-input>
-                        <option value="">Select Manufacturer ({{ filterOptions.manufacturers|length|default(134) }} options)</option>
-                        {% for m in filterOptions.manufacturers|default([]) %}
-                            <option value="{{ m.name }}">{{ m.name }}</option>
-                        {% else %}
-                            <option value="Glock">Glock</option>
-                            <option value="Smith & Wesson">Smith &amp; Wesson</option>
-                            <option value="Ruger">Ruger</option>
-                            <option value="Winchester">Winchester</option>
-                            <option value="Remington">Remington</option>
-                            <option value="Umarex">Umarex</option>
-                            <option value="Henry Repeating Arms">Henry Repeating Arms</option>
-                            <option value="Colt">Colt</option>
-                            <option value="Sig Sauer">Sig Sauer</option>
-                            <option value="Beretta">Beretta</option>
-                            <option value="Benelli">Benelli</option>
-                            <option value="Taurus">Taurus</option>
-                            <option value="Mossberg">Mossberg</option>
-                            <option value="Browning">Browning</option>
-                            <option value="Springfield Armory">Springfield Armory</option>
-                            <option value="CZ-USA">CZ-USA</option>
-                            <option value="Walther">Walther</option>
-                            <option value="Kimber">Kimber</option>
-                            <option value="Savage Arms">Savage Arms</option>
-                            <option value="Marlin">Marlin</option>
-                        {% endfor %}
-                    </select>
+    <div class="zanders-finder-drawer-backdrop" id="zandersFinderBackdrop" data-finder-backdrop="true" aria-hidden="true">
+        <aside class="zanders-finder-drawer" id="zandersFinderDrawer" data-finder-drawer="true" data-finder-modal="true" role="dialog" aria-modal="true" aria-labelledby="zandersFinderTitle">
+            {% block component_product_finder_modal_header %}
+                <div class="zanders-finder-drawer-header">
+                    <h2 class="zanders-finder-drawer-title" id="zandersFinderTitle">{{ 'zanders.finderModal.title'|trans }}</h2>
+                    <button type="button" class="zanders-finder-drawer-close" data-finder-close="true" aria-label="{{ 'zanders.finderModal.closeProductFinder'|trans|striptags }}">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
                 </div>
+            {% endblock %}
 
-                {# 2. Select CALIBER #}
-                <div class="zanders-finder-select-wrapper">
-                    <select name="caliber" class="zanders-finder-select" data-finder-filter-input>
-                        <option value="">Select CALIBER ({{ filterOptions.calibers|length|default(141) }} options)</option>
-                        {% for cal in filterOptions.calibers|default([]) %}
-                            <option value="{{ cal }}">{{ cal }}</option>
-                        {% else %}
-                            <option value="9mm">9mm</option>
-                            <option value="9mm Luger">9mm Luger</option>
-                            <option value=".22 LR">.22 LR</option>
-                            <option value=".45 ACP">.45 ACP</option>
-                            <option value=".380 ACP">.380 ACP</option>
-                            <option value=".40 S&W">.40 S&amp;W</option>
-                            <option value=".357 Magnum">.357 Magnum</option>
-                            <option value=".38 Special">.38 Special</option>
-                            <option value="5.56x45mm NATO">5.56x45mm NATO</option>
-                            <option value=".223 Remington">.223 Remington</option>
-                            <option value=".308 Winchester">.308 Winchester</option>
-                            <option value="7.62x39mm">7.62x39mm</option>
-                            <option value="6.5 Creedmoor">6.5 Creedmoor</option>
-                            <option value=".300 AAC Blackout">.300 AAC Blackout</option>
-                            <option value=".30-06 Springfield">.30-06 Springfield</option>
-                            <option value=".50 Caliber / Ball">.50 Caliber / Ball</option>
-                        {% endfor %}
-                    </select>
-                </div>
+            {% block component_product_finder_modal_form %}
+                <form action="{{ path('frontend.zanders.finder') }}"
+                      method="get"
+                      class="zanders-finder-drawer-form"
+                      id="zandersFinderDrawerForm"
+                      data-finder-form="true"
+                      data-search-url="{{ path('frontend.zanders.finder.search') }}">
 
-                {# 3. Select GAUGE #}
-                <div class="zanders-finder-select-wrapper">
-                    <select name="gauge" class="zanders-finder-select" data-finder-filter-input>
-                        <option value="">Select GAUGE ({{ filterOptions.gauges|length|default(13) }} options)</option>
-                        {% for g in filterOptions.gauges|default([]) %}
-                            <option value="{{ g }}">{{ g }}</option>
-                        {% else %}
-                            <option value="12 Gauge">12 Gauge</option>
-                            <option value="20 Gauge">20 Gauge</option>
-                            <option value="28 Gauge">28 Gauge</option>
-                            <option value="16 Gauge">16 Gauge</option>
-                            <option value="10 Gauge">10 Gauge</option>
-                            <option value=".410 Bore">.410 Bore</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                    {% block component_product_finder_modal_selects %}
+                        <div class="zanders-finder-selects-container">
+                            {% block component_product_finder_modal_select_manufacturer %}
+                                <div class="zanders-finder-select-wrapper">
+                                    <select name="make" class="zanders-finder-select" data-finder-filter-input>
+                                        <option value="">{{ 'zanders.finderModal.selectManufacturer'|trans }} ({{ filterOptions.manufacturers|length|default(134) }} {{ 'zanders.finderModal.options'|trans }})</option>
+                                        {% for m in filterOptions.manufacturers|default([]) %}
+                                            <option value="{{ m.name }}">{{ m.name }}</option>
+                                        {% else %}
+                                            <option value="Glock">Glock</option>
+                                            <option value="Smith & Wesson">Smith &amp; Wesson</option>
+                                            <option value="Ruger">Ruger</option>
+                                            <option value="Winchester">Winchester</option>
+                                            <option value="Remington">Remington</option>
+                                            <option value="Umarex">Umarex</option>
+                                            <option value="Henry Repeating Arms">Henry Repeating Arms</option>
+                                            <option value="Colt">Colt</option>
+                                            <option value="Sig Sauer">Sig Sauer</option>
+                                            <option value="Beretta">Beretta</option>
+                                            <option value="Benelli">Benelli</option>
+                                            <option value="Taurus">Taurus</option>
+                                            <option value="Mossberg">Mossberg</option>
+                                            <option value="Browning">Browning</option>
+                                            <option value="Springfield Armory">Springfield Armory</option>
+                                            <option value="CZ-USA">CZ-USA</option>
+                                            <option value="Walther">Walther</option>
+                                            <option value="Kimber">Kimber</option>
+                                            <option value="Savage Arms">Savage Arms</option>
+                                            <option value="Marlin">Marlin</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endblock %}
 
-                {# 4. Select STOCK MATERIAL #}
-                <div class="zanders-finder-select-wrapper">
-                    <select name="stockMaterial" class="zanders-finder-select" data-finder-filter-input>
-                        <option value="">Select STOCK MATERIAL ({{ filterOptions.stockMaterials|length|default(14) }} options)</option>
-                        {% for sm in filterOptions.stockMaterials|default([]) %}
-                            <option value="{{ sm }}">{{ sm }}</option>
-                        {% else %}
-                            <option value="Synthetic">Synthetic</option>
-                            <option value="Walnut">Walnut</option>
-                            <option value="Wood">Wood</option>
-                            <option value="Polymer">Polymer</option>
-                            <option value="Laminate">Laminate</option>
-                            <option value="Carbon Fiber">Carbon Fiber</option>
-                            <option value="Aluminum">Aluminum</option>
-                            <option value="Composite">Composite</option>
-                            <option value="Hardwood">Hardwood</option>
-                            <option value="Camo Synthetic">Camo Synthetic</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                            {% block component_product_finder_modal_select_caliber %}
+                                <div class="zanders-finder-select-wrapper">
+                                    <select name="caliber" class="zanders-finder-select" data-finder-filter-input>
+                                        <option value="">{{ 'zanders.finderModal.selectCaliber'|trans }} ({{ filterOptions.calibers|length|default(141) }} {{ 'zanders.finderModal.options'|trans }})</option>
+                                        {% for cal in filterOptions.calibers|default([]) %}
+                                            <option value="{{ cal }}">{{ cal }}</option>
+                                        {% else %}
+                                            <option value="9mm">9mm</option>
+                                            <option value="9mm Luger">9mm Luger</option>
+                                            <option value=".22 LR">.22 LR</option>
+                                            <option value=".45 ACP">.45 ACP</option>
+                                            <option value=".380 ACP">.380 ACP</option>
+                                            <option value=".40 S&W">.40 S&amp;W</option>
+                                            <option value=".357 Magnum">.357 Magnum</option>
+                                            <option value=".38 Special">.38 Special</option>
+                                            <option value="5.56x45mm NATO">5.56x45mm NATO</option>
+                                            <option value=".223 Remington">.223 Remington</option>
+                                            <option value=".308 Winchester">.308 Winchester</option>
+                                            <option value="7.62x39mm">7.62x39mm</option>
+                                            <option value="6.5 Creedmoor">6.5 Creedmoor</option>
+                                            <option value=".300 AAC Blackout">.300 AAC Blackout</option>
+                                            <option value=".30-06 Springfield">.30-06 Springfield</option>
+                                            <option value=".50 Caliber / Ball">.50 Caliber / Ball</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endblock %}
 
-                {# 5. Select FRAME MATERIAL #}
-                <div class="zanders-finder-select-wrapper">
-                    <select name="frameMaterial" class="zanders-finder-select" data-finder-filter-input>
-                        <option value="">Select FRAME MATERIAL ({{ filterOptions.frameMaterials|length|default(8) }} options)</option>
-                        {% for fm in filterOptions.frameMaterials|default([]) %}
-                            <option value="{{ fm }}">{{ fm }}</option>
-                        {% else %}
-                            <option value="Steel">Steel</option>
-                            <option value="Aluminum">Aluminum</option>
-                            <option value="Polymer">Polymer</option>
-                            <option value="Stainless Steel">Stainless Steel</option>
-                            <option value="Alloy">Alloy</option>
-                            <option value="Carbon Steel">Carbon Steel</option>
-                            <option value="Titanium">Titanium</option>
-                            <option value="Scandium Alloy">Scandium Alloy</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                            {% block component_product_finder_modal_select_gauge %}
+                                <div class="zanders-finder-select-wrapper">
+                                    <select name="gauge" class="zanders-finder-select" data-finder-filter-input>
+                                        <option value="">{{ 'zanders.finderModal.selectGauge'|trans }} ({{ filterOptions.gauges|length|default(13) }} {{ 'zanders.finderModal.options'|trans }})</option>
+                                        {% for g in filterOptions.gauges|default([]) %}
+                                            <option value="{{ g }}">{{ g }}</option>
+                                        {% else %}
+                                            <option value="12 Gauge">12 Gauge</option>
+                                            <option value="20 Gauge">20 Gauge</option>
+                                            <option value="28 Gauge">28 Gauge</option>
+                                            <option value="16 Gauge">16 Gauge</option>
+                                            <option value="10 Gauge">10 Gauge</option>
+                                            <option value=".410 Bore">.410 Bore</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endblock %}
 
-                {# 6. Select TYPE ACTION #}
-                <div class="zanders-finder-select-wrapper">
-                    <select name="typeAction" class="zanders-finder-select" data-finder-filter-input>
-                        <option value="">Select TYPE ACTION ({{ filterOptions.typeActions|length|default(9) }} options)</option>
-                        {% for ta in filterOptions.typeActions|default([]) %}
-                            <option value="{{ ta }}">{{ ta }}</option>
-                        {% else %}
-                            <option value="Semi-Automatic">Semi-Automatic</option>
-                            <option value="Bolt Action">Bolt Action</option>
-                            <option value="Lever Action">Lever Action</option>
-                            <option value="Pump Action">Pump Action</option>
-                            <option value="Revolver">Revolver</option>
-                            <option value="Single Shot">Single Shot</option>
-                            <option value="Break Open">Break Open</option>
-                            <option value="Over / Under">Over / Under</option>
-                            <option value="Side-by-Side">Side-by-Side</option>
-                        {% endfor %}
-                    </select>
-                </div>
+                            {% block component_product_finder_modal_select_stock_material %}
+                                <div class="zanders-finder-select-wrapper">
+                                    <select name="stockMaterial" class="zanders-finder-select" data-finder-filter-input>
+                                        <option value="">{{ 'zanders.finderModal.selectStockMaterial'|trans }} ({{ filterOptions.stockMaterials|length|default(14) }} {{ 'zanders.finderModal.options'|trans }})</option>
+                                        {% for sm in filterOptions.stockMaterials|default([]) %}
+                                            <option value="{{ sm }}">{{ sm }}</option>
+                                        {% else %}
+                                            <option value="Synthetic">Synthetic</option>
+                                            <option value="Walnut">Walnut</option>
+                                            <option value="Wood">Wood</option>
+                                            <option value="Polymer">Polymer</option>
+                                            <option value="Laminate">Laminate</option>
+                                            <option value="Carbon Fiber">Carbon Fiber</option>
+                                            <option value="Aluminum">Aluminum</option>
+                                            <option value="Composite">Composite</option>
+                                            <option value="Hardwood">Hardwood</option>
+                                            <option value="Camo Synthetic">Camo Synthetic</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endblock %}
 
-                {# 7. Select TYPE OF SIGHTS #}
-                <div class="zanders-finder-select-wrapper">
-                    <select name="typeSights" class="zanders-finder-select" data-finder-filter-input>
-                        <option value="">Select TYPE OF SIGHTS ({{ filterOptions.typeSights|length|default(7) }} options)</option>
-                        {% for ts in filterOptions.typeSights|default([]) %}
-                            <option value="{{ ts }}">{{ ts }}</option>
-                        {% else %}
-                            <option value="Fixed Sights">Fixed Sights</option>
-                            <option value="Adjustable Sights">Adjustable Sights</option>
-                            <option value="Night Sights">Night Sights</option>
-                            <option value="Fiber Optic">Fiber Optic</option>
-                            <option value="Optics Ready">Optics Ready</option>
-                            <option value="Picatinny Rail">Picatinny Rail</option>
-                            <option value="3-Dot Sights">3-Dot Sights</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
+                            {% block component_product_finder_modal_select_frame_material %}
+                                <div class="zanders-finder-select-wrapper">
+                                    <select name="frameMaterial" class="zanders-finder-select" data-finder-filter-input>
+                                        <option value="">{{ 'zanders.finderModal.selectFrameMaterial'|trans }} ({{ filterOptions.frameMaterials|length|default(8) }} {{ 'zanders.finderModal.options'|trans }})</option>
+                                        {% for fm in filterOptions.frameMaterials|default([]) %}
+                                            <option value="{{ fm }}">{{ fm }}</option>
+                                        {% else %}
+                                            <option value="Steel">Steel</option>
+                                            <option value="Aluminum">Aluminum</option>
+                                            <option value="Polymer">Polymer</option>
+                                            <option value="Stainless Steel">Stainless Steel</option>
+                                            <option value="Alloy">Alloy</option>
+                                            <option value="Carbon Steel">Carbon Steel</option>
+                                            <option value="Titanium">Titanium</option>
+                                            <option value="Scandium Alloy">Scandium Alloy</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endblock %}
 
-            {# Matching Items Count Label #}
-            <div class="zanders-finder-matching-row">
-                <span class="zanders-finder-matching-label">Matching Items:</span>
-                <span class="zanders-finder-matching-val" data-finder-matching-count>{{ totalCount|number_format(0, '.', ',') }}</span>
-            </div>
+                            {% block component_product_finder_modal_select_type_action %}
+                                <div class="zanders-finder-select-wrapper">
+                                    <select name="typeAction" class="zanders-finder-select" data-finder-filter-input>
+                                        <option value="">{{ 'zanders.finderModal.selectTypeAction'|trans }} ({{ filterOptions.typeActions|length|default(9) }} {{ 'zanders.finderModal.options'|trans }})</option>
+                                        {% for ta in filterOptions.typeActions|default([]) %}
+                                            <option value="{{ ta }}">{{ ta }}</option>
+                                        {% else %}
+                                            <option value="Semi-Automatic">Semi-Automatic</option>
+                                            <option value="Bolt Action">Bolt Action</option>
+                                            <option value="Lever Action">Lever Action</option>
+                                            <option value="Pump Action">Pump Action</option>
+                                            <option value="Revolver">Revolver</option>
+                                            <option value="Single Shot">Single Shot</option>
+                                            <option value="Break Open">Break Open</option>
+                                            <option value="Over / Under">Over / Under</option>
+                                            <option value="Side-by-Side">Side-by-Side</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endblock %}
 
-            {# Action Buttons: SEARCH and RESET ALL #}
-            <div class="zanders-finder-actions-row">
-                <button type="submit" class="btn zanders-finder-btn-search">
-                    SEARCH
-                </button>
-                <button type="button" class="btn zanders-finder-btn-reset" data-finder-reset="true">
-                    RESET ALL
-                </button>
-            </div>
-        </form>
-    </aside>
-</div>
+                            {% block component_product_finder_modal_select_type_sights %}
+                                <div class="zanders-finder-select-wrapper">
+                                    <select name="typeSights" class="zanders-finder-select" data-finder-filter-input>
+                                        <option value="">{{ 'zanders.finderModal.selectTypeSights'|trans }} ({{ filterOptions.typeSights|length|default(7) }} {{ 'zanders.finderModal.options'|trans }})</option>
+                                        {% for ts in filterOptions.typeSights|default([]) %}
+                                            <option value="{{ ts }}">{{ ts }}</option>
+                                        {% else %}
+                                            <option value="Fixed Sights">Fixed Sights</option>
+                                            <option value="Adjustable Sights">Adjustable Sights</option>
+                                            <option value="Night Sights">Night Sights</option>
+                                            <option value="Fiber Optic">Fiber Optic</option>
+                                            <option value="Optics Ready">Optics Ready</option>
+                                            <option value="Picatinny Rail">Picatinny Rail</option>
+                                            <option value="3-Dot Sights">3-Dot Sights</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block component_product_finder_modal_matching_row %}
+                        <div class="zanders-finder-matching-row">
+                            <span class="zanders-finder-matching-label">{{ 'zanders.finderModal.matchingItems'|trans }}</span>
+                            <span class="zanders-finder-matching-val" data-finder-matching-count>{{ totalCount|number_format(0, '.', ',') }}</span>
+                        </div>
+                    {% endblock %}
+
+                    {% block component_product_finder_modal_actions %}
+                        <div class="zanders-finder-actions-row">
+                            <button type="submit" class="btn zanders-finder-btn-search">
+                                {{ 'zanders.finderModal.search'|trans }}
+                            </button>
+                            <button type="button" class="btn zanders-finder-btn-reset" data-finder-reset="true">
+                                {{ 'zanders.finderModal.resetAll'|trans }}
+                            </button>
+                        </div>
+                    {% endblock %}
+                </form>
+            {% endblock %}
+        </aside>
+    </div>
+{% endblock %}

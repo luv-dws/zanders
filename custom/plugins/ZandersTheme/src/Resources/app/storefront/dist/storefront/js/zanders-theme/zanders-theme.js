@@ -28,8 +28,6 @@ const PluginBase = (typeof window !== 'undefined' && window.PluginBaseClass)
 class AgeVerificationModalPlugin extends PluginBase {
     static options = {
         storageKey: 'zanders_age_verified',
-        cookieKey: 'zanders_age_verified',
-        cookieExpiryDays: 30,
         modalVisibleClass: 'is-visible',
         bodyScrollLockClass: 'zanders-age-modal-open',
         confirmBtnSelector: '[data-age-verification-confirm]',
@@ -89,7 +87,7 @@ class AgeVerificationModalPlugin extends PluginBase {
             event.preventDefault();
         }
 
-        // 1. Store user consent in localStorage and cookie
+        // 1. Store user consent in localStorage
         this.setConsent();
 
         // 2. Publish Shopware native event via emitter if available
@@ -135,22 +133,17 @@ class AgeVerificationModalPlugin extends PluginBase {
     }
 
     hasConsent() {
-        // 1. Check localStorage
+        // Check localStorage
         try {
-            if (window.localStorage && window.localStorage.getItem(this.options.storageKey) === 'true') {
-                return true;
-            }
+            return window.localStorage && window.localStorage.getItem(this.options.storageKey) === 'true';
         } catch (e) {
             // LocalStorage might be disabled or restricted in private browsing
+            return false;
         }
-
-        // 2. Check Cookie fallback
-        const cookieValue = this.getCookie(this.options.cookieKey);
-        return cookieValue === 'true';
     }
 
     setConsent() {
-        // 1. Save to localStorage
+        // Save to localStorage
         try {
             if (window.localStorage) {
                 window.localStorage.setItem(this.options.storageKey, 'true');
@@ -159,10 +152,7 @@ class AgeVerificationModalPlugin extends PluginBase {
             console.warn('[ZandersAgeVerification] LocalStorage write error:', e);
         }
 
-        // 2. Save to cookie
-        this.setCookie(this.options.cookieKey, 'true', this.options.cookieExpiryDays);
-
-        // 3. Mark html tag with verified class to avoid any future flash
+        // Mark html tag with verified class to avoid any future flash
         document.documentElement.classList.add('zanders-age-verified');
     }
 
@@ -210,29 +200,6 @@ class AgeVerificationModalPlugin extends PluginBase {
         return this.el.classList.contains(this.options.modalVisibleClass);
     }
 
-    getCookie(name) {
-        const nameEQ = encodeURIComponent(name) + '=';
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let c = cookies[i];
-            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) === 0) {
-                return decodeURIComponent(c.substring(nameEQ.length, c.length));
-            }
-        }
-        return null;
-    }
-
-    setCookie(name, value, days) {
-        let expires = '';
-        if (days) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = '; expires=' + date.toUTCString();
-        }
-        document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + expires + '; path=/; SameSite=Lax';
-    }
-
     destroy() {
         if (this._onKeyDownHandler) {
             document.removeEventListener('keydown', this._onKeyDownHandler);
@@ -272,6 +239,14 @@ class ProductComparePlugin extends PluginBase {
 
     init() {
         this._drawer = document.querySelector(this.options.drawerSelector);
+        if (!this._drawer) {
+            const countElements = document.querySelectorAll(this.options.countBadgeSelector);
+            countElements.forEach(el => {
+                el.classList.add('is-hidden');
+            });
+            return;
+        }
+
         this._backdrop = document.querySelector(this.options.backdropSelector);
         this._content = document.querySelector(this.options.contentSelector);
         this._empty = document.querySelector(this.options.emptySelector);
@@ -541,7 +516,7 @@ class ProductComparePlugin extends PluginBase {
         countElements.forEach(el => {
             el.textContent = count;
             if (el.classList.contains('zanders-compare-count-badge')) {
-                el.style.display = count > 0 ? 'inline-flex' : 'none';
+                el.classList.toggle('is-hidden', count === 0);
             }
         });
 
@@ -560,13 +535,13 @@ class ProductComparePlugin extends PluginBase {
         const products = this.getProducts();
 
         if (products.length === 0) {
-            this._empty.style.display = 'block';
-            this._content.style.display = 'none';
+            this._empty.classList.remove('is-hidden');
+            this._content.classList.add('is-hidden');
             return;
         }
 
-        this._empty.style.display = 'none';
-        this._content.style.display = 'block';
+        this._empty.classList.add('is-hidden');
+        this._content.classList.remove('is-hidden');
 
         const isPricesHidden = document.body.classList.contains('prices-hidden') || document.documentElement.classList.contains('prices-hidden');
 
@@ -594,8 +569,8 @@ class ProductComparePlugin extends PluginBase {
                         ${products.map(p => `
                             <td class="zanders-compare-prod-col">
                                 ${p.price === 'Login to View'
-                                    ? `<a href="/account/login" class="btn zanders-btn-login-price" style="font-size:0.75rem; padding: 4px 8px; width: auto; min-height: 28px; white-space: nowrap; text-transform: uppercase;">Login to View</a>`
-                                    : `<span class="zanders-compare-price-val zanders-product-price"${isPricesHidden ? ' style="display:none;"' : ''}>
+                                    ? `<a href="/account/login" class="btn zanders-btn-login-price zanders-compare-login-price">Login to View</a>`
+                                    : `<span class="zanders-compare-price-val zanders-product-price${isPricesHidden ? ' is-hidden' : ''}">
                                         ${this._escapeHtml(p.price)}
                                        </span>`
                                 }
@@ -706,7 +681,7 @@ function printInvoiceUrl(url, buttonEl) {
 
     iframe = document.createElement('iframe');
     iframe.id = 'zanders-invoice-print-frame';
-    iframe.setAttribute('style', 'visibility: hidden; position: fixed; right: 0; bottom: 0; width: 0; height: 0; border: 0;');
+    iframe.classList.add('zanders-invoice-print-frame');
     document.body.appendChild(iframe);
 
     let printed = false;
@@ -943,6 +918,156 @@ class ProductFinderPlugin extends PluginBase {
     }
 }
 
+class ProductWarningModalPlugin extends PluginBase {
+    static options = {
+        openBtnSelector: '[data-warning-modal-open="true"]',
+        closeBtnSelector: '[data-warning-modal-close="true"]',
+        openClass: 'is-open',
+    };
+
+    init() {
+        this._modal = this.el;
+        this._openBtns = document.querySelectorAll(this.options.openBtnSelector);
+        this._closeBtns = this._modal.querySelectorAll(this.options.closeBtnSelector);
+        this._registerEvents();
+    }
+
+    _registerEvents() {
+        this._openHandler = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.open();
+        };
+
+        this._closeHandler = (e) => {
+            e.preventDefault();
+            this.close();
+        };
+
+        this._backdropHandler = (e) => {
+            if (e.target === this._modal) {
+                this.close();
+            }
+        };
+
+        this._keyHandler = (e) => {
+            if (e.key === 'Escape' && this.isOpen()) {
+                this.close();
+            }
+        };
+
+        this._openBtns.forEach((btn) => btn.addEventListener('click', this._openHandler));
+        this._closeBtns.forEach((btn) => btn.addEventListener('click', this._closeHandler));
+        this._modal.addEventListener('click', this._backdropHandler);
+        document.addEventListener('keydown', this._keyHandler);
+    }
+
+    open() {
+        this._modal.classList.add(this.options.openClass);
+        this._modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+
+    close() {
+        this._modal.classList.remove(this.options.openClass);
+        this._modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    isOpen() {
+        return this._modal.classList.contains(this.options.openClass);
+    }
+
+    destroy() {
+        this._openBtns.forEach((btn) => btn.removeEventListener('click', this._openHandler));
+        this._closeBtns.forEach((btn) => btn.removeEventListener('click', this._closeHandler));
+        this._modal.removeEventListener('click', this._backdropHandler);
+        document.removeEventListener('keydown', this._keyHandler);
+    }
+}
+
+class CrossSellingSliderPlugin extends PluginBase {
+    static options = {
+        trackSelector: '[data-cross-track="true"]',
+        prevBtnSelector: '[data-cross-prev="true"]',
+        nextBtnSelector: '[data-cross-next="true"]',
+        itemSelector: '.zanders-cross-slide-item',
+        wishlistBtnSelector: '.zanders-cross-wishlist-btn',
+        fallbackStep: 260,
+        stepGap: 16,
+    };
+
+    init() {
+        this._track = this.el.querySelector(this.options.trackSelector);
+        this._prevBtn = this.el.querySelector(this.options.prevBtnSelector);
+        this._nextBtn = this.el.querySelector(this.options.nextBtnSelector);
+        this._wishlistBtns = this.el.querySelectorAll(this.options.wishlistBtnSelector);
+
+        if (!this._track) {
+            return;
+        }
+
+        this._registerEvents();
+    }
+
+    _registerEvents() {
+        if (this._prevBtn) {
+            this._prevBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this._track.scrollBy({ left: -this._getScrollStep(), behavior: 'smooth' });
+            });
+        }
+
+        if (this._nextBtn) {
+            this._nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this._track.scrollBy({ left: this._getScrollStep(), behavior: 'smooth' });
+            });
+        }
+
+        this._wishlistBtns.forEach((btn) => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                btn.classList.toggle('is-active');
+            });
+        });
+    }
+
+    _getScrollStep() {
+        const firstVisibleCard = this._track.querySelector(`${this.options.itemSelector}:not([style*="display: none"])`);
+        if (firstVisibleCard) {
+            return firstVisibleCard.offsetWidth + this.options.stepGap;
+        }
+        return this.options.fallbackStep;
+    }
+}
+
+class ClientStatePlugin extends PluginBase {
+    static options = {
+        priceStorageKey: 'zanders_hide_prices',
+        ageStorageKey: 'zanders_age_verified',
+        pricesHiddenClass: 'prices-hidden',
+        zandersPricesHiddenClass: 'zanders-prices-hidden',
+        ageVerifiedClass: 'zanders-age-verified',
+        isLoggedIn: false,
+    };
+
+    init() {
+        try {
+            if (this.options.isLoggedIn || this.el.dataset.isLoggedIn === 'true') {
+                if (localStorage.getItem(this.options.priceStorageKey) === 'true') {
+                    document.documentElement.classList.add(this.options.pricesHiddenClass, this.options.zandersPricesHiddenClass);
+                }
+            }
+            if (localStorage.getItem(this.options.ageStorageKey) === 'true') {
+                document.documentElement.classList.add(this.options.ageVerifiedClass);
+            }
+        } catch (e) {
+            console.warn('[ZandersTheme] ClientStatePlugin error reading storage:', e);
+        }
+    }
+}
+
 // Register into Shopware's native PluginManager
 if (typeof window !== 'undefined' && window.PluginManager) {
     window.PluginManager.register(
@@ -970,6 +1095,21 @@ if (typeof window !== 'undefined' && window.PluginManager) {
         ProductFinderPlugin,
         '[data-finder-drawer], [data-finder-modal]'
     );
+    window.PluginManager.register(
+        'ProductWarningModal',
+        ProductWarningModalPlugin,
+        '[data-warning-modal]'
+    );
+    window.PluginManager.register(
+        'CrossSellingSlider',
+        CrossSellingSliderPlugin,
+        '[data-zanders-cross-selling]'
+    );
+    window.PluginManager.register(
+        'ClientState',
+        ClientStatePlugin,
+        '[data-client-state]'
+    );
 }
 
 // Export for module systems or global access
@@ -979,6 +1119,9 @@ if (typeof window !== 'undefined') {
     window.OrderPrintPlugin = OrderPrintPlugin;
     window.OrderInvoicePrintPlugin = OrderInvoicePrintPlugin;
     window.ProductFinderPlugin = ProductFinderPlugin;
+    window.ProductWarningModalPlugin = ProductWarningModalPlugin;
+    window.CrossSellingSliderPlugin = CrossSellingSliderPlugin;
+    window.ClientStatePlugin = ClientStatePlugin;
     window.printInvoiceUrl = printInvoiceUrl;
 }
 
@@ -1008,8 +1151,15 @@ const initStorefront = () => {
     }
 
     // Product Compare Direct Initialization
-    const compareDrawerEl = document.querySelector('[data-compare-drawer]') || document.body;
-    window.zandersCompareInstance = new ProductComparePlugin(compareDrawerEl);
+    const compareDrawerEl = document.querySelector('[data-compare-drawer]');
+    if (compareDrawerEl) {
+        window.zandersCompareInstance = new ProductComparePlugin(compareDrawerEl);
+    } else {
+        const countElements = document.querySelectorAll('[data-compare-badge], [data-compare-count]');
+        countElements.forEach(el => {
+            el.style.display = 'none';
+        });
+    }
 
     // Age Verification Modal Direct Initialization (if PluginManager hasn't already initialized it)
     const ageModalEl = document.querySelector('[data-age-verification-modal]');
@@ -1058,7 +1208,7 @@ const initStorefront = () => {
         stockLink.addEventListener('click', (e) => {
             e.preventDefault();
             hideOutOfStock = !hideOutOfStock;
-            const outOfStockCards = document.querySelectorAll('.zanders-cat-product-card.is-out-of-stock');
+            const outOfStockCards = document.querySelectorAll('.zanders-product-card.is-out-of-stock, .zanders-cat-product-card.is-out-of-stock');
             outOfStockCards.forEach(card => {
                 card.style.display = hideOutOfStock ? 'none' : '';
             });
@@ -1095,20 +1245,25 @@ const initStorefront = () => {
         } catch (e) {}
     }
 
-    let isPricesHidden = false;
-    try {
-        isPricesHidden = localStorage.getItem(PRICE_STORAGE_KEY) === 'true';
-    } catch (e) {}
+    if (priceToggleBtns.length > 0) {
+        let isPricesHidden = false;
+        try {
+            isPricesHidden = localStorage.getItem(PRICE_STORAGE_KEY) === 'true';
+        } catch (e) {}
 
-    setPriceVisibility(isPricesHidden);
+        setPriceVisibility(isPricesHidden);
 
-    priceToggleBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const currentlyHidden = document.body.classList.contains('prices-hidden') || document.documentElement.classList.contains('prices-hidden');
-            setPriceVisibility(!currentlyHidden);
+        priceToggleBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const currentlyHidden = document.body.classList.contains('prices-hidden') || document.documentElement.classList.contains('prices-hidden');
+                setPriceVisibility(!currentlyHidden);
+            });
         });
-    });
+    } else {
+        document.body.classList.remove('prices-hidden', 'zanders-prices-hidden');
+        document.documentElement.classList.remove('prices-hidden', 'zanders-prices-hidden');
+    }
 
     // Cross-Selling Slider & Out-of-Stock Filter
     function initCrossSellingSliders() {

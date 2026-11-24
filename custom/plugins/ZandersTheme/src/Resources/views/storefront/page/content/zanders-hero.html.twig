@@ -1,41 +1,55 @@
-<div class="zanders-homepage-hero">
-    <div class="zanders-container-fluid">
-        <div class="zanders-hero-frame46">
-            <div class="zanders-sidebar-space" aria-hidden="true"></div>
-            <div class="main_banner_home">
-                <div class="video">
-                    <iframe 
-                        src="https://www.youtube.com/embed/AEkyCnbje7k?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=AEkyCnbje7k&amp;rel=0&amp;playsinline=1" 
-                        width="696" 
-                        height="494" 
-                        frameborder="0" 
-                        title="Zanders Featured Video"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
+{% block page_content_zanders_hero %}
+    <div class="zanders-homepage-hero">
+        <div class="zanders-container-fluid">
+            <div class="zanders-hero-frame46">
+                {% block page_content_zanders_hero_sidebar_space %}
+                    <div class="zanders-sidebar-space" aria-hidden="true"></div>
+                {% endblock %}
 
-                <div class="side_img img_1">
-                    <a class="homepage-banner" href="#" data-banner-name="TaloExclusiveBlock" title="TALO Distributors">
-                        <img src="{{ asset('assets/TALOEXCLUSIVEBLOCK26612026.gif', 'theme') }}" alt="TaloExclusiveBlock" width="336" height="235">
-                        <span class="visually-hidden sr-only">TaloExclusiveBlock</span>
-                    </a>
-                </div>
+                <div class="main_banner_home">
+                    {% block page_content_zanders_hero_video %}
+                        <div class="video">
+                            <iframe
+                                src="https://www.youtube.com/embed/AEkyCnbje7k?autoplay=1&amp;mute=1&amp;loop=1&amp;playlist=AEkyCnbje7k&amp;rel=0&amp;playsinline=1"
+                                width="696"
+                                height="494"
+                                frameborder="0"
+                                title="{{ 'zanders.home.featuredVideo'|trans|striptags }}"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen
+                            >
+                            </iframe>
+                        </div>
+                    {% endblock %}
 
-                <div class="side_img img_2">
-                    <a class="homepage-banner" href="#" data-banner-name="zanders" title="Zanders Rebates, Flyers &amp; E-Shows">
-                        <img src="{{ asset('assets/REBATE_FLYER-WEB-BLOCK_3_19.gif', 'theme') }}" alt="zanders" width="336" height="235">
-                        <span class="visually-hidden sr-only">zanders</span>
-                    </a>
-                </div>
+                    {% block page_content_zanders_hero_banner_talo %}
+                        <div class="side_img img_1">
+                            <a class="homepage-banner" href="#" data-banner-name="TaloExclusiveBlock" title="{{ 'zanders.home.taloDistributors'|trans|striptags }}">
+                                <img src="{{ asset('assets/TALOEXCLUSIVEBLOCK26612026.gif', 'theme') }}" alt="TaloExclusiveBlock" width="336" height="235">
+                                <span class="visually-hidden sr-only">TaloExclusiveBlock</span>
+                            </a>
+                        </div>
+                    {% endblock %}
 
-                <div class="henry_img img_4">
-                    <a class="homepage-banner" href="#" data-banner-name="BlackFriday" title="Become a ZANDERS Dealer">
-                        <img src="{{ asset('assets/BECOMEDEALER243192024.gif', 'theme') }}" alt="BlackFriday" width="1112" height="300">
-                        <span class="visually-hidden sr-only">BlackFriday</span>
-                    </a>
+                    {% block page_content_zanders_hero_banner_rebates %}
+                        <div class="side_img img_2">
+                            <a class="homepage-banner" href="#" data-banner-name="zanders" title="{{ 'zanders.home.rebatesFlyers'|trans|striptags }}">
+                                <img src="{{ asset('assets/REBATE_FLYER-WEB-BLOCK_3_19.gif', 'theme') }}" alt="zanders" width="336" height="235">
+                                <span class="visually-hidden sr-only">zanders</span>
+                            </a>
+                        </div>
+                    {% endblock %}
+
+                    {% block page_content_zanders_hero_banner_dealer %}
+                        <div class="henry_img img_4">
+                            <a class="homepage-banner" href="#" data-banner-name="BlackFriday" title="{{ 'zanders.home.becomeDealer'|trans|striptags }}">
+                                <img src="{{ asset('assets/BECOMEDEALER243192024.gif', 'theme') }}" alt="BlackFriday" width="1112" height="300">
+                                <span class="visually-hidden sr-only">BlackFriday</span>
+                            </a>
+                        </div>
+                    {% endblock %}
                 </div>
             </div>
         </div>
     </div>
-</div>
+{% endblock %}

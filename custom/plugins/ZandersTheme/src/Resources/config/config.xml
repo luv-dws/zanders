@@ -4,113 +4,47 @@
         <title>Featured Products Configuration</title>
         <title lang="de-DE">Ausgewählte Produkte Konfiguration</title>
 
-        <!-- Zanders Daily Specials: Dynamic Stream, Category, or Manual SKUs -->
-        <component name="sw-entity-single-select">
-            <name>dailySpecialsStream</name>
-            <entity>product_stream</entity>
-            <label>Daily Specials Product Stream (Dynamic Product Group)</label>
-            <label lang="de-DE">Tagesangebote Dynamic Product Group (Stream)</label>
-            <placeholder>Select a dynamic product stream...</placeholder>
-            <placeholder lang="de-DE">Dynamische Produktgruppe wählen...</placeholder>
-            <helpText>Fetch products dynamically based on the selected Product Stream.</helpText>
-            <helpText lang="de-DE">Produkte dynamisch basierend auf dem ausgewählten Product Stream laden.</helpText>
-        </component>
-
-        <component name="sw-entity-single-select">
-            <name>dailySpecialsCategory</name>
-            <entity>category</entity>
-            <label>Daily Specials Category</label>
-            <label lang="de-DE">Tagesangebote Kategorie</label>
-            <placeholder>Select a category...</placeholder>
-            <placeholder lang="de-DE">Kategorie auswählen...</placeholder>
-            <helpText>Fetch products dynamically based on the selected Category (if no stream is selected).</helpText>
-            <helpText lang="de-DE">Produkte dynamisch basierend auf der Kategorie laden (wenn kein Stream gewählt ist).</helpText>
-        </component>
-
-        <component name="sw-entity-multi-id-select">
+        <input-field type="textarea">
             <name>zandersDailySpecials</name>
-            <entity>product</entity>
-            <label>Zanders Daily Specials (Manual Products / Fallback)</label>
-            <label lang="de-DE">Zanders Tagesangebote (Manuell / Fallback)</label>
-            <placeholder>Search products by name or SKU...</placeholder>
-            <placeholder lang="de-DE">Produkte nach Name oder SKU suchen...</placeholder>
-            <helpText>Search and select specific products manually (used as fallback or manual list).</helpText>
-            <helpText lang="de-DE">Suchen und wählen Sie manuell Produkte aus (als Fallback oder manuelle Liste verwendet).</helpText>
-        </component>
+            <label>Zanders Daily Specials (SKUs)</label>
+            <label lang="de-DE">Zanders Tagesangebote (SKUs)</label>
+            <placeholder>Enter product SKUs separated by comma or new line (e.g. SKU001, SKU002)...</placeholder>
+            <placeholder lang="de-DE">Produkt-SKUs durch Komma oder Zeilenumbruch getrennt eingeben (z.B. SKU001, SKU002)...</placeholder>
+            <helpText>Enter product SKUs/numbers manually. Multiple SKUs can be separated by commas, spaces, or new lines.</helpText>
+            <helpText lang="de-DE">Produkt-SKUs/Nummern manuell eingeben. Mehrere SKUs können durch Kommas, Leerzeichen oder Zeilenumbrüche getrennt werden.</helpText>
+        </input-field>
 
-        <!-- POPULAR PRODUCTS: Dynamic Stream, Category, or Manual SKUs -->
-        <component name="sw-entity-single-select">
-            <name>popularProductsStream</name>
-            <entity>product_stream</entity>
-            <label>Popular Products Stream (Dynamic Product Group)</label>
-            <label lang="de-DE">Beliebte Produkte Dynamic Product Group (Stream)</label>
-            <placeholder>Select a dynamic product stream...</placeholder>
-            <placeholder lang="de-DE">Dynamische Produktgruppe wählen...</placeholder>
-            <helpText>Fetch products dynamically based on the selected Product Stream.</helpText>
-            <helpText lang="de-DE">Produkte dynamisch basierend auf dem ausgewählten Product Stream laden.</helpText>
-        </component>
-
-        <component name="sw-entity-single-select">
-            <name>popularProductsCategory</name>
-            <entity>category</entity>
-            <label>Popular Products Category</label>
-            <label lang="de-DE">Beliebte Produkte Kategorie</label>
-            <placeholder>Select a category...</placeholder>
-            <placeholder lang="de-DE">Kategorie auswählen...</placeholder>
-            <helpText>Fetch products dynamically based on the selected Category (if no stream is selected).</helpText>
-            <helpText lang="de-DE">Produkte dynamisch basierend auf der Kategorie laden (wenn kein Stream gewählt ist).</helpText>
-        </component>
-
-        <component name="sw-entity-multi-id-select">
+        <input-field type="textarea">
             <name>popularProducts</name>
-            <entity>product</entity>
-            <label>Popular Products (Manual Products / Fallback)</label>
-            <label lang="de-DE">Beliebte Produkte (Manuell / Fallback)</label>
-            <placeholder>Search products by name or SKU...</placeholder>
-            <placeholder lang="de-DE">Produkte nach Name oder SKU suchen...</placeholder>
-            <helpText>Search and select specific products manually (used as fallback or manual list).</helpText>
-            <helpText lang="de-DE">Suchen und wählen Sie manuell Produkte aus (als Fallback oder manuelle Liste verwendet).</helpText>
-        </component>
+            <label>Popular Products (SKUs)</label>
+            <label lang="de-DE">Beliebte Produkte (SKUs)</label>
+            <placeholder>Enter product SKUs separated by comma or new line (e.g. SKU001, SKU002)...</placeholder>
+            <placeholder lang="de-DE">Produkt-SKUs durch Komma oder Zeilenumbruch getrennt eingeben (z.B. SKU001, SKU002)...</placeholder>
+            <helpText>Enter product SKUs/numbers manually. Multiple SKUs can be separated by commas, spaces, or new lines.</helpText>
+            <helpText lang="de-DE">Produkt-SKUs/Nummern manuell eingeben. Mehrere SKUs können durch Kommas, Leerzeichen oder Zeilenumbrüche getrennt werden.</helpText>
+        </input-field>
     </card>
 
     <card>
-        <title>Low Stock Email Alert Configuration</title>
-        <title lang="de-DE">Niedriger Lagerbestand E-Mail-Benachrichtigung</title>
-
-        <input-field type="bool">
-            <name>lowStockAlertEnabled</name>
-            <label>Enable Low Stock Alert</label>
-            <label lang="de-DE">Niedrigen Lagerbestand-Alarm aktivieren</label>
-            <defaultValue>true</defaultValue>
-            <helpText>Automatically send an email notification to the site administrator when product inventory drops below the configured threshold.</helpText>
-            <helpText lang="de-DE">Sendet automatisch eine E-Mail-Benachrichtigung an den Administrator, wenn der Lagerbestand unter den Schwellenwert fällt.</helpText>
-        </input-field>
+        <title>Low Stock Alert</title>
+        <title lang="de-DE">Niedriger Lagerbestand-Alarm</title>
 
         <input-field type="int">
             <name>lowStockThreshold</name>
-            <label>Low Stock Threshold</label>
+            <label>Low stock threshold</label>
             <label lang="de-DE">Schwellenwert für niedrigen Lagerbestand</label>
+            <helpText>Send an alert email when available stock drops below this quantity.</helpText>
+            <helpText lang="de-DE">Sendet eine Benachrichtigung, wenn der verfügbare Lagerbestand unter diese Menge fällt.</helpText>
             <defaultValue>5</defaultValue>
-            <helpText>Alert will be triggered when product inventory drops to or below this threshold value.</helpText>
-            <helpText lang="de-DE">Der Alarm wird ausgelöst, wenn der Lagerbestand diesen Wert erreicht oder unterschreitet.</helpText>
         </input-field>
 
         <input-field type="text">
-            <name>lowStockNotificationEmail</name>
-            <label>Recipient Email Address for Low Stock Alerts</label>
-            <label lang="de-DE">Empfänger-E-Mail-Adresse für Niedrigen-Lagerbestand-Alarm</label>
+            <name>recipientEmail</name>
+            <label>Admin recipient email</label>
+            <label lang="de-DE">Admin Empfänger-E-Mail</label>
             <placeholder>admin@example.com</placeholder>
-            <helpText>Alert emails will ONLY be sent to this configured email address. If left blank or invalid, no alert emails will be sent.</helpText>
-            <helpText lang="de-DE">Warn-E-Mails werden NUR an diese konfigurierte E-Mail-Adresse gesendet. Wenn leer oder ungültig, werden keine Warnungen gesendet.</helpText>
-        </input-field>
-
-        <input-field type="text">
-            <name>lowStockEmailSubject</name>
-            <label>Alert Email Subject</label>
-            <label lang="de-DE">E-Mail-Betreff für Benachrichtigung</label>
-            <defaultValue>[Low Stock Alert] Product inventory running low</defaultValue>
-            <helpText>Subject line for low stock alert emails.</helpText>
-            <helpText lang="de-DE">Betreffzeile für Warn-E-Mails bei niedrigem Lagerbestand.</helpText>
+            <helpText>Defaults to Shopware's basic information email if left blank.</helpText>
+            <helpText lang="de-DE">Verwendet standardmäßig die E-Mail aus den Shopware-Stammdaten, wenn leer.</helpText>
         </input-field>
     </card>
 

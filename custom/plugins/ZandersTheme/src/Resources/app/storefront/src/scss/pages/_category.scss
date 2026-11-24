@@ -105,9 +105,14 @@
             }
 
             .zanders-page-arrow {
-                color: #64748b;
+                color: inherit;
                 cursor: pointer;
                 user-select: none;
+                text-decoration: none;
+
+                &.is-disabled {
+                    opacity: 0.5;
+                }
             }
 
             .zanders-page-num {
@@ -331,7 +336,7 @@
         .zanders-cat-meta {
             font-size: 0.75rem;
             line-height: 1.5;
-            margin-bottom: 0.625rem;
+            margin-bottom: 0.5rem;
             text-align: center;
 
             .zanders-meta-item {

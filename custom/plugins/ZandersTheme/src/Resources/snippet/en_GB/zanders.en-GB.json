@@ -1,13 +1,109 @@
 {
     "zanders": {
-        "dailySpecials": {
-            "title": "ZANDERS DAILY SPECIALS"
+        "general": {
+            "productFinder": "Product Finder",
+            "openProductFinder": "Open Product Finder"
         },
-        "popularProducts": {
-            "title": "POPULAR PRODUCTS"
+        "header": {
+            "weekdays": "Mon - Fri",
+            "hours": "8:00AM to 4:30PM CST",
+            "welcomeMessage": "Welcome to Zanders Sporting Goods!",
+            "login": "Login",
+            "logout": "LogOut",
+            "searchPlaceholder": "Item, UPC, Desc, Etc"
         },
-        "restriction": {
-            "notAvailable": "This product is not available in your shipping region."
+        "navbar": {
+            "catalog": "CATALOG",
+            "zandersExclusive": "ZANDERS EXCLUSIVE",
+            "onSale": "ON SALE",
+            "closeOut": "CLOSE OUT",
+            "newItems": "NEW ITEMS",
+            "returns": "RETURNS",
+            "flyersEshowsRebates": "FLYERS/ESHOWS/REBATES",
+            "contactUs": "CONTACT US",
+            "hidePrices": "HIDE PRICES",
+            "togglePrices": "Toggle Product Prices"
+        },
+        "footer": {
+            "company": "COMPANY",
+            "aboutUs": "About Us",
+            "termsConditions": "Terms & Conditions",
+            "freightPolicy": "Freight Policy",
+            "jobOpportunities": "Job Opportunities",
+            "staff": "Staff",
+            "manufacturers": "Manufacturers",
+            "resources": "RESOURCES",
+            "forms": "Forms",
+            "pressReleases": "Press Releases",
+            "recalls": "Recalls",
+            "industryLinks": "Industry Links",
+            "tutorials": "Tutorials",
+            "eley": "Eley",
+            "stayConnected": "Stay connected",
+            "copyright": "© 1996-2026 Zanders Sporting Goods",
+            "disclaimer": "Zanders Sporting Goods is a wholesale firearms distributor selling only to federally licensed dealers"
+        },
+        "product": {
+            "itemNumber": "Item Number:",
+            "upc": "UPC:",
+            "available": "Available:",
+            "inStock": "In Stock",
+            "outOfStock": "Out of Stock",
+            "qty": "Qty:",
+            "addToCart": "ADD TO CART",
+            "loginToViewPrice": "Please Login to View Price",
+            "compare": "Compare",
+            "addToCompare": "Add to Compare"
+        },
+        "delivery": {
+            "inStockCount": "%count% in stock"
+        },
+        "ageVerification": {
+            "title": "VERIFY YOUR AGE",
+            "description": "Certain states prohibit advertising or marketing of firearms, ammunition, and related firearm components to minors. We'd like to ensure that you're 18 years of age or older before allowing you to shop our site.",
+            "question": "Are you 18 years of age or older?",
+            "yes": "YES",
+            "no": "NO",
+            "yesAriaLabel": "Yes, I am 18 years of age or older",
+            "noAriaLabel": "No, I am under 18 years of age"
+        },
+        "compare": {
+            "title": "Product Comparison",
+            "statusText": "0 of 5 products",
+            "clearAll": "Clear All",
+            "clearAllTitle": "Clear all products from comparison",
+            "closeComparison": "Close comparison",
+            "emptyTitle": "No products selected to compare",
+            "emptyDescription": "Browse our catalog and click the compare icon on products to see their specifications, stock availability, and prices side by side.",
+            "continueBrowsing": "Continue Browsing",
+            "footerHint": "Compare up to 5 items side by side to evaluate features and availability.",
+            "close": "Close",
+            "toastTitle": "Added to Comparison",
+            "viewCompare": "View Compare",
+            "closeNotification": "Close notification",
+            "dismiss": "Dismiss"
+        },
+        "crossSelling": {
+            "alternativeProducts": "ALTERNATIVE PRODUCTS",
+            "previous": "Previous",
+            "next": "Next",
+            "addToWishlist": "Add to Wishlist",
+            "loginToView": "Login to View"
+        },
+        "finderModal": {
+            "title": "Product Finder",
+            "closeProductFinder": "Close Product Finder",
+            "selectManufacturer": "Select Manufacturer",
+            "selectCaliber": "Select CALIBER",
+            "selectGauge": "Select GAUGE",
+            "selectStockMaterial": "Select STOCK MATERIAL",
+            "selectFrameMaterial": "Select FRAME MATERIAL",
+            "selectTypeAction": "Select TYPE ACTION",
+            "selectTypeSights": "Select TYPE OF SIGHTS",
+            "options": "options",
+            "matchingItems": "Matching Items:",
+            "search": "SEARCH",
+            "resetAll": "RESET ALL"
         },
         "finder": {
             "title": "PRODUCT FINDER",
@@ -18,6 +114,123 @@
             "model": "Model / Action",
             "year": "Year / Vintage",
             "caliber": "Caliber / Spec"
+        },
+        "listing": {
+            "home": "Home",
+            "items": "Items",
+            "of": "Of",
+            "page": "Page:",
+            "previousPage": "Previous page",
+            "nextPage": "Next page",
+            "show": "Show:",
+            "perPage": "per page",
+            "viewAs": "View as:",
+            "gridView": "Grid View",
+            "listView": "List View",
+            "detailView": "Detail View",
+            "hideOutOfStock": "HIDE OUT OF STOCK ITEMS",
+            "sortBy": "Sort By:",
+            "price": "Price",
+            "nameAZ": "Name A-Z",
+            "nameZA": "Name Z-A",
+            "priceHighLow": "Price High to Low",
+            "topseller": "Topseller",
+            "ascending": "Ascending",
+            "noProductsFound": "No products found for your search criteria.",
+            "showAll": "SHOW ALL ITEMS",
+            "noProductsCategory": "No products found in this category."
+        },
+        "search": {
+            "searchLabel": "Search"
+        },
+        "detail": {
+            "home": "Home",
+            "noImageAvailable": "No Image Available",
+            "itemNumberLabel": "ITEM NUMBER:",
+            "availableLabel": "AVAILABLE:",
+            "outOfStock": "OUT OF STOCK",
+            "msrp": "MSRP:",
+            "quickOverview": "QUICK OVERVIEW",
+            "features": "FEATURES:",
+            "createCustomerQuote": "CREATE CUSTOMER QUOTE",
+            "productWarning": "Product Warning",
+            "warningLabel": "WARNING:",
+            "closeWarning": "Close warning",
+            "emailToFriend": "EMAIL TO A FRIEND",
+            "additionalInformation": "ADDITIONAL INFORMATION",
+            "manufacturer": "Manufacturer",
+            "upc": "UPC",
+            "sights": "Sights",
+            "weight": "Weight",
+            "caliber": "Caliber",
+            "metalColor": "Metal Color",
+            "stockColor": "Stock Color",
+            "typeAction": "Type Action",
+            "metalFinish": "Metal Finish",
+            "barrelLength": "Barrel Length",
+            "rateOfTwist": "Rate of Twist",
+            "overallLength": "Overall Length",
+            "stockMaterial": "Stock Material",
+            "magazineCapacity": "Magazine Capacity",
+            "manufacturerPartNumber": "Manufacturer Part Number",
+            "packagingDimensions": "Packaging Dimensions (H x W x L)",
+            "releaseDate": "Release Date",
+            "deliveryTime": "Delivery Time"
+        },
+        "account": {
+            "myAccount": "MY ACCOUNT",
+            "myAccountSidebar": "My Account",
+            "contactInformation": "Contact Information",
+            "edit": "EDIT",
+            "changePassword": "CHANGE PASSWORD",
+            "customerInfo": "Customer Info",
+            "customerNumber": "Customer Number:",
+            "defaultBillingAddress": "Default Billing Address",
+            "defaultShippingAddress": "Default Shipping Address"
+        },
+        "orderPrint": {
+            "orderDate": "Order Date",
+            "shippingAddress": "Shipping Address",
+            "shippingMethod": "Shipping Method",
+            "instructions": "Instructions",
+            "billingAddress": "Billing Address",
+            "paymentMethod": "Payment Method",
+            "purchaseOrderNumber": "Purchase Order Number",
+            "shipPickUpDate": "Ship/Pick Up Date",
+            "itemsOrdered": "Items Ordered",
+            "productName": "PRODUCT NAME",
+            "itemNumber": "ITEM NUMBER",
+            "price": "Price",
+            "qty": "Qty",
+            "subtotal": "Subtotal",
+            "ordered": "Ordered",
+            "backOrdered": "Back Ordered",
+            "toShip": "To Ship",
+            "salesAmount": "Sales Amount",
+            "shipping": "Shipping",
+            "miscCharges": "Misc. Charges",
+            "salesTax": "Sales Tax",
+            "grandTotal": "Grand Total",
+            "notAvailable": "N/A",
+            "defaultShippingMethod": "Standard",
+            "defaultPaymentMethod": "Credit Card"
+        },
+        "dailySpecials": {
+            "title": "ZANDERS DAILY SPECIALS"
+        },
+        "popularProducts": {
+            "title": "POPULAR PRODUCTS"
+        },
+        "restriction": {
+            "notAvailable": "This product is not available in your shipping region."
+        },
+        "home": {
+            "featuredBrandBanners": "Featured Brand Banners",
+            "featuredProductsGrid": "Featured Products Grid",
+            "featuredVideo": "Zanders Featured Video",
+            "taloDistributors": "TALO Distributors",
+            "rebatesFlyers": "Zanders Rebates, Flyers & E-Shows",
+            "becomeDealer": "Become a ZANDERS Dealer"
         }
     },
     "checkout": {

@@ -13,6 +13,8 @@
 @import "components/age-verification";
 @import "components/compare";
 @import "components/product-slider";
+@import "components/cross-selling";
+@import "components/product-information";
 @import "components/finder";
 
 // Layout
@@ -25,3 +27,4 @@
 @import "pages/category";
 @import "pages/product-detail";
 @import "pages/account";
+@import "pages/order-print";

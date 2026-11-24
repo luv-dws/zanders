@@ -12,7 +12,7 @@
             <div class="zanders-featured-grid">
                 {% for product in products %}
                     <div class="zanders-featured-grid-item">
-                        {% sw_include '@ZandersTheme/storefront/component/product/card/zanders-card.html.twig' with {
+                        {% sw_include '@Storefront/storefront/component/product/card/zanders-card.html.twig' with {
                             product: product,
                             isUserLoggedIn: isUserLoggedIn,
                             context: context

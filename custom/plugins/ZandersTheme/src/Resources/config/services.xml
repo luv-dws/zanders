@@ -4,15 +4,12 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <services>
-        <service id="ZandersTheme\Service\LowStockAlertService">
-            <argument type="service" id="Shopware\Core\Content\Mail\Service\MailService"/>
+        <service id="ZandersTheme\Subscriber\LowStockAlertSubscriber">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="product.repository"/>
+            <argument type="service" id="mail_template.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Mail\Service\MailService"/>
             <argument type="service" id="logger"/>
-        </service>
-
-        <service id="ZandersTheme\Subscriber\LowStockSubscriber">
-            <argument type="service" id="ZandersTheme\Service\LowStockAlertService"/>
             <tag name="kernel.event_subscriber"/>
         </service>
 
@@ -62,18 +59,16 @@
             <tag name="kernel.event_subscriber"/>
         </service>
 
-        <service id="ZandersTheme\Controller\OrderPrintController" public="true">
+        <service id="ZandersTheme\Controller\OrderPrintController" autowire="true" public="true">
             <argument type="service" id="order.repository"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
+            <tag name="controller.service_arguments"/>
+            <tag name="container.service_subscriber"/>
         </service>
 
-        <!-- Dynamic Product Service (Category, Product Stream & Config Resolver) -->
+        <!-- Dynamic Product Service (Config Resolver for Daily Specials & Popular Products) -->
         <service id="ZandersTheme\Service\ZandersDynamicProductService" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="sales_channel.product.repository"/>
-            <argument type="service" id="Shopware\Core\Content\ProductStream\Service\ProductStreamBuilder"/>
             <argument type="service" id="logger" on-invalid="null"/>
         </service>
 
@@ -103,11 +98,10 @@
             <argument type="service" id="logger" on-invalid="null"/>
         </service>
 
-        <service id="ZandersTheme\Controller\ProductFinderController" public="true">
+        <service id="ZandersTheme\Controller\ProductFinderController" autowire="true" public="true">
             <argument type="service" id="ZandersTheme\Service\ProductFinderService"/>
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
+            <tag name="controller.service_arguments"/>
+            <tag name="container.service_subscriber"/>
         </service>
 
         <service id="ZandersTheme\Subscriber\ProductFinderSubscriber">

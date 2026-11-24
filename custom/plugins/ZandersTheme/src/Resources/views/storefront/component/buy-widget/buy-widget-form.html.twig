@@ -4,7 +4,7 @@
     {% set isRestricted = zanders_is_product_restricted(product) %}
     {% set canPurchase = zanders_can_customer_purchase() %}
     {% if isRestricted or not canPurchase %}
-        <div class="zanders-buy-widget-restriction-notice alert alert-warning" role="alert" style="margin-top: 15px; font-weight: 600;">
+        <div class="zanders-buy-widget-restriction-notice alert alert-warning" role="alert">
             {% if not canPurchase %}
                 {{ zanders_purchase_restriction_reason()|sw_sanitize }}
             {% else %}

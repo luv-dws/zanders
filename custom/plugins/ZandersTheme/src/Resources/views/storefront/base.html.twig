@@ -1,42 +1,33 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 
-{% block base_head %}
+{% block base_body %}
+    {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
+    <div data-client-state="true" data-client-state-options="{{ { isLoggedIn: isUserLoggedIn }|json_encode }}" style="display:none;"></div>
     {{ parent() }}
-    <script>
-        (function() {
-            try {
-                if (localStorage.getItem('zanders_hide_prices') === 'true') {
-                    document.documentElement.classList.add('prices-hidden', 'zanders-prices-hidden');
-                }
-                if (localStorage.getItem('zanders_age_verified') === 'true' || document.cookie.indexOf('zanders_age_verified=true') !== -1) {
-                    document.documentElement.classList.add('zanders-age-verified');
-                }
-            } catch (e) {}
-        })();
-    </script>
 {% endblock %}
 
 {% block base_body_inner %}
-    <aside class="zanders-floating-finders" aria-label="Product Finder">
+    <aside class="zanders-floating-finders" aria-label="{{ 'zanders.general.productFinder'|trans|striptags }}">
         <a href="{{ path('frontend.zanders.finder') }}"
            class="zanders-floating-tab zanders-tab-product-finder"
            data-finder-drawer-trigger="true"
-           title="Product Finder"
-           aria-label="Open Product Finder">
+           title="{{ 'zanders.general.productFinder'|trans|striptags }}"
+           aria-label="{{ 'zanders.general.openProductFinder'|trans|striptags }}">
             <span class="zanders-tab-icon">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                     <circle cx="11" cy="11" r="8"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </span>
-            <span class="zanders-tab-text">Product Finder</span>
+            <span class="zanders-tab-text">{{ 'zanders.general.productFinder'|trans }}</span>
         </a>
     </aside>
 
     {{ parent() }}
 
     {% sw_include '@Storefront/storefront/component/age-verification-modal.html.twig' %}
-    {% sw_include '@Storefront/storefront/component/product-compare-drawer.html.twig' %}
+    {% if context.customer is defined and context.customer and not context.customer.guest %}
+        {% sw_include '@Storefront/storefront/component/product-compare-drawer.html.twig' %}
+    {% endif %}
     {% sw_include '@Storefront/storefront/component/product-finder-modal.html.twig' %}
 {% endblock %}
-

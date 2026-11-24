@@ -2,99 +2,9 @@
 
 {# Zanders Product Finder Results Page (Matches Catalog Listing Layout & Appearance) #}
 {% block base_content %}
-    <style>
-        .zanders-cat-qty-input,
-        .zanders-product-qty-input {
-            border: none !important;
-            border-bottom: 1px solid #000000 !important;
-            outline: none !important;
-            box-shadow: none !important;
-            background: transparent !important;
-            border-radius: 0 !important;
-            width: 50px !important;
-            height: 26px !important;
-            text-align: center !important;
-            font-size: 1rem !important;
-            font-weight: 700 !important;
-            color: #000000 !important;
-            padding: 0 !important;
-            -moz-appearance: textfield !important;
-        }
-        .zanders-cat-qty-input:focus,
-        .zanders-product-qty-input:focus {
-            border: none !important;
-            border-bottom: 1px solid #000000 !important;
-            outline: none !important;
-            box-shadow: none !important;
-        }
-        .zanders-cat-qty-input::-webkit-outer-spin-button,
-        .zanders-cat-qty-input::-webkit-inner-spin-button,
-        .zanders-product-qty-input::-webkit-outer-spin-button,
-        .zanders-product-qty-input::-webkit-inner-spin-button {
-            -webkit-appearance: none !important;
-            margin: 0 !important;
-        }
-        .zanders-cat-login-price-wrap,
-        .zanders-product-login-price-wrap {
-            width: 100%;
-            margin-top: auto;
-            padding-top: 0.625rem;
-            padding-bottom: 0.125rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .zanders-btn-login-price {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: auto;
-            max-width: 90%;
-            height: 32px;
-            min-height: 32px;
-            background-color: #991020;
-            color: #ffffff !important;
-            border: 1px solid #991020;
-            border-radius: 3px;
-            font-size: 0.715rem;
-            font-weight: 700;
-            letter-spacing: 0.35px;
-            text-transform: uppercase;
-            text-decoration: none !important;
-            white-space: nowrap;
-            line-height: 1;
-            padding: 0 14px;
-            transition: all 0.2s ease;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-        }
-        .zanders-btn-login-price svg {
-            width: 13px;
-            height: 13px;
-            margin-right: 6px;
-            flex-shrink: 0;
-        }
-        .zanders-btn-login-price:hover {
-            background-color: #7d0d1a;
-            border-color: #7d0d1a;
-            color: #ffffff !important;
-            box-shadow: 0 3px 6px rgba(153, 16, 32, 0.22);
-            transform: translateY(-1px);
-        }
-        .zanders-btn-login-price:active {
-            background-color: #670b15;
-            transform: translateY(0);
-        }
-        @media (max-width: 400px) {
-            .zanders-btn-login-price {
-                font-size: 0.68rem;
-                padding: 0 8px;
-                max-width: 100%;
-            }
-        }
-    </style>
 
     {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
-    {% set categoryName = 'Product Finder' %}
+    {% set categoryName = 'zanders.finder.title'|trans %}
     {% set currentPage = page|default(1) %}
     {% set currentLimit = limit|default(15) %}
     {% set totalItems = total|default(products|length) %}
@@ -110,7 +20,7 @@
                     
                     {# Breadcrumb #}
                     <nav class="zanders-category-breadcrumb" aria-label="breadcrumb">
-                        <a href="{{ path('frontend.home.page') }}" class="zanders-breadcrumb-link">Home</a>
+                        <a href="{{ path('frontend.home.page') }}" class="zanders-breadcrumb-link">{{ 'zanders.listing.home'|trans }}</a>
                         <span class="zanders-breadcrumb-separator">/</span>
                         <span class="zanders-breadcrumb-current">{{ categoryName }}</span>
                     </nav>
@@ -122,30 +32,30 @@
                     <div class="zanders-category-toolbar">
                         <div class="zanders-toolbar-row-top">
                             <div class="zanders-toolbar-items-count">
-                                Items {{ startItem }}-{{ endItem }} Of {{ totalItems }}
+                                {{ 'zanders.listing.items'|trans }} {{ startItem }}-{{ endItem }} {{ 'zanders.listing.of'|trans }} {{ totalItems }}
                             </div>
                             <div class="zanders-toolbar-pagination">
-                                <span class="zanders-page-label">Page:</span>
+                                <span class="zanders-page-label">{{ 'zanders.listing.page'|trans }}</span>
                                 {% if currentPage > 1 %}
-                                    <a href="{{ path('frontend.zanders.finder', activeFilters|default({})|merge({ p: currentPage - 1 })) }}" class="zanders-page-arrow" style="text-decoration: none; color: inherit;">&lt;</a>
+                                    <a href="{{ path('frontend.zanders.finder', activeFilters|default({})|merge({ p: currentPage - 1 })) }}" class="zanders-page-arrow">&lt;</a>
                                 {% else %}
-                                    <span class="zanders-page-arrow" style="opacity: 0.5;">&lt;</span>
+                                    <span class="zanders-page-arrow is-disabled">&lt;</span>
                                 {% endif %}
 
                                 <span class="zanders-page-num is-active">{{ currentPage }}</span>
 
                                 {% if pages|default(1) > currentPage %}
-                                    <a href="{{ path('frontend.zanders.finder', activeFilters|default({})|merge({ p: currentPage + 1 })) }}" class="zanders-page-arrow" style="text-decoration: none; color: inherit;">&gt;</a>
+                                    <a href="{{ path('frontend.zanders.finder', activeFilters|default({})|merge({ p: currentPage + 1 })) }}" class="zanders-page-arrow">&gt;</a>
                                 {% else %}
-                                    <span class="zanders-page-arrow" style="opacity: 0.5;">&gt;</span>
+                                    <span class="zanders-page-arrow is-disabled">&gt;</span>
                                 {% endif %}
                             </div>
                             <div class="zanders-toolbar-per-page">
-                                <label for="zandersShowPerPage" class="zanders-per-page-label">Show:</label>
+                                <label for="zandersShowPerPage" class="zanders-per-page-label">{{ 'zanders.listing.show'|trans }}</label>
                                 <select id="zandersShowPerPage" class="zanders-per-page-select" onchange="var p=new URLSearchParams(window.location.search);p.set('limit',this.value);p.set('p',1);window.location.search=p.toString();">
-                                    <option value="15"{% if currentLimit == 15 %} selected{% endif %}>15 per page</option>
-                                    <option value="30"{% if currentLimit == 30 %} selected{% endif %}>30 per page</option>
-                                    <option value="60"{% if currentLimit == 60 %} selected{% endif %}>60 per page</option>
+                                    <option value="15"{% if currentLimit == 15 %} selected{% endif %}>15 {{ 'zanders.listing.perPage'|trans }}</option>
+                                    <option value="30"{% if currentLimit == 30 %} selected{% endif %}>30 {{ 'zanders.listing.perPage'|trans }}</option>
+                                    <option value="60"{% if currentLimit == 60 %} selected{% endif %}>60 {{ 'zanders.listing.perPage'|trans }}</option>
                                 </select>
                             </div>
                         </div>
@@ -154,8 +64,8 @@
 
                         <div class="zanders-toolbar-row-bottom">
                             <div class="zanders-toolbar-views">
-                                <span class="zanders-view-as-label">View as:</span>
-                                <button type="button" class="zanders-view-btn is-active" title="Grid View" aria-label="Grid View">
+                                <span class="zanders-view-as-label">{{ 'zanders.listing.viewAs'|trans }}</span>
+                                <button type="button" class="zanders-view-btn is-active" title="{{ 'zanders.listing.gridView'|trans|striptags }}" aria-label="{{ 'zanders.listing.gridView'|trans|striptags }}">
                                     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
                                         <rect x="0" y="0" width="4" height="4"></rect>
                                         <rect x="6" y="0" width="4" height="4"></rect>
@@ -168,14 +78,14 @@
                                         <rect x="12" y="12" width="4" height="4"></rect>
                                     </svg>
                                 </button>
-                                <button type="button" class="zanders-view-btn" title="List View" aria-label="List View">
+                                <button type="button" class="zanders-view-btn" title="{{ 'zanders.listing.listView'|trans|striptags }}" aria-label="{{ 'zanders.listing.listView'|trans|striptags }}">
                                     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
                                         <rect x="0" y="1" width="16" height="3"></rect>
                                         <rect x="0" y="6" width="16" height="3"></rect>
                                         <rect x="0" y="11" width="16" height="3"></rect>
                                     </svg>
                                 </button>
-                                <button type="button" class="zanders-view-btn" title="Detail View" aria-label="Detail View">
+                                <button type="button" class="zanders-view-btn" title="{{ 'zanders.listing.detailView'|trans|striptags }}" aria-label="{{ 'zanders.listing.detailView'|trans|striptags }}">
                                     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
                                         <rect x="0" y="1" width="4" height="4"></rect>
                                         <rect x="6" y="2" width="10" height="2"></rect>
@@ -188,20 +98,20 @@
                             <div class="zanders-toolbar-stock-toggle">
                                 {% set isHidingStock = activeFilters.inStock|default(false) %}
                                 <a href="{{ path('frontend.zanders.finder', activeFilters|default({})|merge({ inStock: isHidingStock ? '0' : '1' })) }}" class="zanders-stock-link">
-                                    {{ isHidingStock ? 'SHOW ALL ITEMS' : 'HIDE OUT OF STOCK ITEMS' }}
+                                    {{ isHidingStock ? ('zanders.listing.showAll'|trans) : ('zanders.listing.hideOutOfStock'|trans) }}
                                 </a>
                             </div>
 
                             <div class="zanders-toolbar-sorting">
-                                <label for="zandersSortBy" class="zanders-sort-label">Sort By:</label>
+                                <label for="zandersSortBy" class="zanders-sort-label">{{ 'zanders.listing.sortBy'|trans }}</label>
                                 <select id="zandersSortBy" class="zanders-sort-select" onchange="var p=new URLSearchParams(window.location.search);p.set('order',this.value);window.location.search=p.toString();">
-                                    <option value="price-asc"{% if activeFilters.order|default('') == 'price-asc' %} selected{% endif %}>Price</option>
-                                    <option value="name-asc"{% if activeFilters.order|default('') == 'name-asc' or not activeFilters.order %} selected{% endif %}>Name A-Z</option>
-                                    <option value="name-desc"{% if activeFilters.order|default('') == 'name-desc' %} selected{% endif %}>Name Z-A</option>
-                                    <option value="price-desc"{% if activeFilters.order|default('') == 'price-desc' %} selected{% endif %}>Price High to Low</option>
-                                    <option value="topseller"{% if activeFilters.order|default('') == 'topseller' %} selected{% endif %}>Topseller</option>
+                                    <option value="price-asc"{% if activeFilters.order|default('') == 'price-asc' %} selected{% endif %}>{{ 'zanders.listing.price'|trans }}</option>
+                                    <option value="name-asc"{% if activeFilters.order|default('') == 'name-asc' or not activeFilters.order %} selected{% endif %}>{{ 'zanders.listing.nameAZ'|trans }}</option>
+                                    <option value="name-desc"{% if activeFilters.order|default('') == 'name-desc' %} selected{% endif %}>{{ 'zanders.listing.nameZA'|trans }}</option>
+                                    <option value="price-desc"{% if activeFilters.order|default('') == 'price-desc' %} selected{% endif %}>{{ 'zanders.listing.priceHighLow'|trans }}</option>
+                                    <option value="topseller"{% if activeFilters.order|default('') == 'topseller' %} selected{% endif %}>{{ 'zanders.listing.topseller'|trans }}</option>
                                 </select>
-                                <span class="zanders-sort-direction" title="Ascending">↑</span>
+                                <span class="zanders-sort-direction" title="{{ 'zanders.listing.ascending'|trans|striptags }}">↑</span>
                             </div>
                         </div>
                     </div>
@@ -209,160 +119,14 @@
                     {# 3-Column Product Grid #}
                     <div class="zanders-category-product-grid">
                         {% for product in products %}
-                            {% set cover = product.cover ? product.cover.media : null %}
-                            {% set price = product.calculatedPrice.unitPrice %}
-                            {% set msrp = (price * 1.35)|round(2) %}
-                            {% set upc = product.ean ?: ('747115' ~ loop.index ~ '436491') %}
-                            {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
-                            {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
-                            {% set stockQty = availableStock > 0 ? availableStock : 0 %}
-
-                            <div class="zanders-cat-product-card card h-100{% if not isAvailable %} is-out-of-stock{% endif %}" data-in-stock="{{ isAvailable ? '1' : '0' }}">
-                                <button type="button"
-                                        class="zanders-card-compare-btn"
-                                        data-compare-btn
-                                        data-product-id="{{ product.id }}"
-                                        data-product-name="{{ product.translated.name|e('html_attr') }}"
-                                        data-product-sku="{{ product.productNumber|e('html_attr') }}"
-                                        data-product-upc="{{ upc|e('html_attr') }}"
-                                        data-product-brand="{{ (product.manufacturer ? (product.manufacturer.translated.name|default(product.manufacturer.getName())) : '')|e('html_attr') }}"
-                                        data-product-price="{{ isUserLoggedIn ? (price|currency|e('html_attr')) : 'Login to View' }}"
-                                        data-product-image="{{ cover ? cover.url : '' }}"
-                                        data-product-url="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
-                                        data-product-stock="{{ isAvailable ? (isUserLoggedIn ? stockQty ~ ' In Stock' : 'In Stock') : 'Out of Stock' }}"
-                                        data-product-in-stock="{{ isAvailable ? '1' : '0' }}"
-                                        title="Add to Compare"
-                                        aria-label="Add to Compare">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                        <path d="M9 9h6M9 12h6M9 15h4"/>
-                                    </svg>
-                                    <span class="zanders-card-compare-tooltip">Compare</span>
-                                </button>
-
-                                <a href="{{ seoUrl('frontend.detail.page', { productId: product.id }) }}"
-                                   class="zanders-cat-product-link"
-                                   title="{{ product.translated.name }}">
-                                    
-                                    <div class="zanders-cat-image-container">
-                                        {% if cover %}
-                                            <img src="{{ cover.url }}"
-                                                 alt="{{ product.translated.name }}"
-                                                 class="zanders-cat-image"
-                                                 loading="lazy">
-                                        {% else %}
-                                            <div class="zanders-cat-placeholder">
-                                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                                    <polyline points="21 15 16 10 5 21"></polyline>
-                                                </svg>
-                                            </div>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="zanders-cat-details">
-                                        <h2 class="zanders-cat-name">{{ product.translated.name }}</h2>
-                                        
-                                        <div class="zanders-cat-meta" style="text-align: center; font-size: 0.75rem; line-height: 1.5; margin-bottom: 0.5rem;">
-                                            <div class="zanders-meta-item" style="margin-bottom: 2px;">
-                                                <span class="zanders-meta-label" style="color: #64748b; font-weight: 400;">Item Number:</span>
-                                                <span class="zanders-meta-val" style="color: #000000 !important; font-weight: 700;">{{ product.productNumber }}</span>
-                                            </div>
-                                            <div class="zanders-meta-item" style="margin-bottom: 2px;">
-                                                <span class="zanders-meta-label" style="color: #64748b; font-weight: 400;">UPC:</span>
-                                                <span class="zanders-meta-val" style="color: #000000 !important; font-weight: 700;">{{ upc }}</span>
-                                            </div>
-                                            <div class="zanders-meta-item" style="margin-bottom: 2px;">
-                                                <span class="zanders-meta-label" style="color: #64748b; font-weight: 400;">Available:</span>
-                                                {% if isUserLoggedIn %}
-                                                    <span class="zanders-meta-val zanders-stock-val{% if not isAvailable %} is-out-of-stock{% endif %}" style="color: #000000 !important; font-weight: 700;">{{ stockQty }}</span>
-                                                {% else %}
-                                                    {% if isAvailable %}
-                                                        <span class="zanders-meta-val zanders-stock-val" style="color: #000000 !important; font-weight: 700;">In Stock</span>
-                                                    {% else %}
-                                                        <span class="zanders-meta-val is-out-of-stock" style="color: #000000 !important; font-weight: 700;">Out of Stock</span>
-                                                    {% endif %}
-                                                {% endif %}
-                                            </div>
-                                        </div>
-
-                                        {% if isUserLoggedIn %}
-                                            <div class="zanders-cat-price" style="font-size: 1.125rem; font-weight: 700; color: #991020; text-align: center; margin-top: auto; padding-top: 0.25rem;">
-                                                {{ price|currency }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                </a>
-
-                                {% if isUserLoggedIn %}
-                                    {% set isRestricted = zanders_is_product_restricted(product, context) %}
-                                    {% set canPurchase = zanders_can_customer_purchase(context) %}
-                                    {% if isRestricted or not canPurchase %}
-                                        <div class="zanders-cat-restriction-notice alert alert-warning small p-2 mb-0" role="alert" style="font-size: 0.8rem; font-weight: 600;">
-                                            {% if not canPurchase %}
-                                                {{ zanders_purchase_restriction_reason(context)|sw_sanitize }}
-                                            {% else %}
-                                                {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
-                                            {% endif %}
-                                        </div>
-                                    {% else %}
-                                        <form action="{{ path('frontend.checkout.line-item.add') }}"
-                                              method="post"
-                                              class="zanders-cat-buy-form buy-widget"
-                                              data-add-to-cart="true">
-
-                                            <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                            <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
-                                            <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
-                                            <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
-                                            <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
-                                            <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
-                                            <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
-                                            <input type="hidden" name="product-name" value="{{ product.translated.name }}">
-                                            <input type="hidden" name="brand-name" value="{{ product.manufacturer ? product.manufacturer.getName() : '' }}">
-
-                                            <div class="zanders-cat-qty-container">
-                                                <label for="qty-cat-{{ product.id }}" class="zanders-cat-qty-label">Qty:</label>
-                                                {% set quantityAdjustment = zanders_quantity_adjustment(product) %}
-                                                <input type="number"
-                                                       id="qty-cat-{{ product.id }}"
-                                                       name="lineItems[{{ product.id }}][quantity]"
-                                                       class="zanders-cat-qty-input"
-                                                       value="{{ quantityAdjustment.from|default(product.minPurchase|default(1)) }}"
-                                                       min="{{ quantityAdjustment.from|default(product.minPurchase|default(1)) }}"
-                                                       max="{{ quantityAdjustment.to|default(product.calculatedMaxPurchase|default(100)) }}"
-                                                       step="{{ quantityAdjustment.step|default(product.purchaseSteps|default(1)) }}"
-                                                       aria-label="Quantity"
-                                                       style="border: none !important; border-bottom: 1px solid #000000 !important; outline: none !important; box-shadow: none !important; width: 50px !important; height: 26px !important; text-align: center !important; font-size: 1rem !important; font-weight: 700 !important; background: transparent !important; border-radius: 0 !important; padding: 0 !important; color: #000000 !important; -webkit-appearance: none !important; -moz-appearance: textfield !important;"
-                                                       oninput="if(this.value && this.value < 1) this.value = 1;">
-                                            </div>
-
-                                            <button type="submit"
-                                                    class="btn btn-buy zanders-btn-add-to-cart"
-                                                    title="ADD TO CART"
-                                                    aria-label="ADD TO CART"{% if not isAvailable %} disabled{% endif %}>
-                                                ADD TO CART
-                                            </button>
-                                        </form>
-                                    {% endif %}
-                                {% else %}
-                                    <div class="zanders-cat-login-price-wrap">
-                                        <a href="{{ path('frontend.account.login.page') }}"
-                                           class="btn zanders-btn-login-price"
-                                           title="Please Login to View Price">
-                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
-                                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                                            </svg>
-                                            <span>Please Login to View Price</span>
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            </div>
+                            {% sw_include '@Storefront/storefront/component/product/card/zanders-card.html.twig' with {
+                                product: product,
+                                context: context,
+                                isUserLoggedIn: isUserLoggedIn
+                            } %}
                         {% else %}
                             <div class="zanders-category-empty-alert alert alert-info w-100">
-                                No products found for your search criteria.
+                                {{ 'zanders.listing.noProductsFound'|trans }}
                             </div>
                         {% endfor %}
                     </div>

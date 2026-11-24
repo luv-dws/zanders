@@ -1,49 +1,68 @@
 {# Zanders promotional banners and featured product grid; CMS blocks render the dynamic product sections. #}
+{% block page_content_zanders_featured_sections %}
+    {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
 
-{% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
+    {# 1. Featured Products (Automatically displayed 16 products from the store) #}
+    {% set featuredProducts = zanders_get_products(16) %}
 
-{# 1. Featured Products (Automatically displayed 16 products from the store) #}
-{% set featuredProducts = zanders_get_products(16) %}
+    {# SECTION 1: 4 BRAND PROMOTIONAL BANNERS #}
+    {% block page_content_zanders_featured_sections_banners %}
+        <section class="zanders-brand-banners-section" aria-label="{{ 'zanders.home.featuredBrandBanners'|trans|striptags }}">
+            <div class="zanders-container-fluid">
+                <div class="zanders-brand-banners-grid">
+                    {% block page_content_zanders_featured_sections_banner_winchester %}
+                        <a href="{{ seoUrl('frontend.search.page') }}?search=Winchester" class="zanders-brand-banner-card" title="Winchester Repeating Arms">
+                            <img src="{{ asset('assets/banner_winchester.jpg', 'theme') }}" alt="Winchester Repeating Arms" width="293" height="400" loading="lazy">
+                        </a>
+                    {% endblock %}
 
-{# SECTION 1: 4 BRAND PROMOTIONAL BANNERS #}
-<section class="zanders-brand-banners-section" aria-label="Featured Brand Banners">
-    <div class="zanders-container-fluid">
-        <div class="zanders-brand-banners-grid">
-            <a href="{{ seoUrl('frontend.search.page') }}?search=Winchester" class="zanders-brand-banner-card" title="Winchester Repeating Arms">
-                <img src="{{ asset('assets/banner_winchester.jpg', 'theme') }}" alt="Winchester Repeating Arms" width="293" height="400" loading="lazy">
-            </a>
-            <a href="{{ seoUrl('frontend.search.page') }}?search=Nocpix" class="zanders-brand-banner-card" title="Nocpix Thermal Optics">
-                <img src="{{ asset('assets/banner_nocpix.jpg', 'theme') }}" alt="Nocpix Thermal Optics" width="293" height="400" loading="lazy">
-            </a>
-            <a href="{{ seoUrl('frontend.search.page') }}?search=Umarex" class="zanders-brand-banner-card" title="Umarex Airguns &amp; Defense">
-                <img src="{{ asset('assets/banner_umarex.jpg', 'theme') }}" alt="Umarex Airguns &amp; Defense" width="293" height="400" loading="lazy">
-            </a>
-            <a href="{{ seoUrl('frontend.search.page') }}?search=Legacy" class="zanders-brand-banner-card" title="Legacy Sports International">
-                <img src="{{ asset('assets/banner_legacy_sports.jpg', 'theme') }}" alt="Legacy Sports International (Howa, Pointer, Citadel)" width="293" height="400" loading="lazy">
-            </a>
-        </div>
-    </div>
-</section>
+                    {% block page_content_zanders_featured_sections_banner_nocpix %}
+                        <a href="{{ seoUrl('frontend.search.page') }}?search=Nocpix" class="zanders-brand-banner-card" title="Nocpix Thermal Optics">
+                            <img src="{{ asset('assets/banner_nocpix.jpg', 'theme') }}" alt="Nocpix Thermal Optics" width="293" height="400" loading="lazy">
+                        </a>
+                    {% endblock %}
 
-{# FEATURED PRODUCTS WRAPPER #}
-<div class="zanders-featured-sections-wrapper">
-    <div class="zanders-container-fluid">
-        {# SECTION 1: 16-ITEM FEATURED PRODUCTS GRID (4x4) #}
-        {% if featuredProducts|length > 0 %}
-            <section class="zanders-featured-section zanders-brand-products-section" aria-label="Featured Products Grid">
-                <div class="zanders-featured-grid">
-                    {% for product in featuredProducts|slice(0, 16) %}
-                        <div class="zanders-featured-grid-item">
-                            {% sw_include '@ZandersTheme/storefront/component/product/card/zanders-card.html.twig' with {
-                                product: product,
-                                isUserLoggedIn: isUserLoggedIn,
-                                context: context
-                            } %}
-                        </div>
-                    {% endfor %}
+                    {% block page_content_zanders_featured_sections_banner_umarex %}
+                        <a href="{{ seoUrl('frontend.search.page') }}?search=Umarex" class="zanders-brand-banner-card" title="Umarex Airguns &amp; Defense">
+                            <img src="{{ asset('assets/banner_umarex.jpg', 'theme') }}" alt="Umarex Airguns &amp; Defense" width="293" height="400" loading="lazy">
+                        </a>
+                    {% endblock %}
+
+                    {% block page_content_zanders_featured_sections_banner_legacy %}
+                        <a href="{{ seoUrl('frontend.search.page') }}?search=Legacy" class="zanders-brand-banner-card" title="Legacy Sports International">
+                            <img src="{{ asset('assets/banner_legacy_sports.jpg', 'theme') }}" alt="Legacy Sports International (Howa, Pointer, Citadel)" width="293" height="400" loading="lazy">
+                        </a>
+                    {% endblock %}
                 </div>
-            </section>
-        {% endif %}
+            </div>
+        </section>
+    {% endblock %}
 
-    </div>
-</div>
+    {# FEATURED PRODUCTS WRAPPER #}
+    {% block page_content_zanders_featured_sections_products_wrapper %}
+        <div class="zanders-featured-sections-wrapper">
+            <div class="zanders-container-fluid">
+                {# SECTION 1: 16-ITEM FEATURED PRODUCTS GRID (4x4) #}
+                {% if featuredProducts|length > 0 %}
+                    {% block page_content_zanders_featured_sections_products %}
+                        <section class="zanders-featured-section zanders-brand-products-section" aria-label="{{ 'zanders.home.featuredProductsGrid'|trans|striptags }}">
+                            <div class="zanders-featured-grid">
+                                {% for product in featuredProducts|slice(0, 16) %}
+                                    {% block page_content_zanders_featured_sections_product_item %}
+                                        <div class="zanders-featured-grid-item">
+                                            {% sw_include '@Storefront/storefront/component/product/card/zanders-card.html.twig' with {
+                                                product: product,
+                                                isUserLoggedIn: isUserLoggedIn,
+                                                context: context
+                                            } %}
+                                        </div>
+                                    {% endblock %}
+                                {% endfor %}
+                            </div>
+                        </section>
+                    {% endblock %}
+                {% endif %}
+            </div>
+        </div>
+    {% endblock %}
+{% endblock %}

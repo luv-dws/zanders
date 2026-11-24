@@ -1,437 +1,227 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Order #{{ order.orderNumber }}</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+{% sw_extends '@Storefront/storefront/base.html.twig' %}
 
-        body {
-            background-color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #222222;
-            line-height: 1.4;
-            padding: 40px 20px;
-        }
+{% block base_head %}
+    {% sw_include '@Storefront/storefront/layout/meta.html.twig' %}
+    {% block page_account_order_history_print_title %}
+        <title>{% block page_account_order_history_print_title_text %}{{ 'account.orderNumber'|trans }}{{ order.orderNumber }}{% endblock %}</title>
+    {% endblock %}
+    {% block page_account_order_history_print_stylesheets %}
+        {% for file in theme_config('assets.css') %}
+            <link rel="stylesheet" href="{{ asset(file, 'theme') }}">
+        {% endfor %}
+    {% endblock %}
+{% endblock %}
 
-        .zanders-print-container {
-            max-width: 860px;
-            margin: 0 auto;
-        }
+{% block base_body_skip_to_content %}{% endblock %}
 
-        .zanders-logo-section {
-            text-align: center;
-            margin-bottom: 28px;
-        }
+{% block base_header %}{% endblock %}
 
-        .zanders-logo-img {
-            max-width: 140px;
-            height: auto;
-            display: inline-block;
-        }
+{% block base_navigation %}{% endblock %}
 
-        .zanders-order-date {
-            font-size: 11.5px;
-            color: #222222;
-            margin-bottom: 12px;
-            font-weight: 500;
-        }
+{% block base_footer %}{% endblock %}
 
-        .zanders-info-card {
-            background: #ffffff;
-            border: 1px solid #e8e8e8;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-            padding: 22px 26px;
-            margin-bottom: 30px;
-        }
+{% block base_cookie_permission %}{% endblock %}
 
-        .zanders-info-row {
-            display: flex;
-            justify-content: space-between;
-        }
+{% block base_body_classes %}zanders-order-print-body{% endblock %}
 
-        .zanders-info-col {
-            width: 48%;
-        }
-
-        .zanders-info-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: #111111;
-            margin-bottom: 8px;
-        }
-
-        .zanders-info-content {
-            font-size: 10.5px;
-            color: #666666;
-            line-height: 1.45;
-        }
-
-        .zanders-addr-line {
-            text-transform: uppercase;
-        }
-
-        .zanders-info-divider {
-            height: 1px;
-            background-color: #f0f0f0;
-            margin: 18px 0;
-        }
-
-        .zanders-meta-line {
-            margin-top: 4px;
-        }
-
-        .zanders-meta-line strong {
-            color: #111111;
-            font-weight: 700;
-        }
-
-        .zanders-items-heading {
-            font-size: 18px;
-            font-weight: 700;
-            color: #991020;
-            margin-bottom: 14px;
-        }
-
-        .zanders-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 10.5px;
-        }
-
-        .zanders-table th {
-            background-color: #f6f6f6;
-            color: #991020;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 9px 12px;
-            border-bottom: 1.5px solid #dcbdbf;
-            text-align: left;
-            letter-spacing: 0.3px;
-        }
-
-        .zanders-table th.th-subtotal {
-            text-align: right;
-        }
-
-        .zanders-table td {
-            padding: 12px 12px;
-            vertical-align: top;
-            color: #222222;
-            border: none;
-            line-height: 1.4;
-        }
-
-        .zanders-table tr.row-even td {
-            background-color: #ffffff;
-        }
-
-        .zanders-table tr.row-odd td {
-            background-color: #f6f6f6;
-        }
-
-        .col-product {
-            width: 44%;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-
-        .col-item-no {
-            width: 14%;
-            text-transform: uppercase;
-        }
-
-        .col-price {
-            width: 12%;
-        }
-
-        .col-qty {
-            width: 15%;
-        }
-
-        .col-subtotal {
-            width: 15%;
-            text-align: right;
-        }
-
-        .qty-line strong {
-            font-weight: 700;
-            color: #111111;
-        }
-
-        .zanders-totals-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 10.5px;
-            margin-top: 6px;
-        }
-
-        .zanders-totals-table tr.totals-row td {
-            padding: 6px 12px;
-            font-size: 11px;
-            color: #111111;
-            font-weight: 700;
-            border: none;
-        }
-
-        .zanders-totals-table tr.totals-row td.totals-label {
-            width: 85%;
-            text-align: left;
-        }
-
-        .zanders-totals-table tr.totals-row td.totals-value {
-            width: 15%;
-            text-align: right;
-            font-weight: 400;
-            color: #222222;
-        }
-
-        .zanders-totals-table tr.grand-total-row {
-            background-color: #991020 !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-
-        .zanders-totals-table tr.grand-total-row td {
-            padding: 9px 12px;
-            font-size: 11.5px;
-            font-weight: 700;
-            color: #ffffff !important;
-            border: none;
-        }
-
-        .zanders-totals-table tr.grand-total-row td.grand-total-label {
-            width: 85%;
-            text-align: left;
-        }
-
-        .zanders-totals-table tr.grand-total-row td.grand-total-value {
-            width: 15%;
-            text-align: right;
-        }
-
-        @media print {
-            body {
-                background: #ffffff !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            .zanders-print-container {
-                max-width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            .zanders-table th {
-                background-color: #f6f6f6 !important;
-                color: #991020 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .zanders-table tr.row-odd td {
-                background-color: #f6f6f6 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .zanders-totals-table tr.grand-total-row {
-                background-color: #991020 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .zanders-totals-table tr.grand-total-row td {
-                color: #ffffff !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            @page {
-                margin: 1.2cm;
-                size: auto;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="zanders-print-container">
-        {# Logo #}
-        <div class="zanders-logo-section">
-            <img src="{{ asset('assets/zanders-logo.png', 'theme') }}"
-                 alt="ZANDERS America's Distribution Company Since 1962"
-                 class="zanders-logo-img">
-        </div>
-
-        {# Order Date #}
-        <div class="zanders-order-date">
-            Order Date: {{ order.orderDateTime|format_date('long', locale='en_US') }}
-        </div>
-
-        {# Address and Method Info Box #}
-        <div class="zanders-info-card">
-            {# Shipping Info Row #}
-            <div class="zanders-info-row">
-                <div class="zanders-info-col">
-                    <div class="zanders-info-title">Shipping Address</div>
-                    <div class="zanders-info-content">
-                        {% set delivery = order.deliveries|first %}
-                        {% set shipping = delivery ? delivery.shippingOrderAddress : order.billingAddress %}
-                        {% if shipping %}
-                            {% if shipping.company %}
-                                <div class="zanders-addr-line">{{ shipping.company|upper }}</div>
-                            {% else %}
-                                <div class="zanders-addr-line">{{ (shipping.firstName ~ ' ' ~ shipping.lastName)|upper }}</div>
-                            {% endif %}
-                            <div class="zanders-addr-line">{{ shipping.street|upper }}</div>
-                            <div class="zanders-addr-line">
-                                {{ shipping.city|upper }} , {{ shipping.countryState ? ((shipping.countryState.shortCode|replace({'US-': ''})) ?: shipping.countryState.translated.name) : '' }} {{ shipping.zipcode }}
-                            </div>
-                        {% else %}
-                            <div>N/A</div>
-                        {% endif %}
-                    </div>
+{% block base_main %}
+    {% block page_account_order_history_print_container %}
+        <div class="zanders-print-container" data-order-print-page="true">
+            {% block page_account_order_history_print_logo %}
+                <div class="zanders-logo-section">
+                    <img src="{{ asset('assets/zanders-logo.png', 'theme') }}"
+                         alt="{{ 'header.logo'|trans|default('ZANDERS') }}"
+                         class="zanders-logo-img">
                 </div>
+            {% endblock %}
 
-                <div class="zanders-info-col">
-                    <div class="zanders-info-title">Shipping Method</div>
-                    <div class="zanders-info-content">
-                        <div>{{ delivery and delivery.shippingMethod ? delivery.shippingMethod.translated.name : 'Standard' }}</div>
-                        {% if order.customerComment %}
-                            <div class="zanders-meta-line">
-                                <strong>Instructions:</strong> {{ order.customerComment|upper }}
-                            </div>
-                        {% endif %}
-                    </div>
+            {% block page_account_order_history_print_date %}
+                <div class="zanders-order-date">
+                    {{ 'zanders.orderPrint.orderDate'|trans }}: {{ order.orderDateTime|format_date('long') }}
                 </div>
-            </div>
+            {% endblock %}
 
-            <div class="zanders-info-divider"></div>
+            {% block page_account_order_history_print_info_card %}
+                <div class="zanders-info-card">
+                    {% block page_account_order_history_print_shipping_row %}
+                        <div class="zanders-info-row">
+                            {% block page_account_order_history_print_shipping_address %}
+                                <div class="zanders-info-col">
+                                    <div class="zanders-info-title">{{ 'zanders.orderPrint.shippingAddress'|trans }}</div>
+                                    <div class="zanders-info-content">
+                                        {% set delivery = order.deliveries|first %}
+                                        {% set shipping = delivery ? delivery.shippingOrderAddress : order.billingAddress %}
+                                        {% if shipping %}
+                                            {% if shipping.company %}
+                                                <div class="zanders-addr-line">{{ shipping.company|upper }}</div>
+                                            {% else %}
+                                                <div class="zanders-addr-line">{{ (shipping.firstName ~ ' ' ~ shipping.lastName)|upper }}</div>
+                                            {% endif %}
+                                            <div class="zanders-addr-line">{{ shipping.street|upper }}</div>
+                                            <div class="zanders-addr-line">
+                                                {{ shipping.city|upper }} , {{ shipping.countryState ? ((shipping.countryState.shortCode|replace({'US-': ''})) ?: shipping.countryState.translated.name) : '' }} {{ shipping.zipcode }}
+                                            </div>
+                                        {% else %}
+                                            <div>{{ 'zanders.orderPrint.notAvailable'|trans }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endblock %}
 
-            {# Billing Info Row #}
-            <div class="zanders-info-row">
-                <div class="zanders-info-col">
-                    <div class="zanders-info-title">Billing Address</div>
-                    <div class="zanders-info-content">
-                        {% set billing = order.billingAddress %}
-                        {% if billing %}
-                            {% if billing.company %}
-                                <div class="zanders-addr-line">{{ billing.company|upper }}</div>
-                            {% else %}
-                                <div class="zanders-addr-line">{{ (billing.firstName ~ ' ' ~ billing.lastName)|upper }}</div>
-                            {% endif %}
-                            <div class="zanders-addr-line">{{ billing.street|upper }}</div>
-                            <div class="zanders-addr-line">
-                                {{ billing.city|upper }} , {{ billing.countryState ? ((billing.countryState.shortCode|replace({'US-': ''})) ?: billing.countryState.translated.name) : '' }} {{ billing.zipcode }}
-                            </div>
-                        {% else %}
-                            <div>N/A</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="zanders-info-col">
-                    <div class="zanders-info-title">Payment Method</div>
-                    <div class="zanders-info-content">
-                        {% set transaction = order.transactions|last %}
-                        <div>{{ transaction and transaction.paymentMethod ? transaction.paymentMethod.translated.name : 'Credit Card' }}</div>
-                        <div class="zanders-meta-line">
-                            <strong>Purchase Order Number:</strong> {{ order.customFields.purchaseOrderNumber|default(order.orderNumber) }}
+                            {% block page_account_order_history_print_shipping_method %}
+                                <div class="zanders-info-col">
+                                    <div class="zanders-info-title">{{ 'zanders.orderPrint.shippingMethod'|trans }}</div>
+                                    <div class="zanders-info-content">
+                                        <div>{{ delivery and delivery.shippingMethod ? delivery.shippingMethod.translated.name : ('zanders.orderPrint.defaultShippingMethod'|trans) }}</div>
+                                        {% if order.customerComment %}
+                                            <div class="zanders-meta-line">
+                                                <strong>{{ 'zanders.orderPrint.instructions'|trans }}:</strong> {{ order.customerComment|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endblock %}
                         </div>
-                        <div class="zanders-meta-line">
-                            <strong>Ship/Pick Up Date:</strong> {{ order.orderDateTime|date('m/d/Y') }}
+                    {% endblock %}
+
+                    <div class="zanders-info-divider"></div>
+
+                    {% block page_account_order_history_print_billing_row %}
+                        <div class="zanders-info-row">
+                            {% block page_account_order_history_print_billing_address %}
+                                <div class="zanders-info-col">
+                                    <div class="zanders-info-title">{{ 'zanders.orderPrint.billingAddress'|trans }}</div>
+                                    <div class="zanders-info-content">
+                                        {% set billing = order.billingAddress %}
+                                        {% if billing %}
+                                            {% if billing.company %}
+                                                <div class="zanders-addr-line">{{ billing.company|upper }}</div>
+                                            {% else %}
+                                                <div class="zanders-addr-line">{{ (billing.firstName ~ ' ' ~ billing.lastName)|upper }}</div>
+                                            {% endif %}
+                                            <div class="zanders-addr-line">{{ billing.street|upper }}</div>
+                                            <div class="zanders-addr-line">
+                                                {{ billing.city|upper }} , {{ billing.countryState ? ((billing.countryState.shortCode|replace({'US-': ''})) ?: billing.countryState.translated.name) : '' }} {{ billing.zipcode }}
+                                            </div>
+                                        {% else %}
+                                            <div>{{ 'zanders.orderPrint.notAvailable'|trans }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endblock %}
+
+                            {% block page_account_order_history_print_payment_method %}
+                                <div class="zanders-info-col">
+                                    <div class="zanders-info-title">{{ 'zanders.orderPrint.paymentMethod'|trans }}</div>
+                                    <div class="zanders-info-content">
+                                        {% set transaction = order.transactions|last %}
+                                        <div>{{ transaction and transaction.paymentMethod ? transaction.paymentMethod.translated.name : ('zanders.orderPrint.defaultPaymentMethod'|trans) }}</div>
+                                        <div class="zanders-meta-line">
+                                            <strong>{{ 'zanders.orderPrint.purchaseOrderNumber'|trans }}:</strong> {{ order.customFields.purchaseOrderNumber|default(order.orderNumber) }}
+                                        </div>
+                                        <div class="zanders-meta-line">
+                                            <strong>{{ 'zanders.orderPrint.shipPickUpDate'|trans }}:</strong> {{ order.orderDateTime|format_date('short') }}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endblock %}
                         </div>
-                    </div>
+                    {% endblock %}
                 </div>
-            </div>
+            {% endblock %}
+
+            {% block page_account_order_history_print_items %}
+                <h2 class="zanders-items-heading">{{ 'zanders.orderPrint.itemsOrdered'|trans }}</h2>
+
+                <table class="zanders-table">
+                    <thead>
+                        {% block page_account_order_history_print_table_head %}
+                            <tr>
+                                <th class="col-product">{{ 'zanders.orderPrint.productName'|trans }}</th>
+                                <th class="col-item-no">{{ 'zanders.orderPrint.itemNumber'|trans }}</th>
+                                <th class="col-price">{{ 'zanders.orderPrint.price'|trans }}</th>
+                                <th class="col-qty">{{ 'zanders.orderPrint.qty'|trans }}</th>
+                                <th class="col-subtotal th-subtotal">{{ 'zanders.orderPrint.subtotal'|trans }}</th>
+                            </tr>
+                        {% endblock %}
+                    </thead>
+                    <tbody>
+                        {% block page_account_order_history_print_table_body %}
+                            {% for lineItem in order.lineItems %}
+                                {% block page_account_order_history_print_table_row %}
+                                    <tr class="{{ cycle(['row-even', 'row-odd'], loop.index0) }}">
+                                        <td class="col-product">
+                                            {{ lineItem.label|upper }}
+                                        </td>
+                                        <td class="col-item-no">
+                                            {{ (lineItem.payload.productNumber ?: (lineItem.payload.sku ?: lineItem.identifier))|upper }}
+                                        </td>
+                                        <td class="col-price">
+                                            {{ lineItem.unitPrice|currency(order.currency.isoCode) }}
+                                        </td>
+                                        <td class="col-qty">
+                                            <div class="qty-line">{{ 'zanders.orderPrint.ordered'|trans }} : <strong>{{ lineItem.quantity }}</strong></div>
+                                            {% if lineItem.payload.isBackorder or lineItem.payload.backordered %}
+                                                <div class="qty-line">{{ 'zanders.orderPrint.backOrdered'|trans }} : <strong>{{ lineItem.quantity }}</strong></div>
+                                            {% else %}
+                                                <div class="qty-line">{{ 'zanders.orderPrint.toShip'|trans }} : <strong>{{ lineItem.quantity }}</strong></div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="col-subtotal">
+                                            {{ lineItem.totalPrice|currency(order.currency.isoCode) }}
+                                        </td>
+                                    </tr>
+                                {% endblock %}
+                            {% endfor %}
+                        {% endblock %}
+                    </tbody>
+                </table>
+            {% endblock %}
+
+            {% block page_account_order_history_print_totals %}
+                <table class="zanders-totals-table">
+                    <tbody>
+                        {% block page_account_order_history_print_totals_sales_amount %}
+                            <tr class="totals-row">
+                                <td class="totals-label">{{ 'zanders.orderPrint.salesAmount'|trans }}</td>
+                                <td class="totals-value">{{ order.positionPrice|currency(order.currency.isoCode) }}</td>
+                            </tr>
+                        {% endblock %}
+
+                        {% block page_account_order_history_print_totals_shipping %}
+                            <tr class="totals-row">
+                                <td class="totals-label">{{ 'zanders.orderPrint.shipping'|trans }}</td>
+                                <td class="totals-value">{{ (order.shippingTotal ?: 0)|currency(order.currency.isoCode) }}</td>
+                            </tr>
+                        {% endblock %}
+
+                        {% block page_account_order_history_print_totals_misc %}
+                            <tr class="totals-row">
+                                <td class="totals-label">{{ 'zanders.orderPrint.miscCharges'|trans }}</td>
+                                <td class="totals-value">
+                                    {% set misc = (order.amountTotal - order.positionPrice - order.shippingTotal - order.amountTax) %}
+                                    {% if misc < 0 %}{% set misc = 0 %}{% endif %}
+                                    {{ misc|currency(order.currency.isoCode) }}
+                                </td>
+                            </tr>
+                        {% endblock %}
+
+                        {% block page_account_order_history_print_totals_tax %}
+                            <tr class="totals-row">
+                                <td class="totals-label">{{ 'zanders.orderPrint.salesTax'|trans }}</td>
+                                <td class="totals-value">{{ (order.amountTax ?: 0)|currency(order.currency.isoCode) }}</td>
+                            </tr>
+                        {% endblock %}
+
+                        {% block page_account_order_history_print_totals_grand_total %}
+                            <tr class="grand-total-row">
+                                <td class="grand-total-label">{{ 'zanders.orderPrint.grandTotal'|trans }}</td>
+                                <td class="grand-total-value">{{ order.amountTotal|currency(order.currency.isoCode) }}</td>
+                            </tr>
+                        {% endblock %}
+                    </tbody>
+                </table>
+            {% endblock %}
         </div>
-
-        {# Items Ordered #}
-        <h2 class="zanders-items-heading">Items Ordered</h2>
-
-        <table class="zanders-table">
-            <thead>
-                <tr>
-                    <th class="col-product">PRODUCT NAME</th>
-                    <th class="col-item-no">ITEM NUMBER</th>
-                    <th class="col-price">Price</th>
-                    <th class="col-qty">Qty</th>
-                    <th class="col-subtotal th-subtotal">Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lineItem in order.lineItems %}
-                    <tr class="{{ cycle(['row-even', 'row-odd'], loop.index0) }}">
-                        <td class="col-product">
-                            {{ lineItem.label|upper }}
-                        </td>
-                        <td class="col-item-no">
-                            {{ (lineItem.payload.productNumber ?: (lineItem.payload.sku ?: lineItem.identifier))|upper }}
-                        </td>
-                        <td class="col-price">
-                            {{ lineItem.unitPrice|currency(order.currency.isoCode) }}
-                        </td>
-                        <td class="col-qty">
-                            <div class="qty-line">Ordered: <strong>{{ lineItem.quantity }}</strong></div>
-                            {% if lineItem.payload.isBackorder or lineItem.payload.backordered %}
-                                <div class="qty-line">Back Ordered: <strong>{{ lineItem.quantity }}</strong></div>
-                            {% else %}
-                                <div class="qty-line">To Ship: <strong>{{ lineItem.quantity }}</strong></div>
-                            {% endif %}
-                        </td>
-                        <td class="col-subtotal">
-                            {{ lineItem.totalPrice|currency(order.currency.isoCode) }}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {# Totals #}
-        <table class="zanders-totals-table">
-            <tbody>
-                <tr class="totals-row">
-                    <td class="totals-label">Sales Amount</td>
-                    <td class="totals-value">{{ order.positionPrice|currency(order.currency.isoCode) }}</td>
-                </tr>
-                <tr class="totals-row">
-                    <td class="totals-label">Shipping</td>
-                    <td class="totals-value">{{ (order.shippingTotal ?: 0)|currency(order.currency.isoCode) }}</td>
-                </tr>
-                <tr class="totals-row">
-                    <td class="totals-label">Misc. Charges</td>
-                    <td class="totals-value">
-                        {% set misc = (order.amountTotal - order.positionPrice - order.shippingTotal - order.amountTax) %}
-                        {% if misc < 0 %}{% set misc = 0 %}{% endif %}
-                        {{ misc|currency(order.currency.isoCode) }}
-                    </td>
-                </tr>
-                <tr class="totals-row">
-                    <td class="totals-label">Sales Tax</td>
-                    <td class="totals-value">{{ (order.amountTax ?: 0)|currency(order.currency.isoCode) }}</td>
-                </tr>
-                <tr class="grand-total-row">
-                    <td class="grand-total-label">Grand Total</td>
-                    <td class="grand-total-value">{{ order.amountTotal|currency(order.currency.isoCode) }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    {# JavaScript: Automatically trigger window.print() after rendering #}
-    <script>
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                window.print();
-            }, 300);
-        });
-    </script>
-</body>
-</html>
+    {% endblock %}
+{% endblock %}

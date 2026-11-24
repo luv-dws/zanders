@@ -1,147 +1,192 @@
-{% set name = product.translated.name|default(product.name) %}
-{% set sku = product.productNumber %}
-{% set upc = product.ean ?: ('747115' ~ loop.index ~ '436491') %}
-{% set price = product.calculatedPrice.unitPrice %}
-{% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
-{% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
-{% set stockQty = availableStock > 0 ? availableStock : 0 %}
-{% set isLoggedIn = isUserLoggedIn is same as(true) or (context.customer is defined and context.customer and not context.customer.guest) %}
-{% set cover = product.cover ? product.cover.media : null %}
-{% set prod_url = seoUrl('frontend.detail.page', { productId: product.id }) %}
-{% set quantityAdjustment = zanders_quantity_adjustment(product) %}
-{% set quantityFrom = quantityAdjustment.from|default(product.minPurchase|default(1)) %}
-{% set quantityTo = quantityAdjustment.to|default(product.calculatedMaxPurchase|default(100)) %}
-{% set quantityStep = quantityAdjustment.step|default(product.purchaseSteps|default(1)) %}
+{% block component_product_card_zanders %}
+    {% set name = product.translated.name|default(product.name) %}
+    {% set sku = product.productNumber %}
+    {% set upc = product.ean ?: (loop is defined ? ('747115' ~ loop.index ~ '436491') : '') %}
+    {% set price = product.calculatedPrice.unitPrice %}
+    {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
+    {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
+    {% set stockQty = availableStock > 0 ? availableStock : 0 %}
+    {% set isLoggedIn = isUserLoggedIn is defined ? isUserLoggedIn : (context.customer is defined and context.customer and not context.customer.guest) %}
+    {% set cover = product.cover ? product.cover.media : null %}
+    {% set prod_url = seoUrl('frontend.detail.page', { productId: product.id }) %}
+    {% set quantityAdjustment = zanders_quantity_adjustment(product) %}
+    {% set quantityFrom = quantityAdjustment.from|default(product.minPurchase|default(1)) %}
+    {% set quantityTo = quantityAdjustment.to|default(product.calculatedMaxPurchase|default(100)) %}
+    {% set quantityStep = quantityAdjustment.step|default(product.purchaseSteps|default(1)) %}
+    {% set manufacturerName = product.manufacturer ? product.manufacturer.translated.name|default(product.manufacturer.name) : '' %}
 
-<div class="zanders-product-card card h-100{% if not isAvailable %} is-out-of-stock{% endif %}" data-in-stock="{{ isAvailable ? '1' : '0' }}">
-    <button type="button"
-            class="zanders-card-compare-btn"
-            data-compare-btn
-            data-product-id="{{ product.id }}"
-            data-product-name="{{ name|e('html_attr') }}"
-            data-product-sku="{{ sku|e('html_attr') }}"
-            data-product-upc="{{ upc|e('html_attr') }}"
-            data-product-brand="{{ (product.manufacturer ? (product.manufacturer.translated.name|default(product.manufacturer.getName())) : '')|e('html_attr') }}"
-            data-product-price="{{ isLoggedIn ? (price|currency|e('html_attr')) : 'Login to View' }}"
-            data-product-image="{{ cover ? cover.url : '' }}"
-            data-product-url="{{ prod_url }}"
-            data-product-stock="{{ isAvailable ? (isLoggedIn ? stockQty ~ ' In Stock' : 'In Stock') : 'Out of Stock' }}"
-            data-product-in-stock="{{ isAvailable ? '1' : '0' }}"
-            title="Add to Compare"
-            aria-label="Add to Compare">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2"/>
-            <path d="M9 9h6M9 12h6M9 15h4"/>
-        </svg>
-        <span class="zanders-card-compare-tooltip">Compare</span>
-    </button>
-
-    <a href="{{ prod_url }}" class="zanders-product-card-link" title="{{ name }}">
-        <div class="zanders-product-image-container">
-            {% if cover %}
-                <img src="{{ cover.url }}" alt="{{ name }}" class="zanders-product-image" loading="lazy">
-            {% else %}
-                <div class="zanders-product-image-placeholder">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                        <polyline points="21 15 16 10 5 21"></polyline>
-                    </svg>
-                </div>
-            {% endif %}
-        </div>
-        <div class="zanders-product-details">
-            <h3 class="zanders-product-name">{{ name }}</h3>
-            <div class="zanders-product-meta">
-                <div class="zanders-meta-item">
-                    <span class="zanders-meta-label">Item Number:</span>
-                    <span class="zanders-meta-val">{{ sku }}</span>
-                </div>
-                <div class="zanders-meta-item">
-                    <span class="zanders-meta-label">UPC:</span>
-                    <span class="zanders-meta-val">{{ upc }}</span>
-                </div>
-                <div class="zanders-meta-item">
-                    <span class="zanders-meta-label">Available:</span>
-                    {% if isLoggedIn %}
-                        <span class="zanders-meta-val zanders-stock-val{% if not isAvailable %} is-out-of-stock{% endif %}">{{ stockQty }}</span>
-                    {% else %}
-                        {% if isAvailable %}
-                            <span class="zanders-meta-val zanders-stock-val">In Stock</span>
-                        {% else %}
-                            <span class="zanders-meta-val is-out-of-stock">Out of Stock</span>
-                        {% endif %}
-                    {% endif %}
-                </div>
-            </div>
+    <div class="zanders-product-card card h-100{% if not isAvailable %} is-out-of-stock{% endif %}" data-in-stock="{{ isAvailable ? '1' : '0' }}">
+        {% block component_product_card_zanders_compare_button %}
             {% if isLoggedIn %}
-                <div class="zanders-product-price">
-                    {{ price|currency }}
-                </div>
-            {% endif %}
-        </div>
-    </a>
-
-    {% if isLoggedIn %}
-        {% set isRestricted = zanders_is_product_restricted(product, context) %}
-        {% set canPurchase = zanders_can_customer_purchase(context) %}
-        {% if isRestricted or not canPurchase %}
-            <div class="zanders-featured-restriction-notice alert alert-warning small p-2 mb-0" role="alert">
-                {% if not canPurchase %}
-                    {{ zanders_purchase_restriction_reason(context)|sw_sanitize }}
-                {% else %}
-                    {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
-                {% endif %}
-            </div>
-        {% else %}
-            <form action="{{ path('frontend.checkout.line-item.add') }}"
-                  method="post"
-                  class="zanders-product-buy-form buy-widget"
-                  data-add-to-cart="true">
-
-                <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
-                <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
-                <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
-                <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
-                <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
-                <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
-                <input type="hidden" name="product-name" value="{{ name }}">
-                <input type="hidden" name="brand-name" value="{{ product.manufacturer ? product.manufacturer.getName() : '' }}">
-
-                <div class="zanders-product-qty-container">
-                    <label for="qty-feat-{{ product.id }}" class="zanders-product-qty-label">Qty:</label>
-                    <input type="number"
-                           id="qty-feat-{{ product.id }}"
-                           name="lineItems[{{ product.id }}][quantity]"
-                           class="zanders-product-qty-input"
-                           value="{{ quantityFrom }}"
-                           min="{{ quantityFrom }}"
-                           max="{{ quantityTo }}"
-                           step="{{ quantityStep }}"
-                           aria-label="Quantity"
-                           oninput="if(this.value && this.value < 1) this.value = 1;">
-                </div>
-
-                <button type="submit"
-                        class="btn btn-buy zanders-btn-add-to-cart"
-                        title="ADD TO CART"
-                        aria-label="ADD TO CART"{% if not isAvailable %} disabled{% endif %}>
-                    ADD TO CART
+                <button type="button"
+                        class="zanders-card-compare-btn"
+                        data-compare-btn
+                        data-product-id="{{ product.id }}"
+                        data-product-name="{{ name|e('html_attr') }}"
+                        data-product-sku="{{ sku|e('html_attr') }}"
+                        data-product-upc="{{ upc|e('html_attr') }}"
+                        data-product-brand="{{ manufacturerName|e('html_attr') }}"
+                        data-product-price="{{ price|currency|e('html_attr') }}"
+                        data-product-image="{{ cover ? cover.url : '' }}"
+                        data-product-url="{{ prod_url }}"
+                        data-product-stock="{{ isAvailable ? ('zanders.delivery.inStockCount'|trans({'%count%': stockQty})) : ('zanders.product.outOfStock'|trans) }}"
+                        data-product-in-stock="{{ isAvailable ? '1' : '0' }}"
+                        title="{{ 'zanders.product.addToCompare'|trans|striptags }}"
+                        aria-label="{{ 'zanders.product.addToCompare'|trans|striptags }}">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <rect x="3" y="3" width="18" height="18" rx="2"/>
+                        <path d="M9 9h6M9 12h6M9 15h4"/>
+                    </svg>
+                    <span class="zanders-card-compare-tooltip">{{ 'zanders.product.compare'|trans|striptags }}</span>
                 </button>
-            </form>
-        {% endif %}
-    {% else %}
-        <div class="zanders-product-login-price-wrap">
-            <a href="{{ path('frontend.account.login.page') }}"
-               class="btn zanders-btn-login-price"
-               title="Please Login to View Price">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1">
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                </svg>
-                <span>Please Login to View Price</span>
+            {% endif %}
+        {% endblock %}
+
+        {% block component_product_card_zanders_link %}
+            <a href="{{ prod_url }}" class="zanders-product-card-link" title="{{ name }}">
+                {% block component_product_card_zanders_image %}
+                    <div class="zanders-product-image-container">
+                        {% if cover %}
+                            <img src="{{ cover.url }}" alt="{{ name }}" class="zanders-product-image" loading="lazy">
+                        {% else %}
+                            <div class="zanders-product-image-placeholder">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5" aria-hidden="true">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                    <polyline points="21 15 16 10 5 21"></polyline>
+                                </svg>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% block component_product_card_zanders_details %}
+                    <div class="zanders-product-details">
+                        {% block component_product_card_zanders_title %}
+                            <h3 class="zanders-product-name">{{ name }}</h3>
+                        {% endblock %}
+
+                        {% block component_product_card_zanders_meta %}
+                            <div class="zanders-product-meta">
+                                {% block component_product_card_zanders_meta_item_number %}
+                                    <div class="zanders-meta-item">
+                                        <span class="zanders-meta-label">{{ 'zanders.product.itemNumber'|trans|striptags }}</span>
+                                        <span class="zanders-meta-val">{{ sku }}</span>
+                                    </div>
+                                {% endblock %}
+
+                                {% block component_product_card_zanders_meta_upc %}
+                                    {% if upc %}
+                                        <div class="zanders-meta-item">
+                                            <span class="zanders-meta-label">{{ 'zanders.product.upc'|trans|striptags }}</span>
+                                            <span class="zanders-meta-val">{{ upc }}</span>
+                                        </div>
+                                    {% endif %}
+                                {% endblock %}
+
+                                {% block component_product_card_zanders_meta_stock %}
+                                    <div class="zanders-meta-item">
+                                        <span class="zanders-meta-label">{{ 'zanders.product.available'|trans|striptags }}</span>
+                                        {% if isLoggedIn %}
+                                            <span class="zanders-meta-val zanders-stock-val{% if not isAvailable %} is-out-of-stock{% endif %}">{{ stockQty }}</span>
+                                        {% else %}
+                                            {% if isAvailable %}
+                                                <span class="zanders-meta-val zanders-stock-val">{{ 'zanders.product.inStock'|trans|striptags }}</span>
+                                            {% else %}
+                                                <span class="zanders-meta-val is-out-of-stock">{{ 'zanders.product.outOfStock'|trans|striptags }}</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
+
+                        {% block component_product_card_zanders_price %}
+                            {% if isLoggedIn %}
+                                <div class="zanders-product-price">
+                                    {{ price|currency }}
+                                </div>
+                            {% endif %}
+                        {% endblock %}
+                    </div>
+                {% endblock %}
             </a>
-        </div>
-    {% endif %}
-</div>
+        {% endblock %}
+
+        {% block component_product_card_zanders_actions %}
+            {% if isLoggedIn %}
+                {% set isRestricted = zanders_is_product_restricted(product, context) %}
+                {% set canPurchase = zanders_can_customer_purchase(context) %}
+                {% if isRestricted or not canPurchase %}
+                    {% block component_product_card_zanders_restriction_notice %}
+                        <div class="zanders-featured-restriction-notice alert alert-warning small p-2 mb-0" role="alert">
+                            {% if not canPurchase %}
+                                {{ zanders_purchase_restriction_reason(context)|sw_sanitize }}
+                            {% else %}
+                                {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
+                            {% endif %}
+                        </div>
+                    {% endblock %}
+                {% else %}
+                    {% block component_product_card_zanders_buy_form %}
+                        <form action="{{ path('frontend.checkout.line-item.add') }}"
+                              method="post"
+                              class="zanders-product-buy-form buy-widget"
+                              data-add-to-cart="true">
+
+                            {% block component_product_card_zanders_buy_form_hidden_fields %}
+                                <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
+                                <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
+                                <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                                <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                                <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                                <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                                <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
+                                <input type="hidden" name="product-name" value="{{ name }}">
+                                <input type="hidden" name="brand-name" value="{{ manufacturerName }}">
+                            {% endblock %}
+
+                            {% block component_product_card_zanders_buy_form_quantity %}
+                                <div class="zanders-product-qty-container">
+                                    <label for="qty-feat-{{ product.id }}" class="zanders-product-qty-label">{{ 'zanders.product.qty'|trans|striptags }}</label>
+                                    <input type="number"
+                                           id="qty-feat-{{ product.id }}"
+                                           name="lineItems[{{ product.id }}][quantity]"
+                                           class="zanders-product-qty-input"
+                                           value="{{ quantityFrom }}"
+                                           min="{{ quantityFrom }}"
+                                           max="{{ quantityTo }}"
+                                           step="{{ quantityStep }}"
+                                           aria-label="{{ 'zanders.product.qty'|trans|striptags }}">
+                                </div>
+                            {% endblock %}
+
+                            {% block component_product_card_zanders_buy_form_submit %}
+                                <button type="submit"
+                                        class="btn btn-buy zanders-btn-add-to-cart"
+                                        title="{{ 'zanders.product.addToCart'|trans }}"
+                                        aria-label="{{ 'zanders.product.addToCart'|trans }}"{% if not isAvailable %} disabled{% endif %}>
+                                    {{ 'zanders.product.addToCart'|trans }}
+                                </button>
+                            {% endblock %}
+                        </form>
+                    {% endblock %}
+                {% endif %}
+            {% else %}
+                {% block component_product_card_zanders_login_price %}
+                    <div class="zanders-product-login-price-wrap">
+                        <a href="{{ path('frontend.account.login.page') }}"
+                           class="btn zanders-btn-login-price"
+                           title="{{ 'zanders.product.loginToViewPrice'|trans }}">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="me-1" aria-hidden="true">
+                                <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            <span>{{ 'zanders.product.loginToViewPrice'|trans }}</span>
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endif %}
+        {% endblock %}
+    </div>
+{% endblock %}

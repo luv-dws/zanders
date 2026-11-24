@@ -26,8 +26,6 @@ const PluginBase = (typeof window !== 'undefined' && window.PluginBaseClass)
 export default class AgeVerificationModalPlugin extends PluginBase {
     static options = {
         storageKey: 'zanders_age_verified',
-        cookieKey: 'zanders_age_verified',
-        cookieExpiryDays: 30,
         modalVisibleClass: 'is-visible',
         bodyScrollLockClass: 'zanders-age-modal-open',
         confirmBtnSelector: '[data-age-verification-confirm]',
@@ -74,7 +72,7 @@ export default class AgeVerificationModalPlugin extends PluginBase {
             event.preventDefault();
         }
 
-        // Store user consent in localStorage and cookie
+        // Store user consent in localStorage
         this.setConsent();
 
         // Publish Shopware native event via emitter if available
@@ -120,22 +118,14 @@ export default class AgeVerificationModalPlugin extends PluginBase {
     }
 
     hasConsent() {
-        // 1. Check localStorage
         try {
-            if (window.localStorage && window.localStorage.getItem(this.options.storageKey) === 'true') {
-                return true;
-            }
+            return window.localStorage && window.localStorage.getItem(this.options.storageKey) === 'true';
         } catch (e) {
-            // LocalStorage might be disabled or restricted
+            return false;
         }
-
-        // 2. Check Cookie fallback
-        const cookieValue = this.getCookie(this.options.cookieKey);
-        return cookieValue === 'true';
     }
 
     setConsent() {
-        // 1. Save to localStorage
         try {
             if (window.localStorage) {
                 window.localStorage.setItem(this.options.storageKey, 'true');
@@ -144,8 +134,8 @@ export default class AgeVerificationModalPlugin extends PluginBase {
             console.warn('[ZandersAgeVerification] LocalStorage write error:', e);
         }
 
-        // 2. Save to cookie
-        this.setCookie(this.options.cookieKey, 'true', this.options.cookieExpiryDays);
+        // Mark html tag with verified class to avoid any future flash
+        document.documentElement.classList.add('zanders-age-verified');
     }
 
     open() {
@@ -190,29 +180,6 @@ export default class AgeVerificationModalPlugin extends PluginBase {
 
     isOpen() {
         return this.el.classList.contains(this.options.modalVisibleClass);
-    }
-
-    getCookie(name) {
-        const nameEQ = encodeURIComponent(name) + '=';
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let c = cookies[i];
-            while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-            if (c.indexOf(nameEQ) === 0) {
-                return decodeURIComponent(c.substring(nameEQ.length, c.length));
-            }
-        }
-        return null;
-    }
-
-    setCookie(name, value, days) {
-        let expires = '';
-        if (days) {
-            const date = new Date();
-            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-            expires = '; expires=' + date.toUTCString();
-        }
-        document.cookie = encodeURIComponent(name) + '=' + encodeURIComponent(value) + expires + '; path=/; SameSite=Lax';
     }
 
     destroy() {

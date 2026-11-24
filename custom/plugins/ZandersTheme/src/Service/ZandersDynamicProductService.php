@@ -4,8 +4,6 @@ namespace ZandersTheme\Service;
 
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Content\Product\ProductCollection;
-use Shopware\Core\Content\ProductStream\Service\AbstractProductStreamBuilder;
-use Shopware\Core\Content\ProductStream\Service\ProductStreamBuilderInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
@@ -23,115 +21,52 @@ class ZandersDynamicProductService
     public function __construct(
         private readonly SystemConfigService $systemConfigService,
         private readonly SalesChannelRepository $salesChannelProductRepository,
-        private readonly AbstractProductStreamBuilder|ProductStreamBuilderInterface $productStreamBuilder,
         private readonly ?LoggerInterface $logger = null
     ) {
     }
 
     public function getDailySpecials(SalesChannelContext $context, int $limit = 24): ProductCollection
     {
-        return $this->getProductsByConfig('dailySpecials', $context, $limit, 'zandersDailySpecials');
+        return $this->getProductsByConfigKey('zandersDailySpecials', $context, $limit);
     }
 
     public function getPopularProducts(SalesChannelContext $context, int $limit = 24): ProductCollection
     {
-        return $this->getProductsByConfig('popularProducts', $context, $limit, 'popularProducts');
+        return $this->getProductsByConfigKey('popularProducts', $context, $limit);
     }
 
-    public function getProductsByConfig(
-        string $prefix,
+    public function getProductsByConfigKey(
+        string $configKey,
         SalesChannelContext $context,
-        int $limit = 24,
-        ?string $legacyKey = null
+        int $limit = 24
     ): ProductCollection {
         $salesChannelId = $context->getSalesChannelId();
 
-        // 1. Try configured product stream (Dynamic Product Group)
-        $streamId = $this->systemConfigService->getString("ZandersTheme.config.{$prefix}Stream", $salesChannelId);
-        if ($streamId !== '' && Uuid::isValid($streamId)) {
-            $products = $this->getProductsByStream($streamId, $context, $limit);
+        $rawConfig = $this->systemConfigService->get("ZandersTheme.config.{$configKey}", $salesChannelId);
+
+        $identifiers = [];
+        if (is_string($rawConfig) && trim($rawConfig) !== '') {
+            // Split by commas, semicolons, whitespace, or newlines
+            $identifiers = preg_split('/[\s,;]+/', trim($rawConfig), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        } elseif (is_array($rawConfig)) {
+            $identifiers = $rawConfig;
+        }
+
+        if (!empty($identifiers)) {
+            $products = $this->getProductsByIdentifiers($identifiers, $context, $limit);
             if ($products->count() > 0) {
                 return $products;
             }
         }
 
-        // 2. Try configured category
-        $categoryId = $this->systemConfigService->getString("ZandersTheme.config.{$prefix}Category", $salesChannelId);
-        if ($categoryId !== '' && Uuid::isValid($categoryId)) {
-            $products = $this->getProductsByCategory($categoryId, $context, $limit);
-            if ($products->count() > 0) {
-                return $products;
-            }
-        }
-
-        // 3. Try configured manual/fallback product list
-        $productIds = $this->systemConfigService->get("ZandersTheme.config.{$prefix}Products", $salesChannelId);
-        if (!is_array($productIds) && $legacyKey !== null) {
-            $productIds = $this->systemConfigService->get("ZandersTheme.config.{$legacyKey}", $salesChannelId);
-        }
-
-        if (is_array($productIds) && !empty($productIds)) {
-            $products = $this->getProductsByIdentifiers($productIds, $context, $limit);
-            if ($products->count() > 0) {
-                return $products;
-            }
-        }
-
-        // 4. Default fallback: Return active products from catalog so the slider is not empty
+        // Default fallback: Return active products from catalog so the section is not empty
         return $this->getFallbackProducts($context, $limit);
-    }
-
-    public function getProductsByStream(
-        string $streamId,
-        SalesChannelContext $context,
-        int $limit = 12
-    ): ProductCollection {
-        try {
-            $criteria = new Criteria();
-            $criteria->setLimit($limit);
-            $this->addStandardAssociations($criteria);
-
-            if ($this->productStreamBuilder instanceof AbstractProductStreamBuilder) {
-                $this->productStreamBuilder->enrichCriteria($criteria, $streamId, $context->getContext());
-            } else {
-                $filters = $this->productStreamBuilder->buildFilters($streamId, $context->getContext());
-                $criteria->addFilter(...$filters);
-            }
-
-            /** @var ProductCollection $products */
-            $products = $this->salesChannelProductRepository->search($criteria, $context)->getEntities();
-            return $products;
-        } catch (\Throwable $e) {
-            $this->logger?->warning('Failed to load products for stream: ' . $streamId, ['exception' => $e]);
-            return new ProductCollection();
-        }
-    }
-
-    public function getProductsByCategory(
-        string $categoryId,
-        SalesChannelContext $context,
-        int $limit = 12
-    ): ProductCollection {
-        try {
-            $criteria = new Criteria();
-            $criteria->setLimit($limit);
-            $criteria->addFilter(new EqualsAnyFilter('categoryTree', [$categoryId]));
-            $criteria->addSorting(new FieldSorting('sales', FieldSorting::DESCENDING));
-            $this->addStandardAssociations($criteria);
-
-            /** @var ProductCollection $products */
-            $products = $this->salesChannelProductRepository->search($criteria, $context)->getEntities();
-            return $products;
-        } catch (\Throwable $e) {
-            $this->logger?->warning('Failed to load products for category: ' . $categoryId, ['exception' => $e]);
-            return new ProductCollection();
-        }
     }
 
     public function getProductsByIdentifiers(
         array $identifiers,
         SalesChannelContext $context,
-        int $limit = 12
+        int $limit = 24
     ): ProductCollection {
         $idList = array_values(array_filter($identifiers, static fn($s) => is_string($s) && trim($s) !== ''));
         if (empty($idList)) {
@@ -173,7 +108,7 @@ class ZandersDynamicProductService
 
     public function getFallbackProducts(
         SalesChannelContext $context,
-        int $limit = 12
+        int $limit = 24
     ): ProductCollection {
         $criteria = new Criteria();
         $criteria->setLimit($limit);

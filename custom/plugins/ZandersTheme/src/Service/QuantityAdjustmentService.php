@@ -52,7 +52,10 @@ class QuantityAdjustmentService
         }
 
         $from = max(1, (int) ($product->getMinPurchase() ?: 1));
-        $to = max($from, (int) ($product->getCalculatedMaxPurchase() ?: 100));
+        $maxPurchase = method_exists($product, 'getCalculatedMaxPurchase')
+            ? $product->getCalculatedMaxPurchase()
+            : $product->getMaxPurchase();
+        $to = max($from, (int) ($maxPurchase ?: 100));
         $step = max(1, (int) ($product->getPurchaseSteps() ?: 1));
         $default = [
             'from' => $from,

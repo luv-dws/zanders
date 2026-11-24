@@ -2,7 +2,7 @@
 
 {% block page_account_overview_welcome %}
     <div class="zanders-account-header">
-        <h1 class="zanders-account-main-title">MY ACCOUNT</h1>
+        <h1 class="zanders-account-main-title">{{ 'zanders.account.myAccount'|trans }}</h1>
         <div class="zanders-account-title-divider"></div>
     </div>
 {% endblock %}
@@ -10,7 +10,7 @@
 {% block page_account_overview_main %}
     <div class="zanders-account-section">
         <div class="zanders-account-section-header">
-            <h2 class="zanders-account-section-title">ACCOUNT INFORMATION</h2>
+            <h2 class="zanders-account-section-title">{{ 'account.accountInformation'|trans|default('ACCOUNT INFORMATION') }}</h2>
             <div class="zanders-account-section-divider"></div>
         </div>
 
@@ -27,7 +27,7 @@
                                 </svg>
                             </div>
                             <div class="zanders-account-contact-details">
-                                <h3 class="zanders-card-heading">Contact Information</h3>
+                                <h3 class="zanders-card-heading">{{ 'zanders.account.contactInformation'|trans }}</h3>
                                 <div class="zanders-contact-name">
                                     {% if context.customer.company %}
                                         {{ context.customer.company|upper }}
@@ -40,11 +40,11 @@
                                 </div>
                                 <div class="zanders-contact-actions">
                                     <a href="{{ path('frontend.account.profile.page') }}" class="zanders-account-arrow-link">
-                                        <span>EDIT</span>
+                                        <span>{{ 'zanders.account.edit'|trans }}</span>
                                         <span class="zanders-arrow">&rarr;</span>
                                     </a>
                                     <a href="{{ path('frontend.account.profile.page') }}" class="zanders-account-arrow-link">
-                                        <span>CHANGE PASSWORD</span>
+                                        <span>{{ 'zanders.account.changePassword'|trans }}</span>
                                         <span class="zanders-arrow">&rarr;</span>
                                     </a>
                                 </div>
@@ -58,9 +58,9 @@
             <div class="col-12 col-md-6">
                 <div class="zanders-account-card zanders-card-customer">
                     <div class="zanders-account-card-body">
-                        <h3 class="zanders-card-heading">Customer Info</h3>
+                        <h3 class="zanders-card-heading">{{ 'zanders.account.customerInfo'|trans }}</h3>
                         <div class="zanders-customer-number-line">
-                            <span class="zanders-customer-number-label">Customer Number:</span>
+                            <span class="zanders-customer-number-label">{{ 'zanders.account.customerNumber'|trans }}</span>
                             <span class="zanders-customer-number-value">{{ context.customer.customerNumber }}</span>
                         </div>
                     </div>
@@ -77,7 +77,7 @@
 {% block page_account_overview_addresses_include %}
     <div class="zanders-account-section zanders-account-address-book">
         <div class="zanders-account-section-header">
-            <h2 class="zanders-account-section-title-clean">Address Book</h2>
+            <h2 class="zanders-account-section-title-clean">{{ 'account.addressBook'|trans|default('Address Book') }}</h2>
         </div>
 
         <div class="row g-3 zanders-account-cards-row">
@@ -85,7 +85,7 @@
             <div class="col-12 col-md-6">
                 <div class="zanders-account-card zanders-card-address">
                     <div class="zanders-account-card-body">
-                        <h3 class="zanders-card-heading">Default Billing Address</h3>
+                        <h3 class="zanders-card-heading">{{ 'zanders.account.defaultBillingAddress'|trans }}</h3>
                         <div class="zanders-address-details">
                             {% set billingAddress = context.customer.defaultBillingAddress %}
                             {% if billingAddress %}
@@ -114,7 +114,7 @@
             <div class="col-12 col-md-6">
                 <div class="zanders-account-card zanders-card-address">
                     <div class="zanders-account-card-body">
-                        <h3 class="zanders-card-heading">Default Shipping Address</h3>
+                        <h3 class="zanders-card-heading">{{ 'zanders.account.defaultShippingAddress'|trans }}</h3>
                         <div class="zanders-address-details">
                             {% set shippingAddress = context.customer.defaultShippingAddress %}
                             {% if not shippingAddress and context.customer.defaultBillingAddress %}

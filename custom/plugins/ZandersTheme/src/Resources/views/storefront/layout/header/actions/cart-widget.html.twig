@@ -20,7 +20,7 @@
             {% if page.cart and page.cart.price and page.cart.price.positionPrice > 0 %}
                 {{ page.cart.price.positionPrice|currency }}
             {% else %}
-                $0.00
+                {{ 0|currency }}
             {% endif %}
         </span>
     </div>

@@ -1,0 +1,269 @@
+// Zanders Order Print Stylesheet
+
+.zanders-invoice-print-frame {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border: 0;
+    visibility: hidden;
+}
+
+@media print, screen {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #222222;
+            line-height: 1.4;
+            padding: 40px 20px;
+        }
+
+        .zanders-print-container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .zanders-logo-section {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .zanders-logo-img {
+            max-width: 140px;
+            height: auto;
+            display: inline-block;
+        }
+
+        .zanders-order-date {
+            font-size: 11.5px;
+            color: #222222;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .zanders-info-card {
+            background: #ffffff;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+            padding: 22px 26px;
+            margin-bottom: 30px;
+        }
+
+        .zanders-info-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .zanders-info-col {
+            width: 48%;
+        }
+
+        .zanders-info-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111111;
+            margin-bottom: 8px;
+        }
+
+        .zanders-info-content {
+            font-size: 10.5px;
+            color: #666666;
+            line-height: 1.45;
+        }
+
+        .zanders-addr-line {
+            text-transform: uppercase;
+        }
+
+        .zanders-info-divider {
+            height: 1px;
+            background-color: #f0f0f0;
+            margin: 18px 0;
+        }
+
+        .zanders-meta-line {
+            margin-top: 4px;
+        }
+
+        .zanders-meta-line strong {
+            color: #111111;
+            font-weight: 700;
+        }
+
+        .zanders-items-heading {
+            font-size: 18px;
+            font-weight: 700;
+            color: #991020;
+            margin-bottom: 14px;
+        }
+
+        .zanders-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5px;
+        }
+
+        .zanders-table th {
+            background-color: #f6f6f6;
+            color: #991020;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 9px 12px;
+            border-bottom: 1.5px solid #dcbdbf;
+            text-align: left;
+            letter-spacing: 0.3px;
+        }
+
+        .zanders-table th.th-subtotal {
+            text-align: right;
+        }
+
+        .zanders-table td {
+            padding: 12px 12px;
+            vertical-align: top;
+            color: #222222;
+            border: none;
+            line-height: 1.4;
+        }
+
+        .zanders-table tr.row-even td {
+            background-color: #ffffff;
+        }
+
+        .zanders-table tr.row-odd td {
+            background-color: #f6f6f6;
+        }
+
+        .col-product {
+            width: 44%;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .col-item-no {
+            width: 14%;
+            text-transform: uppercase;
+        }
+
+        .col-price {
+            width: 12%;
+        }
+
+        .col-qty {
+            width: 15%;
+        }
+
+        .col-subtotal {
+            width: 15%;
+            text-align: right;
+        }
+
+        .qty-line strong {
+            font-weight: 700;
+            color: #111111;
+        }
+
+        .zanders-totals-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10.5px;
+            margin-top: 6px;
+        }
+
+        .zanders-totals-table tr.totals-row td {
+            padding: 6px 12px;
+            font-size: 11px;
+            color: #111111;
+            font-weight: 700;
+            border: none;
+        }
+
+        .zanders-totals-table tr.totals-row td.totals-label {
+            width: 85%;
+            text-align: left;
+        }
+
+        .zanders-totals-table tr.totals-row td.totals-value {
+            width: 15%;
+            text-align: right;
+            font-weight: 400;
+            color: #222222;
+        }
+
+        .zanders-totals-table tr.grand-total-row {
+            background-color: #991020 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .zanders-totals-table tr.grand-total-row td {
+            padding: 9px 12px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #ffffff !important;
+            border: none;
+        }
+
+        .zanders-totals-table tr.grand-total-row td.grand-total-label {
+            width: 85%;
+            text-align: left;
+        }
+
+        .zanders-totals-table tr.grand-total-row td.grand-total-value {
+            width: 15%;
+            text-align: right;
+        }
+
+        @media print {
+            body {
+                background: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .zanders-print-container {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .zanders-table th {
+                background-color: #f6f6f6 !important;
+                color: #991020 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .zanders-table tr.row-odd td {
+                background-color: #f6f6f6 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .zanders-totals-table tr.grand-total-row {
+                background-color: #991020 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .zanders-totals-table tr.grand-total-row td {
+                color: #ffffff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            @page {
+                margin: 1.2cm;
+                size: auto;
+            }
+        }
+
+}

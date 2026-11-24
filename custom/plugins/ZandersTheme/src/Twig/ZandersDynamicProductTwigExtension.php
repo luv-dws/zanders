@@ -21,8 +21,6 @@ class ZandersDynamicProductTwigExtension extends AbstractExtension
         return [
             new TwigFunction('zanders_get_daily_specials', $this->getDailySpecials(...), ['needs_context' => true]),
             new TwigFunction('zanders_get_popular_products', $this->getPopularProducts(...), ['needs_context' => true]),
-            new TwigFunction('zanders_get_products_by_stream', $this->getProductsByStream(...), ['needs_context' => true]),
-            new TwigFunction('zanders_get_products_by_category', $this->getProductsByCategory(...), ['needs_context' => true]),
         ];
     }
 
@@ -50,31 +48,5 @@ class ZandersDynamicProductTwigExtension extends AbstractExtension
         }
 
         return $this->dynamicProductService->getPopularProducts($salesChannelContext, $limit);
-    }
-
-    /**
-     * @param array<string, mixed> $twigContext
-     */
-    public function getProductsByStream(array $twigContext, string $streamId, int $limit = 24): ProductCollection
-    {
-        $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
-        if (!$salesChannelContext instanceof SalesChannelContext) {
-            return new ProductCollection();
-        }
-
-        return $this->dynamicProductService->getProductsByStream($streamId, $salesChannelContext, $limit);
-    }
-
-    /**
-     * @param array<string, mixed> $twigContext
-     */
-    public function getProductsByCategory(array $twigContext, string $categoryId, int $limit = 24): ProductCollection
-    {
-        $salesChannelContext = TwigContextHelper::getSalesChannelContext($twigContext);
-        if (!$salesChannelContext instanceof SalesChannelContext) {
-            return new ProductCollection();
-        }
-
-        return $this->dynamicProductService->getProductsByCategory($categoryId, $salesChannelContext, $limit);
     }
 }

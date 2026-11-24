@@ -6,12 +6,12 @@
             '%count%': page.listing.total,
             '%searchTerm%': page.searchTerm,
         })
-        : 'Search' %}
+        : 'zanders.search.searchLabel'|trans %}
 
-    {% sw_include '@ZandersTheme/storefront/page/content/zanders-category-listing.html.twig' with {
+    {% sw_include '@Storefront/storefront/page/content/zanders-category-listing.html.twig' with {
         listingOverride: page.listing,
         categoryNameOverride: searchHeading,
-        breadcrumbLabelOverride: page.searchTerm|default('Search'),
+        breadcrumbLabelOverride: page.searchTerm|default('zanders.search.searchLabel'|trans),
         isSearchResults: true,
     } %}
 {% endblock %}

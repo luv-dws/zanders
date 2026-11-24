@@ -3,154 +3,7 @@
 {% block cms_element_cross_selling_tabs_inner %}
     {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
 
-    {% macro cross_selling_card(product, isUserLoggedIn = false) %}
-        {% set name = product.translated.name|default(product.name) %}
-        {% set sku = product.productNumber %}
-        {% set upc = product.ean ?: ('747115436491') %}
-        {% set availableStock = product.availableStock is not null ? product.availableStock : (product.stock is not null ? product.stock : 0) %}
-        {% set isAvailable = availableStock > 0 and (product.available is not defined or product.available) %}
-        {% set stockQty = availableStock > 0 ? availableStock : 0 %}
-        {% set cover = product.cover ? product.cover.media : null %}
-        {% set prod_url = seoUrl('frontend.detail.page', { productId: product.id }) %}
-        {% set brand = product.manufacturer ? (product.manufacturer.translated.name|default(product.manufacturer.getName())) : '' %}
-        {% set quantityAdjustment = zanders_quantity_adjustment(product) %}
-
-        {% set calculatedPrice = product.calculatedPrice %}
-        {% if product.calculatedPrices|length == 1 %}
-            {% set calculatedPrice = product.calculatedPrices.first %}
-        {% endif %}
-        {% set priceVal = calculatedPrice.unitPrice %}
-        {% set formattedPrice = isUserLoggedIn ? priceVal|currency : 'Login to View' %}
-
-        <div class="zanders-cross-slide-item{% if not isAvailable %} is-out-of-stock{% endif %}" data-in-stock="{{ isAvailable ? '1' : '0' }}">
-            <div class="zanders-cross-card">
-                {# Product Image #}
-                <a href="{{ prod_url }}" class="zanders-cross-image-link" title="{{ name }}">
-                    <div class="zanders-cross-image-wrap">
-                        {% if cover and cover.url %}
-                            <img src="{{ cover.url }}" alt="{{ name }}" class="zanders-cross-product-img" loading="lazy">
-                        {% else %}
-                            <div class="zanders-cross-image-placeholder">
-                                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="1.5">
-                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                    <polyline points="21 15 16 10 5 21"></polyline>
-                                </svg>
-                            </div>
-                        {% endif %}
-                    </div>
-                </a>
-
-                {# Product Details (Title & Meta) #}
-                <div class="zanders-cross-details">
-                    <h3 class="zanders-cross-card-title">
-                        <a href="{{ prod_url }}" title="{{ name }}">{{ name }}</a>
-                    </h3>
-
-                    <div class="zanders-cross-card-meta">
-                        <div class="zanders-cross-meta-row">
-                            <span class="zanders-cross-meta-lbl">Item Number:</span>
-                            <span class="zanders-cross-meta-val">{{ sku }}</span>
-                        </div>
-                        <div class="zanders-cross-meta-row">
-                            <span class="zanders-cross-meta-lbl">UPC:</span>
-                            <span class="zanders-cross-meta-val">{{ upc }}</span>
-                        </div>
-                        <div class="zanders-cross-meta-row">
-                            <span class="zanders-cross-meta-lbl">Available:</span>
-                            <span class="zanders-cross-meta-val zanders-cross-stock-qty{% if not isAvailable %} is-out-of-stock{% endif %}">{{ stockQty }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {# Bottom Section: Price & Actions #}
-                <div class="zanders-cross-card-bottom">
-                    {# Price Row #}
-                    <div class="zanders-cross-price-row">
-                        <span class="zanders-cross-current-price">{{ priceVal|currency }}</span>
-                    </div>
-
-                    {# Action Row #}
-                    <div class="zanders-cross-action-row">
-                        {# Left: Add to cart button #}
-                        <div class="zanders-cross-cart-wrap">
-                            {% set isRestricted = zanders_is_product_restricted(product) %}
-                            {% set canPurchase = zanders_can_customer_purchase() %}
-                            {% if isRestricted or not canPurchase %}
-                                <div class="zanders-cross-restriction-notice alert alert-warning small p-1 mb-0" role="alert" style="font-size: 0.75rem; font-weight: 600;">
-                                    {% if not canPurchase %}
-                                        {{ zanders_purchase_restriction_reason()|sw_sanitize }}
-                                    {% else %}
-                                        {{ 'zanders.restriction.notAvailable'|trans|default('This product is not available in your shipping region.') }}
-                                    {% endif %}
-                                </div>
-                            {% elseif isUserLoggedIn %}
-                                <form action="{{ path('frontend.checkout.line-item.add') }}"
-                                      method="post"
-                                      class="zanders-cross-buy-form buy-widget"
-                                      data-add-to-cart="true">
-                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                    <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][quantity]" value="{{ quantityAdjustment.from|default(product.minPurchase|default(1)) }}">
-                                    <input type="hidden" name="product-name" value="{{ name }}">
-                                    <input type="hidden" name="brand-name" value="{{ brand }}">
-
-                                    <button type="submit"
-                                            class="zanders-cross-btn-add-to-cart btn btn-buy"
-                                            title="ADD TO CART"
-                                            aria-label="ADD TO CART"{% if not isAvailable %} disabled{% endif %}>
-                                        ADD TO CART
-                                    </button>
-                                </form>
-                            {% else %}
-                                <form action="{{ path('frontend.checkout.line-item.add') }}"
-                                      method="post"
-                                      class="zanders-cross-buy-form buy-widget"
-                                      data-add-to-cart="true">
-                                    <input type="hidden" name="redirectTo" value="frontend.cart.offcanvas">
-                                    <input type="hidden" name="redirectParameters" data-redirect-parameters="true" value="{{ {productId: product.id}|json_encode }}">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
-                                    <input type="hidden" name="lineItems[{{ product.id }}][quantity]" value="{{ quantityAdjustment.from|default(product.minPurchase|default(1)) }}">
-                                    <input type="hidden" name="product-name" value="{{ name }}">
-                                    <input type="hidden" name="brand-name" value="{{ brand }}">
-
-                                    <button type="submit"
-                                            class="zanders-cross-btn-add-to-cart btn btn-buy"
-                                            title="ADD TO CART"
-                                            aria-label="ADD TO CART"{% if not isAvailable %} disabled{% endif %}>
-                                        ADD TO CART
-                                    </button>
-                                </form>
-                            {% endif %}
-                        </div>
-
-                        {# Right: Wishlist Circle Button #}
-                        <div class="zanders-cross-circle-actions">
-                            <button type="button"
-                                    class="zanders-cross-circle-btn zanders-cross-wishlist-btn"
-                                    title="Add to Wishlist"
-                                    aria-label="Add to Wishlist"
-                                    data-product-id="{{ product.id }}">
-                                <svg width="15" height="15" viewBox="0 0 24 24" fill="#a1a1a1" stroke="#a1a1a1" stroke-width="1">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endmacro %}
-
+    
     {# Check for cross-selling groups in element data #}
     {% set crossSellingItems = [] %}
     {% if element.data.crossSellings.elements is defined and element.data.crossSellings.elements|length > 0 %}
@@ -163,8 +16,8 @@
         {% if fallbackList|length > 0 %}
             {% set fallbackItem = {
                 crossSelling: {
-                    name: 'ALTERNATIVE PRODUCTS',
-                    translated: { name: 'ALTERNATIVE PRODUCTS' },
+                    name: 'zanders.crossSelling.alternativeProducts'|trans,
+                    translated: { name: 'zanders.crossSelling.alternativeProducts'|trans },
                     id: 'fallback'
                 },
                 products: fallbackList,
@@ -175,326 +28,6 @@
     {% endif %}
 
     {% if crossSellingItems|length > 0 %}
-        <style>
-            .zanders-cross-selling-wrapper {
-                margin: 2.5rem 0 3.5rem 0;
-                font-family: inherit;
-            }
-            .zanders-cross-group {
-                margin-bottom: 2.5rem;
-            }
-            .zanders-cross-group:last-child {
-                margin-bottom: 0;
-            }
-            .zanders-cross-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 12px;
-                padding-bottom: 12px;
-                border-bottom: 3px solid #991020;
-                margin-bottom: 24px;
-            }
-            .zanders-cross-title {
-                color: #991020;
-                font-size: 1.25rem;
-                font-weight: 800;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin: 0;
-                line-height: 1.2;
-            }
-            .zanders-cross-header-actions {
-                display: inline-flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .zanders-cross-nav-group {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .zanders-cross-nav-btn {
-                width: 34px;
-                height: 34px;
-                border-radius: 2px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                padding: 0;
-                outline: none;
-            }
-            .zanders-cross-nav-prev {
-                background-color: #ffffff;
-                border: 1px solid #991020;
-                color: #991020;
-            }
-            .zanders-cross-nav-prev:hover {
-                background-color: #fdf2f2;
-            }
-            .zanders-cross-nav-next {
-                background-color: #991020;
-                border: 1px solid #991020;
-                color: #ffffff;
-            }
-            .zanders-cross-nav-next:hover {
-                background-color: #7d0d1a;
-                border-color: #7d0d1a;
-            }
-
-            /* Carousel / Slider Track */
-            .zanders-cross-carousel {
-                position: relative;
-                width: 100%;
-                overflow: hidden;
-            }
-            .zanders-cross-track {
-                display: flex;
-                gap: 16px;
-                overflow-x: auto;
-                scroll-behavior: smooth;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-                padding: 4px 2px 14px 2px;
-            }
-            .zanders-cross-track::-webkit-scrollbar {
-                display: none;
-            }
-            .zanders-cross-slide-item {
-                flex: 0 0 calc(25% - 12px);
-                min-width: 230px;
-                max-width: 285px;
-                box-sizing: border-box;
-                display: flex;
-                transition: opacity 0.2s ease;
-            }
-            @media (max-width: 1199px) {
-                .zanders-cross-slide-item {
-                    flex: 0 0 calc(33.333% - 11px);
-                }
-            }
-            @media (max-width: 899px) {
-                .zanders-cross-slide-item {
-                    flex: 0 0 calc(50% - 8px);
-                }
-            }
-            @media (max-width: 575px) {
-                .zanders-cross-slide-item {
-                    flex: 0 0 100%;
-                    max-width: 100%;
-                }
-            }
-
-            /* Product Card */
-            .zanders-cross-card {
-                background: #ffffff;
-                border: 1px solid #e5e7eb;
-                border-radius: 2px;
-                padding: 18px 16px 14px 16px;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                transition: box-shadow 0.2s ease, transform 0.2s ease;
-            }
-            .zanders-cross-card:hover {
-                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
-            }
-
-            .zanders-cross-image-link {
-                text-decoration: none;
-                display: block;
-            }
-            .zanders-cross-image-wrap {
-                height: 130px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 14px;
-                overflow: hidden;
-            }
-            .zanders-cross-product-img {
-                max-width: 100%;
-                max-height: 100%;
-                object-fit: contain;
-                display: block;
-                transition: transform 0.2s ease;
-            }
-            .zanders-cross-card:hover .zanders-cross-product-img {
-                transform: scale(1.02);
-            }
-            .zanders-cross-image-placeholder {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                height: 100%;
-                background-color: #f8fafc;
-                border-radius: 2px;
-            }
-
-            /* Details & Typography */
-            .zanders-cross-details {
-                text-align: center;
-                flex-grow: 1;
-            }
-            .zanders-cross-card-title {
-                text-align: center;
-                font-size: 0.8125rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                line-height: 1.35;
-                color: #111827;
-                margin: 0 0 8px 0;
-                min-height: 38px;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-            .zanders-cross-card-title a {
-                color: inherit;
-                text-decoration: none;
-            }
-            .zanders-cross-card-title a:hover {
-                color: #991020;
-            }
-
-            .zanders-cross-card-meta {
-                text-align: center;
-                font-size: 0.75rem;
-                line-height: 1.5;
-                margin-bottom: 10px;
-            }
-            .zanders-cross-meta-row {
-                margin-bottom: 2px;
-            }
-            .zanders-cross-meta-lbl {
-                color: #64748b;
-                font-weight: 400;
-                margin-right: 3px;
-            }
-            .zanders-cross-meta-val {
-                color: #000000 !important;
-                font-weight: 700;
-            }
-
-            /* Bottom & Price Row */
-            .zanders-cross-card-bottom {
-                margin-top: auto;
-                padding-top: 6px;
-            }
-            .zanders-cross-price-row {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                width: 100%;
-                margin-bottom: 12px;
-                padding: 0 2px;
-            }
-            .zanders-cross-current-price {
-                color: #991020;
-                font-size: 0.9375rem;
-                font-weight: 700;
-            }
-
-            /* Actions Row */
-            .zanders-cross-action-row {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 8px;
-                width: 100%;
-            }
-            .zanders-cross-cart-wrap {
-                flex-grow: 1;
-            }
-            .zanders-cross-buy-form {
-                margin: 0;
-            }
-            .zanders-cross-btn-add-to-cart {
-                width: 100%;
-                max-width: 110px;
-                height: 32px;
-                background-color: #991020;
-                color: #ffffff !important;
-                font-size: 0.6875rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.4px;
-                padding: 0 10px;
-                border: none;
-                border-radius: 2px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-                white-space: nowrap;
-            }
-            .zanders-cross-btn-add-to-cart:hover {
-                background-color: #7d0d1a;
-            }
-            .zanders-cross-btn-add-to-cart:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-
-            .zanders-cross-circle-actions {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-            }
-            .zanders-cross-circle-btn {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                background-color: #f3f4f6;
-                border: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                color: #64748b;
-                transition: all 0.2s ease;
-                padding: 0;
-                outline: none;
-            }
-            .zanders-cross-circle-btn:hover {
-                background-color: #e5e7eb;
-                color: #991020;
-            }
-            .zanders-cross-circle-btn svg {
-                display: block;
-                transition: transform 0.15s ease;
-            }
-            .zanders-cross-circle-btn:hover svg {
-                transform: scale(1.1);
-            }
-            .zanders-cross-wishlist-btn.is-active svg {
-                fill: #991020 !important;
-                stroke: #991020 !important;
-            }
-
-            /* Responsive Adjustments */
-            @media (max-width: 768px) {
-                .zanders-cross-header {
-                    flex-direction: column;
-                    align-items: flex-start;
-                }
-                .zanders-cross-header-actions {
-                    width: 100%;
-                    justify-content: space-between;
-                }
-                .zanders-cross-title {
-                    font-size: 1.35rem;
-                }
-            }
-        </style>
 
         <div class="zanders-cross-selling-wrapper">
             {% for item in crossSellingItems %}
@@ -506,7 +39,7 @@
                     {# Section Header #}
                     <div class="zanders-cross-header">
                         <h2 class="zanders-cross-title">
-                            {{ (crossSelling.name ?: crossSelling.translated.name)|default('ALTERNATIVE PRODUCTS')|upper }}
+                            {{ (crossSelling.name ?: crossSelling.translated.name)|default('zanders.crossSelling.alternativeProducts'|trans)|upper }}
                         </h2>
 
                         <div class="zanders-cross-header-actions">
@@ -514,8 +47,8 @@
                                 <button type="button"
                                         class="zanders-cross-nav-btn zanders-cross-nav-prev"
                                         data-cross-prev="true"
-                                        title="Previous"
-                                        aria-label="Previous">
+                                        title="{{ 'zanders.crossSelling.previous'|trans|striptags }}"
+                                        aria-label="{{ 'zanders.crossSelling.previous'|trans|striptags }}">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="15 18 9 12 15 6"></polyline>
                                     </svg>
@@ -523,8 +56,8 @@
                                 <button type="button"
                                         class="zanders-cross-nav-btn zanders-cross-nav-next"
                                         data-cross-next="true"
-                                        title="Next"
-                                        aria-label="Next">
+                                        title="{{ 'zanders.crossSelling.next'|trans|striptags }}"
+                                        aria-label="{{ 'zanders.crossSelling.next'|trans|striptags }}">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <polyline points="9 18 15 12 9 6"></polyline>
                                     </svg>
@@ -537,67 +70,18 @@
                     <div class="zanders-cross-carousel">
                         <div class="zanders-cross-track" data-cross-track="true">
                             {% for product in products %}
-                                {{ _self.cross_selling_card(product, isUserLoggedIn) }}
+                                <div class="zanders-cross-slide-item">
+                                    {% sw_include '@Storefront/storefront/component/product/card/zanders-card.html.twig' with {
+                                        product: product,
+                                        context: context,
+                                        isUserLoggedIn: isUserLoggedIn
+                                    } %}
+                                </div>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
-
-        <script>
-            (function() {
-                function setupCrossSelling() {
-                    const containers = document.querySelectorAll('[data-zanders-cross-selling="true"]');
-                    containers.forEach(function(container) {
-                        if (container.dataset.initialized === 'true') return;
-                        container.dataset.initialized = 'true';
-
-                        const track = container.querySelector('[data-cross-track="true"]');
-                        const prevBtn = container.querySelector('[data-cross-prev="true"]');
-                        const nextBtn = container.querySelector('[data-cross-next="true"]');
-
-                        if (!track) return;
-
-                        function getScrollStep() {
-                            const firstVisibleCard = track.querySelector('.zanders-cross-slide-item:not([style*="display: none"])');
-                            if (firstVisibleCard) {
-                                return firstVisibleCard.offsetWidth + 16;
-                            }
-                            return 260;
-                        }
-
-                        if (prevBtn) {
-                            prevBtn.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                track.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
-                            });
-                        }
-
-                        if (nextBtn) {
-                            nextBtn.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                track.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
-                            });
-                        }
-
-                        // Wishlist heart button interaction
-                        const wishlistBtns = container.querySelectorAll('.zanders-cross-wishlist-btn');
-                        wishlistBtns.forEach(function(wBtn) {
-                            wBtn.addEventListener('click', function(e) {
-                                e.preventDefault();
-                                this.classList.toggle('is-active');
-                            });
-                        });
-                    });
-                }
-
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', setupCrossSelling);
-                } else {
-                    setupCrossSelling();
-                }
-            })();
-        </script>
     {% endif %}
 {% endblock %}

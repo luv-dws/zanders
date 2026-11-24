@@ -22,14 +22,14 @@
                             </svg>
                         </span>
                         <div class="top-bar-schedule-text">
-                            <div>Mon - Fri</div>
-                            <div>8:00AM to 4:30PM CST</div>
+                            <div>{{ 'zanders.header.weekdays'|trans }}</div>
+                            <div>{{ 'zanders.header.hours'|trans }}</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="d-flex align-items-center gap-3 top-bar-right">
-                    <span class="top-bar-welcome d-none d-md-inline">Welcome to Zanders Sporting Goods!</span>
+                    <span class="top-bar-welcome d-none d-md-inline">{{ 'zanders.header.welcomeMessage'|trans }}</span>
                     {% if context.customer %}
                         <a href="{{ path('frontend.account.home.page') }}" class="top-bar-item text-decoration-none">
                             <span class="top-bar-circle-icon">
@@ -41,7 +41,7 @@
                             <span class="top-bar-text">{{ context.customer.firstName }}</span>
                         </a>
                         <a href="{{ path('frontend.account.logout.page') }}" class="top-bar-item text-decoration-none ms-2">
-                            <span class="top-bar-text small">LogOut</span>
+                            <span class="top-bar-text small">{{ 'zanders.header.logout'|trans }}</span>
                         </a>
                     {% else %}
                         <a href="{{ path('frontend.account.login.page') }}" class="top-bar-item text-decoration-none">
@@ -52,7 +52,7 @@
                                     <line x1="8" y1="12" x2="16" y2="12"></line>
                                 </svg>
                             </span>
-                            <span class="top-bar-text">Login</span>
+                            <span class="top-bar-text">{{ 'zanders.header.login'|trans }}</span>
                         </a>
                     {% endif %}
                 </div>

@@ -1,13 +1,109 @@
 {
     "zanders": {
-        "dailySpecials": {
-            "title": "ZANDERS TAGESANGEBOTE"
+        "general": {
+            "productFinder": "Produktfinder",
+            "openProductFinder": "Produktfinder öffnen"
         },
-        "popularProducts": {
-            "title": "BELIEBTE PRODUKTE"
+        "header": {
+            "weekdays": "Mo. - Fr.",
+            "hours": "8:00 bis 16:30 Uhr CST",
+            "welcomeMessage": "Willkommen bei Zanders Sporting Goods!",
+            "login": "Anmelden",
+            "logout": "Abmelden",
+            "searchPlaceholder": "Artikel, UPC, Beschr. usw."
         },
-        "restriction": {
-            "notAvailable": "Dieses Produkt ist in Ihrer Versandregion nicht verfügbar."
+        "navbar": {
+            "catalog": "KATALOG",
+            "zandersExclusive": "ZANDERS EXKLUSIV",
+            "onSale": "IM ANGEBOT",
+            "closeOut": "RESTPOSTEN",
+            "newItems": "NEUE ARTIKEL",
+            "returns": "RÜCKSENDUNGEN",
+            "flyersEshowsRebates": "PROSPEKTE/E-SHOWS/RABATTE",
+            "contactUs": "KONTAKT",
+            "hidePrices": "PREISE AUSBLENDEN",
+            "togglePrices": "Produktpreise umschalten"
+        },
+        "footer": {
+            "company": "UNTERNEHMEN",
+            "aboutUs": "Über uns",
+            "termsConditions": "AGB",
+            "freightPolicy": "Frachtrichtlinien",
+            "jobOpportunities": "Karriere",
+            "staff": "Mitarbeiter",
+            "manufacturers": "Hersteller",
+            "resources": "RESSOURCEN",
+            "forms": "Formulare",
+            "pressReleases": "Pressemitteilungen",
+            "recalls": "Rückrufe",
+            "industryLinks": "Branchen-Links",
+            "tutorials": "Anleitungen",
+            "eley": "Eley",
+            "stayConnected": "In Verbindung bleiben",
+            "copyright": "© 1996-2026 Zanders Sporting Goods",
+            "disclaimer": "Zanders Sporting Goods ist ein Großhändler für Schusswaffen, der ausschließlich an lizenzierte Händler verkauft"
+        },
+        "product": {
+            "itemNumber": "Artikelnummer:",
+            "upc": "UPC:",
+            "available": "Verfügbar:",
+            "inStock": "Auf Lager",
+            "outOfStock": "Nicht vorrätig",
+            "qty": "Menge:",
+            "addToCart": "IN DEN WARENKORB",
+            "loginToViewPrice": "Bitte anmelden, um Preis zu sehen",
+            "compare": "Vergleichen",
+            "addToCompare": "Zum Vergleich hinzufügen"
+        },
+        "delivery": {
+            "inStockCount": "%count% auf Lager"
+        },
+        "ageVerification": {
+            "title": "ALTER BESTÄTIGEN",
+            "description": "Bestimmte Bundesstaaten verbieten die Werbung oder Vermarktung von Schusswaffen, Munition und zugehörigen Komponenten an Minderjährige. Wir möchten sicherstellen, dass Sie mindestens 18 Jahre alt sind, bevor Sie unseren Shop besuchen.",
+            "question": "Sind Sie 18 Jahre oder älter?",
+            "yes": "JA",
+            "no": "NEIN",
+            "yesAriaLabel": "Ja, ich bin mindestens 18 Jahre alt",
+            "noAriaLabel": "Nein, ich bin unter 18 Jahre alt"
+        },
+        "compare": {
+            "title": "Produktvergleich",
+            "statusText": "0 von 5 Produkten",
+            "clearAll": "Alle löschen",
+            "clearAllTitle": "Alle Produkte aus dem Vergleich entfernen",
+            "closeComparison": "Vergleich schließen",
+            "emptyTitle": "Keine Produkte zum Vergleich ausgewählt",
+            "emptyDescription": "Durchsuchen Sie unseren Katalog und klicken Sie auf das Vergleichssymbol bei Produkten, um deren Spezifikationen, Verfügbarkeit und Preise nebeneinander zu sehen.",
+            "continueBrowsing": "Weiter einkaufen",
+            "footerHint": "Vergleichen Sie bis zu 5 Artikel nebeneinander, um Eigenschaften und Verfügbarkeit zu prüfen.",
+            "close": "Schließen",
+            "toastTitle": "Zum Vergleich hinzugefügt",
+            "viewCompare": "Vergleich anzeigen",
+            "closeNotification": "Benachrichtigung schließen",
+            "dismiss": "Verwerfen"
+        },
+        "crossSelling": {
+            "alternativeProducts": "ALTERNATIVE PRODUKTE",
+            "previous": "Zurück",
+            "next": "Weiter",
+            "addToWishlist": "Auf den Wunschzettel",
+            "loginToView": "Anmelden zum Anzeigen"
+        },
+        "finderModal": {
+            "title": "Produktfinder",
+            "closeProductFinder": "Produktfinder schließen",
+            "selectManufacturer": "Hersteller auswählen",
+            "selectCaliber": "KALIBER auswählen",
+            "selectGauge": "KALIBER (Schrot) auswählen",
+            "selectStockMaterial": "SCHAFTMATERIAL auswählen",
+            "selectFrameMaterial": "RAHMENMATERIAL auswählen",
+            "selectTypeAction": "MECHANIK-TYP auswählen",
+            "selectTypeSights": "VISIER-TYP auswählen",
+            "options": "Optionen",
+            "matchingItems": "Passende Artikel:",
+            "search": "SUCHEN",
+            "resetAll": "ALLE ZURÜCKSETZEN"
         },
         "finder": {
             "title": "PRODUKTFINDER",
@@ -18,6 +114,123 @@
             "model": "Modell / Mechanik",
             "year": "Jahr / Baujahr",
             "caliber": "Kaliber / Spezifikation"
+        },
+        "listing": {
+            "home": "Startseite",
+            "items": "Artikel",
+            "of": "von",
+            "page": "Seite:",
+            "previousPage": "Vorherige Seite",
+            "nextPage": "Nächste Seite",
+            "show": "Anzeigen:",
+            "perPage": "pro Seite",
+            "viewAs": "Ansicht:",
+            "gridView": "Gitteransicht",
+            "listView": "Listenansicht",
+            "detailView": "Detailansicht",
+            "hideOutOfStock": "NICHT VORRÄTIGE ARTIKEL AUSBLENDEN",
+            "sortBy": "Sortieren nach:",
+            "price": "Preis",
+            "nameAZ": "Name A-Z",
+            "nameZA": "Name Z-A",
+            "priceHighLow": "Preis absteigend",
+            "topseller": "Bestseller",
+            "ascending": "Aufsteigend",
+            "noProductsFound": "Keine Produkte für Ihre Suchkriterien gefunden.",
+            "showAll": "ALLE ARTIKEL ANZEIGEN",
+            "noProductsCategory": "Keine Produkte in dieser Kategorie gefunden."
+        },
+        "search": {
+            "searchLabel": "Suche"
+        },
+        "detail": {
+            "home": "Startseite",
+            "noImageAvailable": "Kein Bild verfügbar",
+            "itemNumberLabel": "ARTIKELNUMMER:",
+            "availableLabel": "VERFÜGBAR:",
+            "outOfStock": "NICHT VORRÄTIG",
+            "msrp": "UVP:",
+            "quickOverview": "SCHNELLÜBERSICHT",
+            "features": "MERKMALE:",
+            "createCustomerQuote": "KUNDENANGEBOT ERSTELLEN",
+            "productWarning": "Produktwarnung",
+            "warningLabel": "WARNUNG:",
+            "closeWarning": "Warnung schließen",
+            "emailToFriend": "AN EINEN FREUND SENDEN",
+            "additionalInformation": "ZUSÄTZLICHE INFORMATIONEN",
+            "manufacturer": "Hersteller",
+            "upc": "UPC",
+            "sights": "Visierung",
+            "weight": "Gewicht",
+            "caliber": "Kaliber",
+            "metalColor": "Metallfarbe",
+            "stockColor": "Schaftfarbe",
+            "typeAction": "Mechanik-Typ",
+            "metalFinish": "Metall-Finish",
+            "barrelLength": "Lauflänge",
+            "rateOfTwist": "Dralllänge",
+            "overallLength": "Gesamtlänge",
+            "stockMaterial": "Schaftmaterial",
+            "magazineCapacity": "Magazinkapazität",
+            "manufacturerPartNumber": "Herstellernummer",
+            "packagingDimensions": "Verpackungsmaße (H x B x L)",
+            "releaseDate": "Erscheinungsdatum",
+            "deliveryTime": "Lieferzeit"
+        },
+        "account": {
+            "myAccount": "MEIN KONTO",
+            "myAccountSidebar": "Mein Konto",
+            "contactInformation": "Kontaktinformationen",
+            "edit": "BEARBEITEN",
+            "changePassword": "PASSWORT ÄNDERN",
+            "customerInfo": "Kundeninformationen",
+            "customerNumber": "Kundennummer:",
+            "defaultBillingAddress": "Standard-Rechnungsadresse",
+            "defaultShippingAddress": "Standard-Lieferadresse"
+        },
+        "orderPrint": {
+            "orderDate": "Bestelldatum",
+            "shippingAddress": "Lieferadresse",
+            "shippingMethod": "Versandart",
+            "instructions": "Hinweise",
+            "billingAddress": "Rechnungsadresse",
+            "paymentMethod": "Zahlungsart",
+            "purchaseOrderNumber": "Bestellnummer",
+            "shipPickUpDate": "Versand-/Abholdatum",
+            "itemsOrdered": "Bestellte Artikel",
+            "productName": "PRODUKTNAME",
+            "itemNumber": "ARTIKELNUMMER",
+            "price": "Preis",
+            "qty": "Menge",
+            "subtotal": "Zwischensumme",
+            "ordered": "Bestellt",
+            "backOrdered": "Im Rückstand",
+            "toShip": "Zu versenden",
+            "salesAmount": "Warenwert",
+            "shipping": "Versandkosten",
+            "miscCharges": "Sonstige Gebühren",
+            "salesTax": "MwSt.",
+            "grandTotal": "Gesamtsumme",
+            "notAvailable": "k. A.",
+            "defaultShippingMethod": "Standard",
+            "defaultPaymentMethod": "Kreditkarte"
+        },
+        "dailySpecials": {
+            "title": "ZANDERS TAGESANGEBOTE"
+        },
+        "popularProducts": {
+            "title": "BELIEBTE PRODUKTE"
+        },
+        "restriction": {
+            "notAvailable": "Dieses Produkt ist in Ihrer Versandregion nicht verfügbar."
+        },
+        "home": {
+            "featuredBrandBanners": "Vorgestellte Markenbanner",
+            "featuredProductsGrid": "Vorgestelltes Produktraster",
+            "featuredVideo": "Zanders Vorgestelltes Video",
+            "taloDistributors": "TALO Großhändler",
+            "rebatesFlyers": "Zanders Rabatte, Prospekte & E-Shows",
+            "becomeDealer": "Werden Sie ZANDERS-Händler"
         }
     },
     "checkout": {
