@@ -21,8 +21,8 @@ const PluginBase = (typeof window !== 'undefined' && window.PluginBaseClass)
             this._initialized = true;
         }
 
-        init() {}
-        destroy() {}
+        init() { }
+        destroy() { }
     };
 
 class AgeVerificationModalPlugin extends PluginBase {
@@ -49,7 +49,7 @@ class AgeVerificationModalPlugin extends PluginBase {
             try {
                 const parsed = JSON.parse(optionsAttr);
                 this.options = Object.assign({}, this.options, parsed);
-            } catch (e) {}
+            } catch (e) { }
         }
 
         this._confirmBtn = this.el.querySelector(this.options.confirmBtnSelector);
@@ -569,11 +569,11 @@ class ProductComparePlugin extends PluginBase {
                         ${products.map(p => `
                             <td class="zanders-compare-prod-col">
                                 ${p.price === 'Login to View'
-                                    ? `<a href="/account/login" class="btn zanders-btn-login-price zanders-compare-login-price">Login to View</a>`
-                                    : `<span class="zanders-compare-price-val zanders-product-price${isPricesHidden ? ' is-hidden' : ''}">
+                ? `<a href="/account/login" class="btn zanders-btn-login-price zanders-compare-login-price">Login to View</a>`
+                : `<span class="zanders-compare-price-val zanders-product-price${isPricesHidden ? ' is-hidden' : ''}">
                                         ${this._escapeHtml(p.price)}
                                        </span>`
-                                }
+            }
                             </td>
                         `).join('')}
                     </tr>
@@ -993,6 +993,9 @@ class CrossSellingSliderPlugin extends PluginBase {
         nextBtnSelector: '[data-cross-next="true"]',
         itemSelector: '.zanders-cross-slide-item',
         wishlistBtnSelector: '.zanders-cross-wishlist-btn',
+        stockToggleSelector: '[data-cross-stock-toggle="true"]',
+        stockToggleTextSelector: '.zanders-cross-stock-toggle-text',
+        hideOutOfStockByDefault: true,
         fallbackStep: 260,
         stepGap: 16,
     };
@@ -1002,12 +1005,49 @@ class CrossSellingSliderPlugin extends PluginBase {
         this._prevBtn = this.el.querySelector(this.options.prevBtnSelector);
         this._nextBtn = this.el.querySelector(this.options.nextBtnSelector);
         this._wishlistBtns = this.el.querySelectorAll(this.options.wishlistBtnSelector);
+        this._stockToggleBtn = this.el.querySelector(this.options.stockToggleSelector);
+        this._stockToggleText = this._stockToggleBtn ? this._stockToggleBtn.querySelector(this.options.stockToggleTextSelector) : null;
+        this._isHidingOutOfStock = this.options.hideOutOfStockByDefault;
 
         if (!this._track) {
             return;
         }
 
+        // Apply initial out-of-stock visibility state
+        this._applyOutOfStockVisibility();
+
         this._registerEvents();
+    }
+
+    _applyOutOfStockVisibility() {
+        const items = this._track.querySelectorAll(this.options.itemSelector);
+        let hasOutOfStock = false;
+
+        items.forEach((item) => {
+            const isOutOfStock = item.querySelector('.is-out-of-stock') || item.querySelector('[data-in-stock="0"]');
+            if (isOutOfStock) {
+                hasOutOfStock = true;
+                item.style.display = this._isHidingOutOfStock ? 'none' : '';
+            }
+        });
+
+        if (this._stockToggleBtn) {
+            // If there are no out-of-stock items in this slider, hide the toggle button entirely
+            if (!hasOutOfStock) {
+                this._stockToggleBtn.style.display = 'none';
+                return;
+            }
+
+            this._stockToggleBtn.style.display = '';
+            this._stockToggleBtn.classList.toggle('is-active', this._isHidingOutOfStock);
+            this._stockToggleBtn.setAttribute('aria-pressed', (!this._isHidingOutOfStock).toString());
+
+            if (this._stockToggleText) {
+                const showText = this._stockToggleText.dataset.textShow;
+                const hideText = this._stockToggleText.dataset.textHide;
+                this._stockToggleText.textContent = this._isHidingOutOfStock ? showText : hideText;
+            }
+        }
     }
 
     _registerEvents() {
@@ -1031,6 +1071,18 @@ class CrossSellingSliderPlugin extends PluginBase {
                 btn.classList.toggle('is-active');
             });
         });
+
+        if (this._stockToggleBtn) {
+            this._stockToggleBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this._toggleOutOfStock();
+            });
+        }
+    }
+
+    _toggleOutOfStock() {
+        this._isHidingOutOfStock = !this._isHidingOutOfStock;
+        this._applyOutOfStockVisibility();
     }
 
     _getScrollStep() {
@@ -1242,14 +1294,14 @@ const initStorefront = () => {
 
         try {
             localStorage.setItem(PRICE_STORAGE_KEY, hide ? 'true' : 'false');
-        } catch (e) {}
+        } catch (e) { }
     }
 
     if (priceToggleBtns.length > 0) {
         let isPricesHidden = false;
         try {
             isPricesHidden = localStorage.getItem(PRICE_STORAGE_KEY) === 'true';
-        } catch (e) {}
+        } catch (e) { }
 
         setPriceVisibility(isPricesHidden);
 
@@ -1303,11 +1355,52 @@ const initStorefront = () => {
             // Wishlist toggle
             const wishlistBtns = slider.querySelectorAll('.zanders-cross-wishlist-btn');
             wishlistBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
+                btn.addEventListener('click', function (e) {
                     e.preventDefault();
                     this.classList.toggle('is-active');
                 });
             });
+
+            // Fallback Stock toggle for vanilla setup (if PluginManager is not active)
+            const stockToggleBtn = slider.querySelector('[data-cross-stock-toggle="true"]');
+            if (stockToggleBtn && !window.PluginManager) {
+                let isHiding = true;
+                const toggleText = stockToggleBtn.querySelector('.zanders-cross-stock-toggle-text');
+                const items = track.querySelectorAll('.zanders-cross-slide-item');
+
+                const applyStockVisibility = () => {
+                    let hasOutOfStock = false;
+                    items.forEach(item => {
+                        const isOutOfStock = item.querySelector('.is-out-of-stock') || item.querySelector('[data-in-stock="0"]');
+                        if (isOutOfStock) {
+                            hasOutOfStock = true;
+                            item.style.display = isHiding ? 'none' : '';
+                        }
+                    });
+
+                    if (!hasOutOfStock) {
+                        stockToggleBtn.style.display = 'none';
+                        return;
+                    }
+                    stockToggleBtn.style.display = '';
+                    stockToggleBtn.classList.toggle('is-active', isHiding);
+                    stockToggleBtn.setAttribute('aria-pressed', (!isHiding).toString());
+
+                    if (toggleText) {
+                        toggleText.textContent = isHiding
+                            ? (toggleText.dataset.textShow || 'SHOW OUT OF STOCK ITEMS')
+                            : (toggleText.dataset.textHide || 'HIDE OUT OF STOCK ITEMS');
+                    }
+                };
+
+                applyStockVisibility();
+
+                stockToggleBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    isHiding = !isHiding;
+                    applyStockVisibility();
+                });
+            }
         });
     }
 
@@ -1362,6 +1455,86 @@ const initStorefront = () => {
     }
 
     initProductWarningModal();
+
+    /**
+     * Back-in-Stock ("Notify Me") Modal Handler
+     */
+    function initStockNotificationModal() {
+        const modal = document.querySelector('[data-stock-notification-modal]');
+        if (!modal) return;
+
+        const inputProductId = modal.querySelector('[data-stock-modal-input-product-id]');
+        const nameEl = modal.querySelector('[data-stock-modal-name]');
+        const skuEl = modal.querySelector('[data-stock-modal-sku]');
+        const imgEl = modal.querySelector('[data-stock-modal-img]');
+        const emailInput = modal.querySelector('#zandersStockNotifyEmailInput');
+        const closeBtns = modal.querySelectorAll('[data-stock-modal-close="true"]');
+
+        function openModal(btn) {
+            const productId = btn.getAttribute('data-product-id');
+            const productName = btn.getAttribute('data-product-name') || '';
+            const productSku = btn.getAttribute('data-product-sku') || '';
+            const productImage = btn.getAttribute('data-product-image') || '';
+
+            if (inputProductId) inputProductId.value = productId || '';
+            if (nameEl) nameEl.textContent = productName;
+            if (skuEl) skuEl.textContent = productSku;
+            if (imgEl) {
+                if (productImage) {
+                    imgEl.src = productImage;
+                    imgEl.alt = productName;
+                    imgEl.parentElement.style.display = '';
+                } else {
+                    imgEl.parentElement.style.display = 'none';
+                }
+            }
+
+            modal.classList.add('is-open');
+            modal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden';
+
+            if (emailInput && !emailInput.value) {
+                setTimeout(() => emailInput.focus(), 150);
+            }
+        }
+
+        function closeModal() {
+            modal.classList.remove('is-open');
+            modal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        // Delegate click for trigger buttons (works for dynamically loaded sliders / listings too)
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('[data-stock-notify-open="true"]');
+            if (btn) {
+                e.preventDefault();
+                e.stopPropagation();
+                openModal(btn);
+            }
+        });
+
+        closeBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal();
+            });
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+                closeModal();
+            }
+        });
+    }
+
+    initStockNotificationModal();
 };
 
 if (document.readyState === 'loading') {

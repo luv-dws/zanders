@@ -112,7 +112,6 @@
         <service id="ZandersTheme\Service\QuantityAdjustmentService" public="true">
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="product.repository"/>
-            <argument type="service" id="category.repository"/>
         </service>
 
         <service id="ZandersTheme\Twig\QuantityAdjustmentTwigExtension" public="true">
@@ -123,6 +122,52 @@
         <service id="ZandersTheme\Cart\QuantityAdjustmentCartValidator" public="true">
             <argument type="service" id="ZandersTheme\Service\QuantityAdjustmentService"/>
             <tag name="shopware.cart.validator"/>
+        </service>
+
+        <service id="ZandersTheme\Core\Content\StockNotification\StockNotificationDefinition">
+            <tag name="shopware.entity.definition"/>
+        </service>
+
+        <service id="ZandersTheme\Controller\StockNotificationController" autowire="true" public="true">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="zanders_stock_notification.repository"/>
+            <argument type="service" id="product.repository"/>
+            <tag name="controller.service_arguments"/>
+            <tag name="container.service_subscriber"/>
+        </service>
+
+        <service id="ZandersTheme\Subscriber\StockRestockSubscriber">
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="zanders_stock_notification.repository"/>
+            <argument type="service" id="product.repository"/>
+            <argument type="service" id="mail_template.repository"/>
+            <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Mail\Service\MailService"/>
+            <argument type="service" id="router"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="logger"/>
+            <argument type="service" id="Shopware\Core\System\SalesChannel\Context\SalesChannelContextFactory"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="ZandersTheme\Core\Content\WarningLabel\WarningLabelDefinition">
+            <tag name="shopware.entity.definition"/>
+        </service>
+
+        <service id="ZandersTheme\Subscriber\ProductWarningSubscriber">
+            <argument type="service" id="zanders_warning_label.repository"/>
+            <argument type="service" id="Shopware\Core\Framework\Adapter\Cache\CacheTagCollector" on-invalid="null"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="ZandersTheme\Subscriber\WarningLabelCacheInvalidationSubscriber">
+            <argument type="service" id="Shopware\Core\Framework\Adapter\Cache\CacheInvalidator"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="ZandersTheme\Twig\WarningMessageTwigExtension">
+            <tag name="twig.extension"/>
         </service>
     </services>
 </container>

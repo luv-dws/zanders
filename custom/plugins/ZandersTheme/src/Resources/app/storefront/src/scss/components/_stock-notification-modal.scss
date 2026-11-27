@@ -1,0 +1,285 @@
+// ── Global Back-in-Stock ("Notify Me") Modal ──
+.zanders-stock-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 100000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+    box-sizing: border-box;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+
+    &.is-open {
+        display: flex !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    .zanders-stock-modal-dialog {
+        position: relative;
+        background-color: #ffffff;
+        border-radius: 4px;
+        border-top: 4px solid #991020;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+        max-width: 520px;
+        width: 100%;
+        padding: 28px 30px;
+        box-sizing: border-box;
+        animation: zandersStockModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+
+        .zanders-stock-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: transparent;
+            border: none;
+            padding: 6px;
+            cursor: pointer;
+            color: #88929e;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            transition: all 0.15s ease;
+
+            &:hover {
+                color: #121212;
+                background-color: #f1f3f6;
+            }
+        }
+
+        .zanders-stock-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+
+            .zanders-stock-modal-icon-badge {
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background-color: #fbf0f1;
+                color: #991020;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+                border: 1px solid #f6d8db;
+            }
+
+            .zanders-stock-modal-title-group {
+                .zanders-stock-modal-title {
+                    margin: 0;
+                    font-size: 1.25rem;
+                    font-weight: 700;
+                    color: #121212;
+                    letter-spacing: -0.2px;
+                    line-height: 1.25;
+                }
+
+                .zanders-stock-modal-subtitle {
+                    margin: 4px 0 0;
+                    font-size: 0.8125rem;
+                    color: #64748b;
+                    line-height: 1.45;
+                }
+            }
+        }
+
+        .zanders-stock-modal-product-preview {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-left: 3px solid #991020;
+            border-radius: 3px;
+            padding: 12px 16px;
+            margin-bottom: 22px;
+
+            .zanders-stock-modal-prod-img-wrap {
+                width: 58px;
+                height: 58px;
+                background-color: #ffffff;
+                border: 1px solid #e8ebee;
+                border-radius: 2px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 3px;
+                overflow: hidden;
+                flex-shrink: 0;
+
+                .zanders-stock-modal-prod-img {
+                    max-width: 100%;
+                    max-height: 100%;
+                    object-fit: contain;
+                }
+            }
+
+            .zanders-stock-modal-prod-info {
+                flex-grow: 1;
+                overflow: hidden;
+
+                .zanders-stock-modal-prod-name {
+                    font-size: 0.875rem;
+                    font-weight: 700;
+                    color: #121212;
+                    line-height: 1.35;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .zanders-stock-modal-prod-sku {
+                    font-size: 0.75rem;
+                    margin-top: 3px;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+
+                    .zanders-sku-label {
+                        color: #64748b;
+                    }
+
+                    .zanders-sku-val {
+                        color: #121212;
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
+
+        .zanders-stock-form-group {
+            margin-bottom: 0;
+
+            .zanders-stock-modal-label {
+                font-size: 0.8125rem;
+                font-weight: 700;
+                color: #24292f;
+                text-transform: uppercase;
+                letter-spacing: 0.4px;
+                margin-bottom: 6px;
+                display: block;
+            }
+
+            .zanders-input-group {
+                .zanders-input-group-icon {
+                    background-color: #f8fafc;
+                    border: 1px solid #cbd5e1;
+                    border-right: none;
+                    color: #64748b;
+                    border-radius: 2px 0 0 2px;
+                    padding: 0 12px;
+                }
+
+                .zanders-email-control {
+                    border: 1px solid #cbd5e1;
+                    border-radius: 0 2px 2px 0;
+                    height: 42px;
+                    font-size: 0.875rem;
+                    color: #121212;
+                    padding: 0 14px;
+                    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+                    &:focus {
+                        border-color: #991020;
+                        box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.15);
+                        outline: none;
+                    }
+                }
+            }
+
+            .zanders-stock-modal-privacy {
+                font-size: 0.75rem;
+                color: #64748b;
+                margin-top: 8px;
+                display: block;
+                line-height: 1.4;
+            }
+        }
+
+        .zanders-stock-modal-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid #edf0f3;
+
+            .zanders-modal-btn-cancel {
+                height: 38px;
+                padding: 0 20px;
+                background-color: transparent;
+                border: 1px solid #cbd5e1;
+                border-radius: 2px;
+                color: #475569;
+                font-size: 0.8125rem;
+                font-weight: 700;
+                letter-spacing: 0.4px;
+                text-transform: uppercase;
+                cursor: pointer;
+                transition: all 0.15s ease;
+
+                &:hover {
+                    background-color: #f8fafc;
+                    border-color: #94a3b8;
+                    color: #1e293b;
+                }
+            }
+
+            .zanders-modal-btn-submit {
+                height: 38px;
+                padding: 0 24px;
+                background-color: #991020;
+                border: 1px solid #991020;
+                border-radius: 2px;
+                color: #ffffff;
+                font-size: 0.8125rem;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                cursor: pointer;
+                transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+                box-shadow: 0 2px 6px rgba(153, 16, 32, 0.2);
+
+                &:hover {
+                    background-color: #7d0d1a;
+                    border-color: #7d0d1a;
+                    color: #ffffff;
+                    box-shadow: 0 3px 8px rgba(153, 16, 32, 0.3);
+                }
+
+                &:active {
+                    background-color: #670b15;
+                    border-color: #670b15;
+                }
+            }
+        }
+    }
+}
+
+@keyframes zandersStockModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(-14px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}

@@ -88,7 +88,10 @@
             "previous": "Previous",
             "next": "Next",
             "addToWishlist": "Add to Wishlist",
-            "loginToView": "Login to View"
+            "loginToView": "Login to View",
+            "showOutOfStock": "SHOW OUT OF STOCK ITEMS",
+            "hideOutOfStock": "HIDE OUT OF STOCK ITEMS",
+            "toggleStockTitle": "Toggle out-of-stock products"
         },
         "finderModal": {
             "title": "Product Finder",
@@ -231,6 +234,25 @@
             "taloDistributors": "TALO Distributors",
             "rebatesFlyers": "Zanders Rebates, Flyers & E-Shows",
             "becomeDealer": "Become a ZANDERS Dealer"
+        },
+        "stockNotification": {
+            "notifyMeButton": "Notify Me",
+            "emailPlaceholder": "Enter your email address",
+            "outOfStockNotice": "This product is currently out of stock. Enter your email to be notified when it becomes available.",
+            "privacyNotice": "We will only notify you once when this product is back in stock.",
+            "subscribeSuccess": "Thank you! You will be notified when this product is back in stock.",
+            "alreadySubscribed": "You are already subscribed to notifications for this product.",
+            "invalidInput": "Please provide a valid email address.",
+            "emailRequired": "Email address is required.",
+            "emailInvalid": "Please provide a valid email address.",
+            "invalidProduct": "Invalid product selected.",
+            "productNotFound": "Product not found.",
+            "featureDisabled": "Back-in-stock notifications are currently unavailable.",
+            "modalTitle": "Get Notified When Available",
+            "modalSubtitle": "We will email you once as soon as this item is back in stock.",
+            "emailInputLabel": "Your Email Address",
+            "cancel": "Cancel",
+            "closeModal": "Close"
         }
     },
     "checkout": {

@@ -1,0 +1,125 @@
+{# Global Back-in-Stock ("Notify Me") Modal for Zanders Sporting Goods #}
+{% block component_stock_notification_modal %}
+    <div class="zanders-stock-modal-backdrop"
+         id="zandersStockNotificationModal"
+         data-stock-notification-modal="true"
+         role="dialog"
+         aria-modal="true"
+         aria-hidden="true"
+         tabindex="-1">
+        {% block component_stock_notification_modal_dialog %}
+            <div class="zanders-stock-modal-dialog">
+                {% block component_stock_notification_modal_close_button %}
+                    <button type="button"
+                            class="zanders-stock-modal-close"
+                            data-stock-modal-close="true"
+                            aria-label="{{ 'zanders.stockNotification.closeModal'|trans|default('Close') }}">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                {% endblock %}
+
+                {% block component_stock_notification_modal_header %}
+                    <div class="zanders-stock-modal-header">
+                        {% block component_stock_notification_modal_header_icon %}
+                            <div class="zanders-stock-modal-icon-badge">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                </svg>
+                            </div>
+                        {% endblock %}
+
+                        {% block component_stock_notification_modal_header_text %}
+                            <div class="zanders-stock-modal-title-group">
+                                <h3 class="zanders-stock-modal-title">{{ 'zanders.stockNotification.modalTitle'|trans }}</h3>
+                                <p class="zanders-stock-modal-subtitle">{{ 'zanders.stockNotification.modalSubtitle'|trans }}</p>
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% block component_stock_notification_modal_product_preview %}
+                    <div class="zanders-stock-modal-product-preview">
+                        {% block component_stock_notification_modal_product_preview_image %}
+                            <div class="zanders-stock-modal-prod-img-wrap">
+                                <img src="" alt="" class="zanders-stock-modal-prod-img" data-stock-modal-img>
+                            </div>
+                        {% endblock %}
+
+                        {% block component_stock_notification_modal_product_preview_info %}
+                            <div class="zanders-stock-modal-prod-info">
+                                <div class="zanders-stock-modal-prod-name" data-stock-modal-name></div>
+                                <div class="zanders-stock-modal-prod-sku">
+                                    <span class="zanders-sku-label">{{ 'zanders.product.itemNumber'|trans|striptags }}</span>
+                                    <span class="zanders-sku-val" data-stock-modal-sku></span>
+                                </div>
+                            </div>
+                        {% endblock %}
+                    </div>
+                {% endblock %}
+
+                {% block component_stock_notification_modal_form %}
+                    <form action="{{ path('frontend.stock_notification.subscribe') }}"
+                          method="post"
+                          class="zanders-stock-modal-form"
+                          data-stock-modal-form="true">
+
+                        {% block component_stock_notification_modal_form_hidden_fields %}
+                            <input type="hidden" name="productId" value="" data-stock-modal-input-product-id>
+                        {% endblock %}
+
+                        {% block component_stock_notification_modal_form_email %}
+                            {% set customerEmail = '' %}
+                            {% if context.customer is defined and context.customer and context.customer.email is defined %}
+                                {% set customerEmail = context.customer.email %}
+                            {% endif %}
+
+                            <div class="form-group zanders-stock-form-group">
+                                <label for="zandersStockNotifyEmailInput" class="form-label zanders-stock-modal-label">
+                                    {{ 'zanders.stockNotification.emailInputLabel'|trans }}
+                                </label>
+                                <div class="input-group zanders-input-group">
+                                    <span class="input-group-text zanders-input-group-icon">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+                                        </svg>
+                                    </span>
+                                    <input type="email"
+                                           id="zandersStockNotifyEmailInput"
+                                           name="email"
+                                           class="form-control zanders-email-control"
+                                           placeholder="{{ 'zanders.stockNotification.emailPlaceholder'|trans }}"
+                                           value="{{ customerEmail }}"
+                                           required="required"
+                                           autocomplete="email">
+                                </div>
+                                <small class="form-text zanders-stock-modal-privacy">
+                                    {{ 'zanders.stockNotification.privacyNotice'|trans }}
+                                </small>
+                            </div>
+                        {% endblock %}
+
+                        {% block component_stock_notification_modal_form_actions %}
+                            <div class="zanders-stock-modal-actions">
+                                <button type="button" class="btn zanders-modal-btn-cancel" data-stock-modal-close="true">
+                                    {{ 'zanders.stockNotification.cancel'|trans }}
+                                </button>
+                                <button type="submit" class="btn zanders-modal-btn-submit">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                                    </svg>
+                                    <span>{{ 'zanders.stockNotification.notifyMeButton'|trans }}</span>
+                                </button>
+                            </div>
+                        {% endblock %}
+                    </form>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

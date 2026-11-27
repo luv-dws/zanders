@@ -1,0 +1,44 @@
+<sw-page class="zanders-warning-label-detail">
+    <template #smart-bar-actions>
+        <mt-button
+            variant="secondary"
+            size="default"
+            @click="$router.push({ name: 'zanders.warning.label.index' })"
+        >
+            Cancel
+        </mt-button>
+        <sw-button-process
+            :is-loading="isLoading"
+            :process-success="isSaveSuccessful"
+            variant="primary"
+            @process-finish="saveFinish"
+            @click.prevent="onSave"
+        >
+            Save
+        </sw-button-process>
+    </template>
+    <template #content>
+        <sw-card-view v-if="warningLabel">
+            <mt-card title="General" position-identifier="zanders-warning-label-detail-general">
+                <mt-text-field
+                    v-model="warningLabel.name"
+                    label="Warning Label Name"
+                    placeholder="e.g. Restricted Item / Cancer and Reproductive Harm"
+                    required
+                />
+                <mt-textarea
+                    v-model="warningLabel.message"
+                    label="Alert Message"
+                    placeholder="e.g. Cancer and Reproductive Harm"
+                    required
+                />
+                <mt-text-field
+                    v-model="warningLabel.url"
+                    label="Website URL"
+                    placeholder="e.g. https://www.p65warnings.ca.gov/"
+                    help-text="Optional URL to display as a clickable link in the popup modal."
+                />
+            </mt-card>
+        </sw-card-view>
+    </template>
+</sw-page>

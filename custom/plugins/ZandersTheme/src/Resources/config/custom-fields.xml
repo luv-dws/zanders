@@ -35,100 +35,12 @@
                 <label lang="de-DE">PDP-Warnhinweis aktivieren</label>
                 <position>1</position>
             </bool>
-            <text name="zanders_warning_title">
-                <label>Warning Title</label>
-                <label lang="de-DE">Warnhinweistitel</label>
-                <placeholder>Restricted Item</placeholder>
-                <placeholder lang="de-DE">Beschränkter Artikel</placeholder>
+            <single-entity-select name="zanders_warning_label_id">
+                <label>Warning Label</label>
+                <label lang="de-DE">Warnhinweis-Vorlage</label>
+                <entity>zanders_warning_label</entity>
                 <position>2</position>
-            </text>
-            <text-area name="zanders_warning_message">
-                <label>Warning Message</label>
-                <label lang="de-DE">Warnhinweistext</label>
-                <placeholder>Enter the warning or handling information displayed on the product page.</placeholder>
-                <placeholder lang="de-DE">Warn- oder Handling-Informationen für die Produktseite eingeben.</placeholder>
-                <position>3</position>
-            </text-area>
-        </fields>
-    </custom-field-set>
-    <custom-field-set>
-        <name>zanders_quantity_adjustment_product</name>
-        <label>Quantity Adjustment</label>
-        <label lang="de-DE">Mengenanpassung</label>
-        <related-entities>
-            <product/>
-        </related-entities>
-        <fields>
-            <text-area name="zanders_quantity_adjustment_rules">
-                <label>Product quantity adjustment rules (JSON)</label>
-                <label lang="de-DE">Produkt-Mengenanpassungsregeln (JSON)</label>
-                <placeholder>[{"qtyFrom":100,"qtyTo":500,"step":1,"startFrom":"2026-01-01","startTo":"2026-12-31","display":"100+"}]</placeholder>
-                <position>1</position>
-            </text-area>
-            <text name="zanders_qty_from">
-                <label>Qty From</label>
-                <position>2</position>
-            </text>
-            <text name="zanders_qty_to">
-                <label>Qty To</label>
-                <position>3</position>
-            </text>
-            <text name="zanders_qty_step">
-                <label>Step / Value</label>
-                <position>4</position>
-            </text>
-            <text name="zanders_qty_start_from">
-                <label>Start From</label>
-                <position>5</position>
-            </text>
-            <text name="zanders_qty_start_to">
-                <label>Start To</label>
-                <position>6</position>
-            </text>
-            <text name="zanders_qty_string">
-                <label>String</label>
-                <position>7</position>
-            </text>
-        </fields>
-    </custom-field-set>
-    <custom-field-set>
-        <name>zanders_quantity_adjustment_category</name>
-        <label>Category Quantity Adjustment</label>
-        <label lang="de-DE">Kategorie-Mengenanpassung</label>
-        <related-entities>
-            <category/>
-        </related-entities>
-        <fields>
-            <text-area name="zanders_category_quantity_adjustment_rules">
-                <label>Category quantity adjustment rules (JSON)</label>
-                <label lang="de-DE">Kategorie-Mengenanpassungsregeln (JSON)</label>
-                <placeholder>[{"qtyFrom":100,"qtyTo":500,"step":1,"startFrom":"2026-01-01","startTo":"2026-12-31","display":"100+"}]</placeholder>
-                <position>1</position>
-            </text-area>
-            <text name="zanders_category_qty_from">
-                <label>Qty From</label>
-                <position>2</position>
-            </text>
-            <text name="zanders_category_qty_to">
-                <label>Qty To</label>
-                <position>3</position>
-            </text>
-            <text name="zanders_category_qty_step">
-                <label>Step / Value</label>
-                <position>4</position>
-            </text>
-            <text name="zanders_category_qty_start_from">
-                <label>Start From</label>
-                <position>5</position>
-            </text>
-            <text name="zanders_category_qty_start_to">
-                <label>Start To</label>
-                <position>6</position>
-            </text>
-            <text name="zanders_category_qty_string">
-                <label>String</label>
-                <position>7</position>
-            </text>
+            </single-entity-select>
         </fields>
     </custom-field-set>
 </custom-fields>

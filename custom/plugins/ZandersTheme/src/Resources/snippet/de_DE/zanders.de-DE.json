@@ -88,7 +88,10 @@
             "previous": "Zurück",
             "next": "Weiter",
             "addToWishlist": "Auf den Wunschzettel",
-            "loginToView": "Anmelden zum Anzeigen"
+            "loginToView": "Anmelden zum Anzeigen",
+            "showOutOfStock": "NICHT VORRÄTIGE ARTIKEL ANZEIGEN",
+            "hideOutOfStock": "NICHT VORRÄTIGE ARTIKEL AUSBLENDEN",
+            "toggleStockTitle": "Nicht vorrätige Artikel ein-/ausblenden"
         },
         "finderModal": {
             "title": "Produktfinder",
@@ -231,6 +234,25 @@
             "taloDistributors": "TALO Großhändler",
             "rebatesFlyers": "Zanders Rabatte, Prospekte & E-Shows",
             "becomeDealer": "Werden Sie ZANDERS-Händler"
+        },
+        "stockNotification": {
+            "notifyMeButton": "Benachrichtigen",
+            "emailPlaceholder": "Ihre E-Mail-Adresse eingeben",
+            "outOfStockNotice": "Dieses Produkt ist derzeit nicht vorrätig. Tragen Sie Ihre E-Mail-Adresse ein, um benachrichtigt zu werden, sobald es wieder verfügbar ist.",
+            "privacyNotice": "Wir benachrichtigen Sie einmalig, sobald das Produkt wieder vorrätig ist.",
+            "subscribeSuccess": "Vielen Dank! Wir informieren Sie, sobald das Produkt wieder verfügbar ist.",
+            "alreadySubscribed": "Sie sind bereits für die Benachrichtigung zu diesem Produkt angemeldet.",
+            "invalidInput": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+            "emailRequired": "E-Mail-Adresse ist erforderlich.",
+            "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
+            "invalidProduct": "Ungültiges Produkt ausgewählt.",
+            "productNotFound": "Produkt wurde nicht gefunden.",
+            "featureDisabled": "Die Benachrichtigungsfunktion ist derzeit nicht verfügbar.",
+            "modalTitle": "Benachrichtigen, wenn verfügbar",
+            "modalSubtitle": "Wir senden Ihnen eine einmalige E-Mail, sobald der Artikel wieder vorrätig ist.",
+            "emailInputLabel": "Ihre E-Mail-Adresse",
+            "cancel": "Abbrechen",
+            "closeModal": "Schließen"
         }
     },
     "checkout": {

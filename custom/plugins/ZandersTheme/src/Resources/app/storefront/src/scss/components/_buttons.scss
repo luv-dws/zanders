@@ -94,3 +94,54 @@
     font-size: 0.8125rem;
     padding: 0 20px;
 }
+
+// Global Notify Me Card Button
+.zanders-card-notify-wrapper {
+    width: 100%;
+    margin-top: auto;
+    padding-top: 10px;
+    display: flex;
+    justify-content: center;
+
+    .zanders-btn-notify-me,
+    button.zanders-btn-notify-me,
+    a.zanders-btn-notify-me {
+        width: 100% !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        background-color: #991020 !important;
+        color: #ffffff !important;
+        border: 1px solid #991020 !important;
+        border-radius: 2px !important;
+        font-size: 0.8125rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        text-transform: uppercase !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 8px !important;
+        padding: 0.5rem 1rem !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        transition: all 0.15s ease !important;
+        box-shadow: 0 2px 4px rgba(153, 16, 32, 0.2) !important;
+
+        .zanders-notify-icon {
+            flex-shrink: 0;
+        }
+
+        &:hover {
+            background-color: #7d0d1a !important;
+            border-color: #7d0d1a !important;
+            color: #ffffff !important;
+            text-decoration: none !important;
+            box-shadow: 0 3px 8px rgba(153, 16, 32, 0.3) !important;
+        }
+
+        &:active {
+            background-color: #670b15 !important;
+            border-color: #670b15 !important;
+        }
+    }
+}

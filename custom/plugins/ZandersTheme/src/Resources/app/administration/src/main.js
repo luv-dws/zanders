@@ -7,3 +7,6 @@ import './module/sw-cms/blocks/commerce/zanders-daily-specials';
 import './module/sw-cms/blocks/commerce/zanders-popular-products';
 
 import './component/zanders-quantity-adjustment-config';
+
+// Import Warning Label Module
+import './module/zanders-warning-label';

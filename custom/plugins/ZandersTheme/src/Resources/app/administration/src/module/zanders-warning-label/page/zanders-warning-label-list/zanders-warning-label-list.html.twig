@@ -1,0 +1,129 @@
+<sw-page class="zanders-warning-label-list">
+    <template #search-bar>
+        <sw-search-bar
+            initial-search-type="zanders_warning_label"
+            :placeholder="$t('global.sw-search-bar.placeholder')"
+            :initial-search="term"
+            @search="onSearch"
+        />
+    </template>
+
+    <template #smart-bar-header>
+        <h2>
+            Warning Labels
+            <span v-if="!isLoading" class="sw-page__smart-bar-amount">
+                ({{ total }})
+            </span>
+        </h2>
+    </template>
+
+    <template #smart-bar-actions>
+        <mt-button
+            variant="primary"
+            size="default"
+            @click="$router.push({ name: 'zanders.warning.label.create' })"
+        >
+            Add Warning Label
+        </mt-button>
+    </template>
+
+    <template #content>
+        <div class="zanders-warning-label-list__content">
+            <mt-empty-state
+                v-if="!isLoading && !total"
+                centered
+                icon="regular-exclamation-triangle"
+                headline="No warning labels found"
+                description="Create your first warning label to assign to products."
+            >
+                <template #button>
+                    <mt-button
+                        variant="primary"
+                        @click="$router.push({ name: 'zanders.warning.label.create' })"
+                    >
+                        Add Warning Label
+                    </mt-button>
+                </template>
+            </mt-empty-state>
+
+            <sw-data-grid
+                v-else
+                ref="warningLabelGrid"
+                :data-source="entityList"
+                :columns="columns"
+                :full-page="true"
+                :show-settings="true"
+                :show-selection="true"
+                :sort-by="currentSortBy"
+                :sort-direction="sortDirection"
+                :is-loading="isLoading"
+                :allow-column-edit="true"
+                identifier="zanders-warning-label-list"
+                :disable-data-fetching="true"
+                @column-sort="onSortColumn"
+                @page-change="onPageChange"
+                @selection-change="updateSelection"
+            >
+                <template #column-name="{ item }">
+                    <router-link :to="{ name: 'zanders.warning.label.detail', params: { id: item.id } }">
+                        {{ item.name }}
+                    </router-link>
+                </template>
+
+                <template #actions="{ item }">
+                    <sw-context-menu-item
+                        :router-link="{ name: 'zanders.warning.label.detail', params: { id: item.id } }"
+                    >
+                        {{ $t('global.default.edit') }}
+                    </sw-context-menu-item>
+                    <sw-context-menu-item
+                        variant="danger"
+                        @click="onDelete(item.id)"
+                    >
+                        {{ $t('global.default.delete') }}
+                    </sw-context-menu-item>
+                </template>
+
+                <template #action-modals="{ item }">
+                    <sw-modal
+                        v-if="showDeleteModal === item.id"
+                        :title="$t('global.default.warning')"
+                        variant="small"
+                        @modal-close="onCloseDeleteModal"
+                    >
+                        <p>
+                            Are you sure you want to delete the warning label <strong>"{{ item.name }}"</strong>?
+                        </p>
+
+                        <template #modal-footer>
+                            <mt-button
+                                size="small"
+                                variant="secondary"
+                                @click="onCloseDeleteModal"
+                            >
+                                {{ $t('global.default.cancel') }}
+                            </mt-button>
+                            <mt-button
+                                variant="critical"
+                                size="small"
+                                @click="onConfirmDelete(item.id)"
+                            >
+                                {{ $t('global.default.delete') }}
+                            </mt-button>
+                        </template>
+                    </sw-modal>
+                </template>
+
+                <template #pagination>
+                    <sw-pagination
+                        :page="page"
+                        :limit="limit"
+                        :total="total"
+                        :total-visible="7"
+                        @page-change="onPageChange"
+                    />
+                </template>
+            </sw-data-grid>
+        </div>
+    </template>
+</sw-page>

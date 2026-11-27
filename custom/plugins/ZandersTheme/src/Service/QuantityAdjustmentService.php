@@ -2,7 +2,6 @@
 
 namespace ZandersTheme\Service;
 
-use Shopware\Core\Content\Category\CategoryEntity;
 use Shopware\Core\Content\Product\ProductEntity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -12,29 +11,10 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 class QuantityAdjustmentService
 {
     public const CONFIG_RULES = 'ZandersTheme.config.quantityAdjustmentRules';
-    public const PRODUCT_FIELD = 'zanders_quantity_adjustment_rules';
-    public const CATEGORY_FIELD = 'zanders_category_quantity_adjustment_rules';
-    private const PRODUCT_INDIVIDUAL_FIELDS = [
-        'qtyFrom' => 'zanders_qty_from',
-        'qtyTo' => 'zanders_qty_to',
-        'step' => 'zanders_qty_step',
-        'startFrom' => 'zanders_qty_start_from',
-        'startTo' => 'zanders_qty_start_to',
-        'display' => 'zanders_qty_string',
-    ];
-    private const CATEGORY_INDIVIDUAL_FIELDS = [
-        'qtyFrom' => 'zanders_category_qty_from',
-        'qtyTo' => 'zanders_category_qty_to',
-        'step' => 'zanders_category_qty_step',
-        'startFrom' => 'zanders_category_qty_start_from',
-        'startTo' => 'zanders_category_qty_start_to',
-        'display' => 'zanders_category_qty_string',
-    ];
 
     public function __construct(
         private readonly SystemConfigService $systemConfigService,
-        private readonly EntityRepository $productRepository,
-        private readonly EntityRepository $categoryRepository
+        private readonly EntityRepository $productRepository
     ) {
     }
 
@@ -64,41 +44,6 @@ class QuantityAdjustmentService
             'display' => '',
             'source' => null,
         ];
-
-        $productCustomFields = $product->getCustomFields() ?? [];
-        $productRules = $this->decodeIndividualRule($productCustomFields, self::PRODUCT_INDIVIDUAL_FIELDS);
-        if ($productRules === []) {
-            $productRules = $this->decodeRules($productCustomFields[self::PRODUCT_FIELD] ?? null);
-        }
-        $matched = $this->findMatchingRule($productRules);
-        if ($matched !== null) {
-            return $this->applyRule($matched, $default, 'product');
-        }
-
-        $categoryIds = $product->getCategoryTree() ?? [];
-        if ($categoryIds === [] && $product->getCategories() !== null) {
-            $categoryIds = $product->getCategories()->getIds();
-        }
-
-        if ($categoryIds !== []) {
-            $criteria = new Criteria(array_values(array_unique($categoryIds)));
-            $categories = $this->categoryRepository->search($criteria, $context->getContext())->getEntities();
-
-            foreach ($categories as $category) {
-                if (!$category instanceof CategoryEntity) {
-                    continue;
-                }
-                $categoryCustomFields = $category->getCustomFields() ?? [];
-                $categoryRules = $this->decodeIndividualRule($categoryCustomFields, self::CATEGORY_INDIVIDUAL_FIELDS);
-                if ($categoryRules === []) {
-                    $categoryRules = $this->decodeRules($categoryCustomFields[self::CATEGORY_FIELD] ?? null);
-                }
-                $matched = $this->findMatchingRule($categoryRules);
-                if ($matched !== null) {
-                    return $this->applyRule($matched, $default, 'category');
-                }
-            }
-        }
 
         $systemValue = $this->systemConfigService->get(self::CONFIG_RULES, $context->getSalesChannelId());
         $matched = $this->findMatchingRule($this->decodeRules($systemValue));
@@ -186,30 +131,6 @@ class QuantityAdjustmentService
         }
 
         return array_is_list($decoded) ? $decoded : [$decoded];
-    }
-
-    /**
-     * @param array<string,mixed> $customFields
-     * @param array<string,string> $fieldNames
-     * @return list<array<string,mixed>>
-     */
-    private function decodeIndividualRule(array $customFields, array $fieldNames): array
-    {
-        $qtyFrom = (int) ($customFields[$fieldNames['qtyFrom']] ?? 0);
-        $qtyTo = (int) ($customFields[$fieldNames['qtyTo']] ?? 0);
-
-        if ($qtyFrom <= 0 || $qtyTo < $qtyFrom) {
-            return [];
-        }
-
-        return [[
-            'qtyFrom' => $qtyFrom,
-            'qtyTo' => $qtyTo,
-            'step' => (int) ($customFields[$fieldNames['step']] ?? 1),
-            'startFrom' => (string) ($customFields[$fieldNames['startFrom']] ?? ''),
-            'startTo' => (string) ($customFields[$fieldNames['startTo']] ?? ''),
-            'display' => (string) ($customFields[$fieldNames['display']] ?? ''),
-        ]];
     }
 
     public function validateQuantity(ProductEntity|string $product, int $quantity, SalesChannelContext $context): ?string

@@ -328,6 +328,51 @@
                 opacity: 0.7;
             }
         }
+
+        .zanders-stock-notification-wrapper {
+            margin-top: 8px;
+
+            .alert {
+                font-size: 0.8125rem;
+                border-radius: 3px;
+            }
+
+            .input-group {
+                .form-control {
+                    border-radius: 2px 0 0 2px;
+                    border: 1px solid #d1d5db;
+                    font-size: 0.8125rem;
+
+                    &:focus {
+                        border-color: #991020;
+                        box-shadow: 0 0 0 1px #991020;
+                    }
+                }
+
+                .zanders-pd-notify-btn,
+                .btn-primary {
+                    background-color: #991020;
+                    border-color: #991020;
+                    color: #ffffff;
+                    font-weight: 700;
+                    font-size: 0.75rem;
+                    letter-spacing: 0.5px;
+                    text-transform: uppercase;
+                    border-radius: 0 2px 2px 0;
+                    padding: 0 18px;
+
+                    &:hover {
+                        background-color: #7d0d1a;
+                        border-color: #7d0d1a;
+                    }
+                }
+            }
+
+            .form-text {
+                font-size: 0.75rem;
+                color: #64748b;
+            }
+        }
     }
 
     // ── Quick Overview (Static) ──
@@ -387,7 +432,8 @@
                 }
             }
 
-            ul, ol {
+            ul,
+            ol {
                 padding-left: 1.1rem;
                 margin-bottom: 6px;
 
@@ -596,6 +642,7 @@
             opacity: 0;
             transform: translateY(-16px) scale(0.96);
         }
+
         to {
             opacity: 1;
             transform: translateY(0) scale(1);
@@ -755,7 +802,128 @@
         .zanders-cross-header-actions {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+
+            .zanders-cross-stock-toggle-group {
+                display: inline-flex;
+                align-items: center;
+
+                .zanders-cross-stock-toggle-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 7px;
+                    height: 34px;
+                    padding: 0 14px;
+                    background-color: #ffffff;
+                    color: #991020;
+                    border: 1px solid #991020;
+                    border-radius: 2px;
+                    font-size: 0.6875rem;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                    text-transform: uppercase;
+                    text-decoration: none;
+                    white-space: nowrap;
+                    line-height: 1;
+                    cursor: pointer;
+                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+                    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+                    outline: none;
+
+                    .zanders-cross-stock-toggle-icon {
+                        display: inline-flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-shrink: 0;
+                        line-height: 1;
+
+                        svg {
+                            display: block;
+                            width: 14px;
+                            height: 14px;
+                            transition: transform 0.2s ease;
+                        }
+
+                        .icon-eye {
+                            display: inline-block;
+                        }
+
+                        .icon-eye-off {
+                            display: none;
+                        }
+                    }
+
+                    .zanders-cross-stock-toggle-text {
+                        display: inline-block;
+                        line-height: 1;
+                    }
+
+                    &:hover {
+                        background-color: #fdf2f2;
+                        border-color: #7d0d1a;
+                        color: #7d0d1a;
+                        box-shadow: 0 2px 5px rgba(153, 16, 32, 0.15);
+                        transform: translateY(-0.5px);
+
+                        .zanders-cross-stock-toggle-icon svg {
+                            transform: scale(1.1);
+                        }
+                    }
+
+                    &:active {
+                        transform: translateY(0);
+                        box-shadow: 0 1px 2px rgba(153, 16, 32, 0.1);
+                    }
+
+                    &:focus-visible {
+                        box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.25);
+                    }
+
+                    // When out-of-stock items are currently visible
+                    &:not(.is-active) {
+                        background-color: #991020;
+                        border-color: #991020;
+                        color: #ffffff;
+
+                        .icon-eye {
+                            display: none;
+                        }
+
+                        .icon-eye-off {
+                            display: inline-block;
+                        }
+
+                        &:hover {
+                            background-color: #7d0d1a;
+                            border-color: #7d0d1a;
+                            color: #ffffff;
+                            box-shadow: 0 3px 6px rgba(153, 16, 32, 0.25);
+                        }
+                    }
+
+                    // When out-of-stock items are currently hidden
+                    &.is-active {
+                        background-color: #ffffff;
+                        border-color: #991020;
+                        color: #991020;
+
+                        .icon-eye {
+                            display: inline-block;
+                        }
+
+                        .icon-eye-off {
+                            display: none;
+                        }
+
+                        &:hover {
+                            background-color: #fdf2f2;
+                            border-color: #7d0d1a;
+                            color: #7d0d1a;
+                        }
+                    }
+                }
+            }
 
             .zanders-cross-nav-group {
                 display: inline-flex;

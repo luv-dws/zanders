@@ -4,7 +4,6 @@ namespace ZandersTheme\Subscriber;
 
 use Shopware\Core\Content\Product\Events\ProductCrossSellingIdsCriteriaEvent;
 use Shopware\Core\Content\Product\Events\ProductCrossSellingStreamCriteriaEvent;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CrossSellingSubscriber implements EventSubscriberInterface
@@ -29,14 +28,7 @@ class CrossSellingSubscriber implements EventSubscriberInterface
         $criteria->addAssociation('manufacturer');
         $criteria->addAssociation('prices');
 
-        // Filter out of stock items at the database level (availableStock > 0)
-        $criteria->addFilter(
-            new RangeFilter(
-                'availableStock',
-                [
-                    RangeFilter::GT => 0,
-                ]
-            )
-        );
+        // Note: Database-level stock filtering is omitted so out-of-stock items can be
+        // loaded and dynamically toggled via the storefront Show/Hide toggle button.
     }
 }

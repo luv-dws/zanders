@@ -45,31 +45,31 @@
                         <div class="zanders-pd-gallery-col">
 
                             {% if isUserLoggedIn %}
-                            <div class="zanders-pd-actions-row">
-                                <button
-                                    type="button"
-                                    class="zanders-pd-action-link zanders-compare-action-btn"
-                                    data-compare-btn
-                                    data-product-id="{{ product.id }}"
-                                    data-product-name="{{ product.translated.name|e('html_attr') }}"
-                                    data-product-sku="{{ product.productNumber|e('html_attr') }}"
-                                    data-product-upc="{{ (product.ean ?: '')|e('html_attr') }}"
-                                    data-product-brand="{{ (product.manufacturer ? product.manufacturer.translated.name : '')|e('html_attr') }}"
-                                    data-product-price="{{ formattedPrice|e('html_attr') }}"
-                                    data-product-image="{{ mainImage ? mainImage.url : '' }}"
-                                    data-product-url="{{ seoUrl('frontend.detail.page', {productId: product.id}) }}"
-                                    data-product-stock="{{ availableStock >= 50 ? ('50+ ' ~ ('zanders.product.inStock'|trans)) : (availableStock > 0 ? ('zanders.delivery.inStockCount'|trans({'%count%': availableStock})) : ('zanders.product.outOfStock'|trans)) }}"
-                                    data-product-in-stock="{{ isAvailable ? '1' : '0' }}"
-                                    title="{{ 'zanders.product.addToCompare'|trans|striptags }}"
-                                    aria-label="{{ 'zanders.product.addToCompare'|trans|striptags }}"
-                                >
-                                    <svg class="zanders-action-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <rect x="3" y="3" width="18" height="18" rx="2"/>
-                                        <path d="M9 9h6M9 12h6M9 15h4"/>
-                                    </svg>
-                                    <span class="zanders-compare-btn-text">{{ 'zanders.product.addToCompare'|trans|striptags }}</span>
-                                </button>
-                            </div>
+                                <div class="zanders-pd-actions-row">
+                                    <button
+                                        type="button"
+                                        class="zanders-pd-action-link zanders-compare-action-btn"
+                                        data-compare-btn
+                                        data-product-id="{{ product.id }}"
+                                        data-product-name="{{ product.translated.name|e('html_attr') }}"
+                                        data-product-sku="{{ product.productNumber|e('html_attr') }}"
+                                        data-product-upc="{{ (product.ean ?: '')|e('html_attr') }}"
+                                        data-product-brand="{{ (product.manufacturer ? product.manufacturer.translated.name : '')|e('html_attr') }}"
+                                        data-product-price="{{ formattedPrice|e('html_attr') }}"
+                                        data-product-image="{{ mainImage ? mainImage.url : '' }}"
+                                        data-product-url="{{ seoUrl('frontend.detail.page', {productId: product.id}) }}"
+                                        data-product-stock="{{ availableStock >= 50 ? ('50+ ' ~ ('zanders.product.inStock'|trans)) : (availableStock > 0 ? ('zanders.delivery.inStockCount'|trans({'%count%' : availableStock})) : ('zanders.product.outOfStock'|trans)) }}"
+                                        data-product-in-stock="{{ isAvailable ? '1' : '0' }}"
+                                        title="{{ 'zanders.product.addToCompare'|trans|striptags }}"
+                                        aria-label="{{ 'zanders.product.addToCompare'|trans|striptags }}"
+                                    >
+                                        <svg class="zanders-action-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                            <path d="M9 9h6M9 12h6M9 15h4"/>
+                                        </svg>
+                                        <span class="zanders-compare-btn-text">{{ 'zanders.product.addToCompare'|trans|striptags }}</span>
+                                    </button>
+                                </div>
                             {% endif %}
 
                             {% set mainImage = product.cover.media ?? null %}
@@ -166,54 +166,95 @@
                                         {% endif %}
                                     </div>
                                 {% elseif product.active %}
-                                    {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
-                                    <form
-                                        action="{{ path('frontend.checkout.line-item.add') }}"
-                                        method="post"
-                                        class="zanders-pd-buy-form"
-                                        data-add-to-cart="true"
-                                    >
+                                    {% set isNotifyMeEnabled = config('ZandersTheme.config.enableNotifyMe') %}
+                                    {% if isNotifyMeEnabled is null %}
+                                        {% set isNotifyMeEnabled = true %}
+                                    {% endif %}
 
-                                        <input type="hidden" name="redirectTo" value="frontend.detail.page">
-                                        <input
-                                            type="hidden"
-                                            name="redirectParameters"
-                                            data-redirect-parameters="true"
-                                            value="{{ {productId: product.id}|json_encode }}"
-                                        >
-                                        <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
-                                        <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
-                                        <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
-                                        <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
-                                        <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
-                                        <input type="hidden" name="product-name" value="{{ product.translated.name }}">
-                                        <input type="hidden" name="brand-name" value="{{ product.manufacturer.translated.name|default('') }}">
-                                        <div class="zanders-pd-action-bar">
-                                            <div class="zanders-pd-qty-group">
-                                                <label for="zandersQtyInput" class="zanders-pd-qty-label">{{ 'zanders.product.qty'|trans|striptags }}</label>
-                                                <input
-                                                    type="number"
-                                                    id="zandersQtyInput"
-                                                    name="lineItems[{{ product.id }}][quantity]"
-                                                    class="zanders-pd-qty-input"
-                                                    min="{{ quantityFrom }}"
-                                                    max="{{ quantityTo }}"
-                                                    step="{{ quantityStep }}"
-                                                    value="{{ quantityFrom }}"
-                                                >
-                                            </div>
+                                    {% if isNotifyMeEnabled and availableStock <= 0 %}
+                                        <div class="zanders-stock-notification-wrapper mb-3">
+                                            <form
+                                                action="{{ path('frontend.stock_notification.subscribe') }}"
+                                                method="post"
+                                                class="zanders-stock-notification-form"
+                                                data-stock-notification="true"
+                                            >
 
-                                            {% if buyable %}
-                                                <button type="submit" class="zanders-pd-add-to-cart-btn">
-                                                    {{ 'zanders.product.addToCart'|trans }}
-                                                </button>
-                                            {% else %}
-                                                <button type="button" class="zanders-pd-add-to-cart-btn is-disabled" disabled>
-                                                    {{ 'zanders.detail.outOfStock'|trans }}
-                                                </button>
-                                            {% endif %}
+                                                <input type="hidden" name="productId" value="{{ product.id }}">
+
+                                                <div class="alert alert-warning mb-2 py-2 px-3 small" role="alert">
+                                                    {{ 'zanders.stockNotification.outOfStockNotice'|trans }}
+                                                </div>
+
+                                                <div class="input-group">
+                                                    <input
+                                                        type="email"
+                                                        name="email"
+                                                        class="form-control form-control-sm"
+                                                        placeholder="{{ 'zanders.stockNotification.emailPlaceholder'|trans }}"
+                                                        value="{{ context.customer ? context.customer.email : '' }}"
+                                                        required="required"
+                                                        aria-label="{{ 'zanders.stockNotification.emailPlaceholder'|trans }}"
+                                                    >
+                                                    <button class="btn btn-primary btn-sm zanders-pd-notify-btn" type="submit">
+                                                        {{ 'zanders.stockNotification.notifyMeButton'|trans }}
+                                                    </button>
+                                                </div>
+                                                <small class="form-text text-muted d-block mt-1">
+                                                    {{ 'zanders.stockNotification.privacyNotice'|trans }}
+                                                </small>
+                                            </form>
                                         </div>
-                                    </form>
+                                    {% else %}
+                                        {% set buyable = product.available and product.childCount <= 0 and product.calculatedMaxPurchase > 0 %}
+                                        <form
+                                            action="{{ path('frontend.checkout.line-item.add') }}"
+                                            method="post"
+                                            class="zanders-pd-buy-form"
+                                            data-add-to-cart="true"
+                                        >
+
+                                            <input type="hidden" name="redirectTo" value="frontend.detail.page">
+                                            <input
+                                                type="hidden"
+                                                name="redirectParameters"
+                                                data-redirect-parameters="true"
+                                                value="{{ {productId: product.id}|json_encode }}"
+                                            >
+                                            <input type="hidden" name="lineItems[{{ product.id }}][id]" value="{{ product.id }}">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][type]" value="product">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][referencedId]" value="{{ product.id }}">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][stackable]" value="1">
+                                            <input type="hidden" name="lineItems[{{ product.id }}][removable]" value="1">
+                                            <input type="hidden" name="product-name" value="{{ product.translated.name }}">
+                                            <input type="hidden" name="brand-name" value="{{ product.manufacturer.translated.name|default('') }}">
+                                            <div class="zanders-pd-action-bar">
+                                                <div class="zanders-pd-qty-group">
+                                                    <label for="zandersQtyInput" class="zanders-pd-qty-label">{{ 'zanders.product.qty'|trans|striptags }}</label>
+                                                    <input
+                                                        type="number"
+                                                        id="zandersQtyInput"
+                                                        name="lineItems[{{ product.id }}][quantity]"
+                                                        class="zanders-pd-qty-input"
+                                                        min="{{ quantityFrom }}"
+                                                        max="{{ quantityTo }}"
+                                                        step="{{ quantityStep }}"
+                                                        value="{{ quantityFrom }}"
+                                                    >
+                                                </div>
+
+                                                {% if buyable %}
+                                                    <button type="submit" class="zanders-pd-add-to-cart-btn">
+                                                        {{ 'zanders.product.addToCart'|trans }}
+                                                    </button>
+                                                {% else %}
+                                                    <button type="button" class="zanders-pd-add-to-cart-btn is-disabled" disabled>
+                                                        {{ 'zanders.detail.outOfStock'|trans }}
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </form>
+                                    {% endif %}
                                 {% endif %}
                             {% else %}
                                 <div class="zanders-pd-login-price-wrap">
@@ -266,13 +307,9 @@
                             </div>
 
                             {# ── Warning Box & Modal: Product Warning Information ── #}
-                            {% set warningFields = product.translated.customFields ?: product.customFields %}
-                            {% set warningEnabled = warningFields.zanders_warning_enabled|default(false) %}
-                            {% set warningTitle = warningFields.zanders_warning_title|default('zanders.detail.productWarning'|trans) %}
-                            {% set warningMessage = warningFields.zanders_warning_message|default('') %}
+                            {% set warningLabel = page.extensions.zandersWarningLabel %}
 
-                            {% if warningEnabled and warningMessage is not empty %}
-
+                            {% if warningLabel %}
                                 <div class="zanders-pd-warning-box">
                                     <div class="zanders-pd-warning-icon">
                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -284,7 +321,7 @@
                                     <div class="zanders-pd-warning-content">
                                         <strong class="zanders-pd-warning-label">{{ 'zanders.detail.warningLabel'|trans }}</strong>
                                         <button type="button" class="zanders-pd-warning-link" data-warning-modal-open="true" aria-haspopup="dialog">
-                                            {{ warningTitle|sw_sanitize }}
+                                            {{ warningLabel.name|sw_sanitize }}
                                         </button>
                                     </div>
                                 </div>
@@ -307,8 +344,17 @@
                                         </div>
                                         <div class="zanders-warning-modal-content">
                                             <p class="zanders-warning-modal-text">
-                                                <strong>{{ 'zanders.detail.warningLabel'|trans }}</strong> {{ warningMessage|sw_sanitize }}
+                                                <strong>{{ 'zanders.detail.warningLabel'|trans }}</strong> {{ warningLabel.message|zanders_format_warning_message }}
                                             </p>
+                                            {% set warningUrl = warningLabel.url|default(warningLabel.get('url'))|default('') %}
+                                            {% if warningUrl is not empty %}
+                                                {% set targetUrl = (warningUrl starts with 'http://' or warningUrl starts with 'https://') ? warningUrl : ('https://' ~ warningUrl) %}
+                                                <p class="zanders-warning-modal-text mt-1">
+                                                    <a href="{{ targetUrl }}" target="_blank" rel="noopener noreferrer" class="zanders-warning-link">
+                                                        {{ warningUrl|zanders_format_warning_url_label }}
+                                                    </a>
+                                                </p>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </div>

@@ -1,6 +1,28 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
     <card>
+        <title>Notify Me Configuration</title>
+        <title lang="de-DE">Benachrichtigungskonfiguration</title>
+
+        <input-field type="bool">
+            <name>enableNotifyMe</name>
+            <label>Enable "Notify Me" on out-of-stock products</label>
+            <label lang="de-DE">"Benachrichtigen"-Funktion für nicht vorrätige Produkte aktivieren</label>
+            <helpText>Show a back-in-stock subscription button instead of Add to Cart when stock reaches 0.</helpText>
+            <helpText lang="de-DE">Zeigt ein Anmeldeformular anstelle des Warenkorb-Buttons an, wenn der Lagerbestand 0 oder kleiner ist.</helpText>
+            <defaultValue>true</defaultValue>
+        </input-field>
+
+        <input-field type="text">
+            <name>notifyMeSenderEmail</name>
+            <label>Sender email for back-in-stock notifications</label>
+            <label lang="de-DE">Absender-E-Mail für Wieder-vorrätig-Benachrichtigungen</label>
+            <placeholder>noreply@example.com</placeholder>
+            <helpText>Optional sender email address. Falls back to core basic information email when empty.</helpText>
+            <helpText lang="de-DE">Optionale Absender-E-Mail-Adresse. Fällt auf die Stammdaten-E-Mail zurück, wenn leer.</helpText>
+        </input-field>
+    </card>
+    <card>
         <title>Featured Products Configuration</title>
         <title lang="de-DE">Ausgewählte Produkte Konfiguration</title>
 

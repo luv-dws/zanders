@@ -7,6 +7,7 @@ use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressEnt
 use Shopware\Core\Checkout\Customer\Event\CustomerSetDefaultShippingAddressEvent;
 use Shopware\Core\Content\Product\Events\ProductListingResultEvent;
 use Shopware\Core\Framework\Adapter\Cache\Event\HttpCacheCookieEvent;
+use Shopware\Core\Framework\Adapter\Cache\Event\HttpCacheKeyEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Struct\ArrayEntity;
@@ -35,8 +36,19 @@ class ProductRestrictionStorefrontSubscriber implements EventSubscriberInterface
             ProductPageLoadedEvent::class => 'onProductPageLoaded',
             ProductListingResultEvent::class => 'onProductListingResult',
             HttpCacheCookieEvent::class => 'onHttpCacheCookie',
+            HttpCacheKeyEvent::class => 'onHttpCacheKey',
             CustomerSetDefaultShippingAddressEvent::class => 'onDefaultShippingAddressChanged',
         ];
+    }
+
+    public function onHttpCacheKey(HttpCacheKeyEvent $event): void
+    {
+        // Cache-key lookup happens before Shopware rebuilds the sales-channel context.
+        // Once a successful login has set this cookie, bypass lookup and storage so stale
+        // anonymous HTML can never be returned for the authenticated browser session.
+        if (\in_array('logged-in', explode(',', (string) $event->request->cookies->get('sw-states')), true)) {
+            $event->isCacheable = false;
+        }
     }
 
     /**
@@ -91,9 +103,24 @@ class ProductRestrictionStorefrontSubscriber implements EventSubscriberInterface
     public function onHttpCacheCookie(HttpCacheCookieEvent $event): void
     {
         $context = $event->context;
+
+        // The global header is rendered as an ESI fragment and contains customer-specific
+        // information (the account link, first name and logout action). A cache hash only
+        // describes the customer's rule/context state, not their identity, so storing this
+        // fragment can make an anonymous or another customer's header reappear after login.
+        // Keep anonymous headers cacheable, but always render an authenticated header fresh.
+        if ($event->request->attributes->get('_route') === 'frontend.header' && $context->getCustomer() !== null) {
+            $event->doNotStore = true;
+        }
+
         $destination = $this->restrictionService->getShippingDestination($context);
         $stateId = $destination['stateId'] ?? 'none';
         $event->add('customer-shipping-state', $stateId);
+
+        // Storefront pages contain customer-specific markup and, on this shop, customer prices.
+        // Include the customer identity in the cache hash so a login cannot reuse an anonymous
+        // page (or another customer's page) that was stored under the same context/rule hash.
+        $event->add('customer-id', $context->getCustomer()?->getId() ?? 'anonymous');
     }
 
     public function onProductPageLoaded(ProductPageLoadedEvent $event): void

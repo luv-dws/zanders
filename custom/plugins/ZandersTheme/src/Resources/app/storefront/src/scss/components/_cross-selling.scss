@@ -1,325 +1,494 @@
 // Zanders Cross-Selling Slider Styles
 
-            .zanders-cross-selling-wrapper {
-                margin: 2.5rem 0 3.5rem 0;
-                font-family: inherit;
-            }
-            .zanders-cross-group {
-                margin-bottom: 2.5rem;
-            }
-            .zanders-cross-group:last-child {
-                margin-bottom: 0;
-            }
-            .zanders-cross-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                flex-wrap: wrap;
-                gap: 12px;
-                padding-bottom: 12px;
-                border-bottom: 3px solid #991020;
-                margin-bottom: 24px;
-            }
-            .zanders-cross-title {
-                color: #991020;
-                font-size: 1.25rem;
-                font-weight: 800;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                margin: 0;
-                line-height: 1.2;
-            }
-            .zanders-cross-header-actions {
-                display: inline-flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .zanders-cross-nav-group {
-                display: inline-flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .zanders-cross-nav-btn {
-                width: 34px;
-                height: 34px;
-                border-radius: 2px;
+.zanders-cross-selling-wrapper {
+    margin: 2.5rem 0 3.5rem 0;
+    font-family: inherit;
+}
+
+.zanders-cross-group {
+    margin-bottom: 2.5rem;
+}
+
+.zanders-cross-group:last-child {
+    margin-bottom: 0;
+}
+
+.zanders-cross-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #991020;
+    margin-bottom: 24px;
+}
+
+.zanders-cross-title {
+    color: #991020;
+    font-size: 1.25rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.zanders-cross-header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+
+    .zanders-cross-stock-toggle-group {
+        display: inline-flex;
+        align-items: center;
+
+        .zanders-cross-stock-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            height: 34px;
+            padding: 0 14px;
+            background-color: #ffffff;
+            color: #991020;
+            border: 1px solid #991020;
+            border-radius: 2px;
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            text-decoration: none;
+            white-space: nowrap;
+            line-height: 1;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            outline: none;
+
+            .zanders-cross-stock-toggle-icon {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                padding: 0;
-                outline: none;
+                flex-shrink: 0;
+                line-height: 1;
+
+                svg {
+                    display: block;
+                    width: 14px;
+                    height: 14px;
+                    transition: transform 0.2s ease;
+                }
+
+                .icon-eye {
+                    display: inline-block;
+                }
+
+                .icon-eye-off {
+                    display: none;
+                }
             }
-            .zanders-cross-nav-prev {
-                background-color: #ffffff;
-                border: 1px solid #991020;
-                color: #991020;
+
+            .zanders-cross-stock-toggle-text {
+                display: inline-block;
+                line-height: 1;
             }
-            .zanders-cross-nav-prev:hover {
+
+            &:hover {
                 background-color: #fdf2f2;
-            }
-            .zanders-cross-nav-next {
-                background-color: #991020;
-                border: 1px solid #991020;
-                color: #ffffff;
-            }
-            .zanders-cross-nav-next:hover {
-                background-color: #7d0d1a;
                 border-color: #7d0d1a;
-            }
+                color: #7d0d1a;
+                box-shadow: 0 2px 5px rgba(153, 16, 32, 0.15);
+                transform: translateY(-0.5px);
 
-            /* Carousel / Slider Track */
-            .zanders-cross-carousel {
-                position: relative;
-                width: 100%;
-                overflow: hidden;
-            }
-            .zanders-cross-track {
-                display: flex;
-                gap: 16px;
-                overflow-x: auto;
-                scroll-behavior: smooth;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-                padding: 4px 2px 14px 2px;
-            }
-            .zanders-cross-track::-webkit-scrollbar {
-                display: none;
-            }
-            .zanders-cross-slide-item {
-                flex: 0 0 calc(25% - 12px);
-                min-width: 230px;
-                max-width: 285px;
-                box-sizing: border-box;
-                display: flex;
-                transition: opacity 0.2s ease;
-
-                .zanders-product-card {
-                    width: 100%;
-                    height: 100%;
-                }
-            }
-            @media (max-width: 1199px) {
-                .zanders-cross-slide-item {
-                    flex: 0 0 calc(33.333% - 11px);
-                }
-            }
-            @media (max-width: 899px) {
-                .zanders-cross-slide-item {
-                    flex: 0 0 calc(50% - 8px);
-                }
-            }
-            @media (max-width: 575px) {
-                .zanders-cross-slide-item {
-                    flex: 0 0 100%;
-                    max-width: 100%;
+                .zanders-cross-stock-toggle-icon svg {
+                    transform: scale(1.1);
                 }
             }
 
-            /* Product Card */
-            .zanders-cross-card {
-                background: #ffffff;
-                border: 1px solid #e5e7eb;
-                border-radius: 2px;
-                padding: 18px 16px 14px 16px;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                transition: box-shadow 0.2s ease, transform 0.2s ease;
-            }
-            .zanders-cross-card:hover {
-                box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
+            &:active {
+                transform: translateY(0);
+                box-shadow: 0 1px 2px rgba(153, 16, 32, 0.1);
             }
 
-            .zanders-cross-image-link {
-                text-decoration: none;
-                display: block;
-            }
-            .zanders-cross-image-wrap {
-                height: 130px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 14px;
-                overflow: hidden;
-            }
-            .zanders-cross-product-img {
-                max-width: 100%;
-                max-height: 100%;
-                object-fit: contain;
-                display: block;
-                transition: transform 0.2s ease;
-            }
-            .zanders-cross-card:hover .zanders-cross-product-img {
-                transform: scale(1.02);
-            }
-            .zanders-cross-image-placeholder {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 100%;
-                height: 100%;
-                background-color: #f8fafc;
-                border-radius: 2px;
+            &:focus-visible {
+                box-shadow: 0 0 0 2px rgba(153, 16, 32, 0.25);
             }
 
-            /* Details & Typography */
-            .zanders-cross-details {
-                text-align: center;
-                flex-grow: 1;
-            }
-            .zanders-cross-card-title {
-                text-align: center;
-                font-size: 0.8125rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                line-height: 1.35;
-                color: #111827;
-                margin: 0 0 8px 0;
-                min-height: 38px;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-            }
-            .zanders-cross-card-title a {
-                color: inherit;
-                text-decoration: none;
-            }
-            .zanders-cross-card-title a:hover {
-                color: #991020;
-            }
-
-            .zanders-cross-card-meta {
-                text-align: center;
-                font-size: 0.75rem;
-                line-height: 1.5;
-                margin-bottom: 10px;
-            }
-            .zanders-cross-meta-row {
-                margin-bottom: 2px;
-            }
-            .zanders-cross-meta-lbl {
-                color: #64748b;
-                font-weight: 400;
-                margin-right: 3px;
-            }
-            .zanders-cross-meta-val {
-                color: #000000 !important;
-                font-weight: 700;
-            }
-
-            /* Bottom & Price Row */
-            .zanders-cross-card-bottom {
-                margin-top: auto;
-                padding-top: 6px;
-            }
-            .zanders-cross-price-row {
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-                width: 100%;
-                margin-bottom: 12px;
-                padding: 0 2px;
-            }
-            .zanders-cross-current-price {
-                color: #991020;
-                font-size: 0.9375rem;
-                font-weight: 700;
-            }
-
-            /* Actions Row */
-            .zanders-cross-action-row {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 8px;
-                width: 100%;
-            }
-            .zanders-cross-cart-wrap {
-                flex-grow: 1;
-            }
-            .zanders-cross-buy-form {
-                margin: 0;
-            }
-            .zanders-cross-btn-add-to-cart {
-                width: 100%;
-                max-width: 110px;
-                height: 32px;
+            // When out-of-stock items are currently visible (showing out-of-stock, button says "HIDE OUT OF STOCK ITEMS")
+            &:not(.is-active) {
                 background-color: #991020;
-                color: #ffffff !important;
-                font-size: 0.6875rem;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.4px;
-                padding: 0 10px;
-                border: none;
-                border-radius: 2px;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: background-color 0.2s ease;
-                white-space: nowrap;
-            }
-            .zanders-cross-btn-add-to-cart:hover {
-                background-color: #7d0d1a;
-            }
-            .zanders-cross-btn-add-to-cart:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
+                border-color: #991020;
+                color: #ffffff;
+
+                .icon-eye {
+                    display: none;
+                }
+
+                .icon-eye-off {
+                    display: inline-block;
+                }
+
+                &:hover {
+                    background-color: #7d0d1a;
+                    border-color: #7d0d1a;
+                    color: #ffffff;
+                    box-shadow: 0 3px 6px rgba(153, 16, 32, 0.25);
+                }
             }
 
-            .zanders-cross-circle-actions {
-                display: inline-flex;
-                align-items: center;
-                gap: 6px;
-            }
-            .zanders-cross-circle-btn {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                background-color: #f3f4f6;
-                border: none;
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                color: #64748b;
-                transition: all 0.2s ease;
-                padding: 0;
-                outline: none;
-            }
-            .zanders-cross-circle-btn:hover {
-                background-color: #e5e7eb;
+            // When out-of-stock items are currently hidden (button says "SHOW OUT OF STOCK ITEMS")
+            &.is-active {
+                background-color: #ffffff;
+                border-color: #991020;
                 color: #991020;
-            }
-            .zanders-cross-circle-btn svg {
-                display: block;
-                transition: transform 0.15s ease;
-            }
-            .zanders-cross-circle-btn:hover svg {
-                transform: scale(1.1);
-            }
-            .zanders-cross-wishlist-btn.is-active svg {
-                fill: #991020 !important;
-                stroke: #991020 !important;
-            }
 
-            /* Responsive Adjustments */
-            @media (max-width: 768px) {
-                .zanders-cross-header {
-                    flex-direction: column;
-                    align-items: flex-start;
+                .icon-eye {
+                    display: inline-block;
                 }
-                .zanders-cross-header-actions {
-                    width: 100%;
-                    justify-content: space-between;
+
+                .icon-eye-off {
+                    display: none;
                 }
-                .zanders-cross-title {
-                    font-size: 1.35rem;
+
+                &:hover {
+                    background-color: #fdf2f2;
+                    border-color: #7d0d1a;
+                    color: #7d0d1a;
                 }
             }
+        }
+    }
+
+    .zanders-cross-nav-group {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+}
+
+.zanders-cross-nav-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.zanders-cross-nav-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    outline: none;
+}
+
+.zanders-cross-nav-prev {
+    background-color: #ffffff;
+    border: 1px solid #991020;
+    color: #991020;
+}
+
+.zanders-cross-nav-prev:hover {
+    background-color: #fdf2f2;
+}
+
+.zanders-cross-nav-next {
+    background-color: #991020;
+    border: 1px solid #991020;
+    color: #ffffff;
+}
+
+.zanders-cross-nav-next:hover {
+    background-color: #7d0d1a;
+    border-color: #7d0d1a;
+}
+
+/* Carousel / Slider Track */
+.zanders-cross-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.zanders-cross-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 4px 2px 14px 2px;
+}
+
+.zanders-cross-track::-webkit-scrollbar {
+    display: none;
+}
+
+.zanders-cross-slide-item {
+    flex: 0 0 calc(25% - 12px);
+    min-width: 230px;
+    max-width: 285px;
+    box-sizing: border-box;
+    display: flex;
+    transition: opacity 0.2s ease;
+
+    .zanders-product-card {
+        width: 100%;
+        height: 100%;
+    }
+}
+
+@media (max-width: 1199px) {
+    .zanders-cross-slide-item {
+        flex: 0 0 calc(33.333% - 11px);
+    }
+}
+
+@media (max-width: 899px) {
+    .zanders-cross-slide-item {
+        flex: 0 0 calc(50% - 8px);
+    }
+}
+
+@media (max-width: 575px) {
+    .zanders-cross-slide-item {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Product Card */
+.zanders-cross-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 2px;
+    padding: 18px 16px 14px 16px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.zanders-cross-card:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+.zanders-cross-image-link {
+    text-decoration: none;
+    display: block;
+}
+
+.zanders-cross-image-wrap {
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+    overflow: hidden;
+}
+
+.zanders-cross-product-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.zanders-cross-card:hover .zanders-cross-product-img {
+    transform: scale(1.02);
+}
+
+.zanders-cross-image-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #f8fafc;
+    border-radius: 2px;
+}
+
+/* Details & Typography */
+.zanders-cross-details {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.zanders-cross-card-title {
+    text-align: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.35;
+    color: #111827;
+    margin: 0 0 8px 0;
+    min-height: 38px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.zanders-cross-card-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.zanders-cross-card-title a:hover {
+    color: #991020;
+}
+
+.zanders-cross-card-meta {
+    text-align: center;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.zanders-cross-meta-row {
+    margin-bottom: 2px;
+}
+
+.zanders-cross-meta-lbl {
+    color: #64748b;
+    font-weight: 400;
+    margin-right: 3px;
+}
+
+.zanders-cross-meta-val {
+    color: #000000 !important;
+    font-weight: 700;
+}
+
+/* Bottom & Price Row */
+.zanders-cross-card-bottom {
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.zanders-cross-price-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 0 2px;
+}
+
+.zanders-cross-current-price {
+    color: #991020;
+    font-size: 0.9375rem;
+    font-weight: 700;
+}
+
+/* Actions Row */
+.zanders-cross-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+}
+
+.zanders-cross-cart-wrap {
+    flex-grow: 1;
+}
+
+.zanders-cross-buy-form {
+    margin: 0;
+}
+
+.zanders-cross-btn-add-to-cart {
+    width: 100%;
+    max-width: 110px;
+    height: 32px;
+    background-color: #991020;
+    color: #ffffff !important;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.zanders-cross-btn-add-to-cart:hover {
+    background-color: #7d0d1a;
+}
+
+.zanders-cross-btn-add-to-cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.zanders-cross-circle-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.zanders-cross-circle-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #64748b;
+    transition: all 0.2s ease;
+    padding: 0;
+    outline: none;
+}
+
+.zanders-cross-circle-btn:hover {
+    background-color: #e5e7eb;
+    color: #991020;
+}
+
+.zanders-cross-circle-btn svg {
+    display: block;
+    transition: transform 0.15s ease;
+}
+
+.zanders-cross-circle-btn:hover svg {
+    transform: scale(1.1);
+}
+
+.zanders-cross-wishlist-btn.is-active svg {
+    fill: #991020 !important;
+    stroke: #991020 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .zanders-cross-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .zanders-cross-header-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .zanders-cross-title {
+        font-size: 1.35rem;
+    }
+}
