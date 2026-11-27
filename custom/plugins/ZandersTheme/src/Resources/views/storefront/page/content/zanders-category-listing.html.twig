@@ -7,8 +7,8 @@
     {% set breadcrumbLabel = breadcrumbLabelOverride is defined ? breadcrumbLabelOverride : categoryName %}
     {% set isUserLoggedIn = context.customer is defined and context.customer and not context.customer.guest %}
     {% set isSearchResults = isSearchResults|default(false) %}
-    {% set startItem = isSearchResults and listing and listing.total > 0 ? ((listing.page - 1) * listing.limit + 1) : (products|length > 0 ? 1 : 0) %}
-    {% set endItem = isSearchResults and listing and listing.total > 0 ? (startItem + products|length - 1) : products|length %}
+    {% set startItem = listing and listing.total > 0 ? ((listing.page - 1) * listing.limit + 1) : (products|length > 0 ? 1 : 0) %}
+    {% set endItem = listing and listing.total > 0 ? min(listing.total, (startItem + products|length - 1)) : products|length %}
 
     <div class="zanders-category-page-wrapper">
         <div class="zanders-category-container">
@@ -26,39 +26,64 @@
 
                     {% block page_content_zanders_category_listing_heading %}
                         {# Category Heading #}
-                        <h1 class="zanders-category-heading">{{ categoryName }}</h1>
+                        {% set isSearch = isSearchResults|default(false) or (page.searchTerm is defined and page.searchTerm is not empty) %}
+                        <h1 class="zanders-category-heading"{% if isSearch %} data-search-results="true"{% endif %}>{{ categoryName }}</h1>
                     {% endblock %}
 
                     {% block page_content_zanders_category_listing_toolbar %}
                         {# Listing Toolbar #}
                         <div class="zanders-category-toolbar">
+                            <div class="zanders-toolbar-divider zanders-toolbar-divider-top"></div>
+
                             {% block page_content_zanders_category_listing_toolbar_top %}
                                 <div class="zanders-toolbar-row-top">
                                     {% block page_content_zanders_category_listing_toolbar_items_count %}
-                                        <div class="zanders-toolbar-items-count">
+                                        <div class="zanders-toolbar-items-count"
+                                             data-label-items="{{ 'zanders.listing.items'|trans }}"
+                                             data-label-of="{{ 'zanders.listing.of'|trans }}"
+                                             data-initial-total="{{ listing ? listing.total : products|length }}"
+                                             data-initial-start="{{ startItem }}"
+                                             data-initial-end="{{ endItem }}">
                                             {{ 'zanders.listing.items'|trans }} {{ startItem }}-{{ endItem }} {{ 'zanders.listing.of'|trans }} {{ listing ? listing.total : products|length }}
                                         </div>
                                     {% endblock %}
 
                                     {% block page_content_zanders_category_listing_toolbar_pagination %}
-                                        <div class="zanders-toolbar-pagination">
+                                        {% set currentPage = (listing and listing.page) ? listing.page : 1 %}
+                                        {% set pageLimit = (listing and listing.limit > 0) ? listing.limit : 15 %}
+                                        {% set totalItems = listing ? listing.total : products|length %}
+                                        {% set totalPages = totalItems > 0 ? (totalItems / pageLimit)|round(0, 'ceil') : 1 %}
+                                        {% set maxPages = 5 %}
+                                        {% set startP = max(1, min(currentPage - 2, totalPages - maxPages + 1)) %}
+                                        {% set endP = min(totalPages, startP + maxPages - 1) %}
+                                        <div class="zanders-toolbar-pagination"
+                                             data-label-page="{{ 'zanders.listing.page'|trans }}"
+                                             data-label-prev="{{ 'zanders.listing.previousPage'|trans|striptags }}"
+                                             data-label-next="{{ 'zanders.listing.nextPage'|trans|striptags }}"
+                                             data-current-page="{{ currentPage }}"
+                                             data-page-limit="{{ pageLimit }}"
+                                             data-total-pages="{{ totalPages }}"
+                                             data-initial-total="{{ totalItems }}">
                                             <span class="zanders-page-label">{{ 'zanders.listing.page'|trans }}</span>
-                                            {% if isSearchResults and listing %}
-                                                {% if listing.page > 1 %}
-                                                    <a href="{{ path('frontend.search.page', { search: page.searchTerm, p: listing.page - 1, order: listing.sorting, limit: listing.limit }) }}" class="zanders-page-arrow" aria-label="{{ 'zanders.listing.previousPage'|trans|striptags }}">&lt;</a>
-                                                {% else %}
-                                                    <span class="zanders-page-arrow">&lt;</span>
-                                                {% endif %}
-                                                <span class="zanders-page-num is-active">{{ listing.page }}</span>
-                                                {% if listing.page * listing.limit < listing.total %}
-                                                    <a href="{{ path('frontend.search.page', { search: page.searchTerm, p: listing.page + 1, order: listing.sorting, limit: listing.limit }) }}" class="zanders-page-arrow" aria-label="{{ 'zanders.listing.nextPage'|trans|striptags }}">&gt;</a>
-                                                {% else %}
-                                                    <span class="zanders-page-arrow">&gt;</span>
-                                                {% endif %}
+
+                                            {% if currentPage > 1 %}
+                                                <a href="{% if isSearchResults %}{{ path('frontend.search.page', { search: page.searchTerm, p: currentPage - 1, order: listing.sorting, limit: listing.limit }) }}{% else %}?p={{ currentPage - 1 }}{% endif %}" class="zanders-page-arrow" data-page="{{ currentPage - 1 }}" aria-label="{{ 'zanders.listing.previousPage'|trans|striptags }}">&lt;</a>
                                             {% else %}
-                                                <span class="zanders-page-arrow">&lt;</span>
-                                                <span class="zanders-page-num is-active">1</span>
-                                                <span class="zanders-page-arrow">&gt;</span>
+                                                <span class="zanders-page-arrow is-disabled" aria-label="{{ 'zanders.listing.previousPage'|trans|striptags }}">&lt;</span>
+                                            {% endif %}
+
+                                            {% for pNum in startP..endP %}
+                                                {% if pNum == currentPage %}
+                                                    <span class="zanders-page-num is-active" data-page="{{ pNum }}">{{ pNum }}</span>
+                                                {% else %}
+                                                    <a href="{% if isSearchResults %}{{ path('frontend.search.page', { search: page.searchTerm, p: pNum, order: listing.sorting, limit: listing.limit }) }}{% else %}?p={{ pNum }}{% endif %}" class="zanders-page-num" data-page="{{ pNum }}">{{ pNum }}</a>
+                                                {% endif %}
+                                            {% endfor %}
+
+                                            {% if currentPage < totalPages %}
+                                                <a href="{% if isSearchResults %}{{ path('frontend.search.page', { search: page.searchTerm, p: currentPage + 1, order: listing.sorting, limit: listing.limit }) }}{% else %}?p={{ currentPage + 1 }}{% endif %}" class="zanders-page-arrow" data-page="{{ currentPage + 1 }}" aria-label="{{ 'zanders.listing.nextPage'|trans|striptags }}">&gt;</a>
+                                            {% else %}
+                                                <span class="zanders-page-arrow is-disabled" aria-label="{{ 'zanders.listing.nextPage'|trans|striptags }}">&gt;</span>
                                             {% endif %}
                                         </div>
                                     {% endblock %}
@@ -66,8 +91,9 @@
                                     {% block page_content_zanders_category_listing_toolbar_per_page %}
                                         <div class="zanders-toolbar-per-page">
                                             <label for="zandersShowPerPage" class="zanders-per-page-label">{{ 'zanders.listing.show'|trans }}</label>
-                                            <select id="zandersShowPerPage" class="zanders-per-page-select"{% if isSearchResults %} onchange="var params = new URLSearchParams(window.location.search); params.set('limit', this.value); params.set('p', '1'); window.location.search = params.toString();"{% endif %}>
-                                                <option value="15"{% if not isSearchResults or listing.limit == 15 %} selected{% endif %}>15 {{ 'zanders.listing.perPage'|trans }}</option>
+                                            <select id="zandersShowPerPage" class="zanders-per-page-select"{% if isSearchResults %} onchange="var params = new URLSearchParams(window.location.search); params.set('limit', this.value); params.set('p', '1'); window.location.search = params.toString();"{% else %} onchange="var params = new URLSearchParams(window.location.search); params.set('limit', this.value); params.set('p', '1'); window.location.search = params.toString();"{% endif %}>
+                                                <option value="10"{% if listing and listing.limit == 10 %} selected{% endif %}>10 {{ 'zanders.listing.perPage'|trans }}</option>
+                                                <option value="15"{% if not isSearchResults or (listing and listing.limit == 15) %} selected{% endif %}>15 {{ 'zanders.listing.perPage'|trans }}</option>
                                                 <option value="30"{% if isSearchResults and listing.limit == 30 %} selected{% endif %}>30 {{ 'zanders.listing.perPage'|trans }}</option>
                                                 <option value="60"{% if isSearchResults and listing.limit == 60 %} selected{% endif %}>60 {{ 'zanders.listing.perPage'|trans }}</option>
                                             </select>
@@ -81,49 +107,60 @@
                             {% block page_content_zanders_category_listing_toolbar_bottom %}
                                 <div class="zanders-toolbar-row-bottom">
                                     {% block page_content_zanders_category_listing_toolbar_views %}
-                                        <div class="zanders-toolbar-views">
+                                        <div class="zanders-toolbar-views" data-listing-view-switch="true">
                                             <span class="zanders-view-as-label">{{ 'zanders.listing.viewAs'|trans }}</span>
-                                            <button type="button" class="zanders-view-btn is-active" title="{{ 'zanders.listing.gridView'|trans|striptags }}" aria-label="{{ 'zanders.listing.gridView'|trans|striptags }}">
-                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                                                    <rect x="0" y="0" width="4" height="4"></rect>
-                                                    <rect x="6" y="0" width="4" height="4"></rect>
-                                                    <rect x="12" y="0" width="4" height="4"></rect>
-                                                    <rect x="0" y="6" width="4" height="4"></rect>
-                                                    <rect x="6" y="6" width="4" height="4"></rect>
-                                                    <rect x="12" y="6" width="4" height="4"></rect>
-                                                    <rect x="0" y="12" width="4" height="4"></rect>
-                                                    <rect x="6" y="12" width="4" height="4"></rect>
-                                                    <rect x="12" y="12" width="4" height="4"></rect>
+                                            <button type="button"
+                                                    class="zanders-view-btn is-active"
+                                                    data-view-mode="grid"
+                                                    title="{{ 'zanders.listing.gridView'|trans|striptags }}"
+                                                    aria-label="{{ 'zanders.listing.gridView'|trans|striptags }}">
+                                                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                                                    <rect x="0" y="0" width="6" height="6"></rect>
+                                                    <rect x="8" y="0" width="6" height="6"></rect>
+                                                    <rect x="0" y="8" width="6" height="6"></rect>
+                                                    <rect x="8" y="8" width="6" height="6"></rect>
                                                 </svg>
                                             </button>
-                                            <button type="button" class="zanders-view-btn" title="{{ 'zanders.listing.listView'|trans|striptags }}" aria-label="{{ 'zanders.listing.listView'|trans|striptags }}">
-                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                                                    <rect x="0" y="1" width="16" height="3"></rect>
-                                                    <rect x="0" y="6" width="16" height="3"></rect>
-                                                    <rect x="0" y="11" width="16" height="3"></rect>
+                                            <button type="button"
+                                                    class="zanders-view-btn"
+                                                    data-view-mode="list-image"
+                                                    title="{{ 'zanders.listing.detailView'|trans|striptags }}"
+                                                    aria-label="{{ 'zanders.listing.detailView'|trans|striptags }}">
+                                                <svg width="14" height="14" viewBox="0 0 16 14" fill="currentColor">
+                                                    <rect x="0" y="1" width="3" height="3"></rect>
+                                                    <rect x="5" y="1.5" width="11" height="2"></rect>
+                                                    <rect x="0" y="6" width="3" height="3"></rect>
+                                                    <rect x="5" y="6.5" width="11" height="2"></rect>
+                                                    <rect x="0" y="11" width="3" height="3"></rect>
+                                                    <rect x="5" y="11.5" width="11" height="2"></rect>
                                                 </svg>
                                             </button>
-                                            <button type="button" class="zanders-view-btn" title="{{ 'zanders.listing.detailView'|trans|striptags }}" aria-label="{{ 'zanders.listing.detailView'|trans|striptags }}">
-                                                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
-                                                    <rect x="0" y="1" width="4" height="4"></rect>
-                                                    <rect x="6" y="2" width="10" height="2"></rect>
-                                                    <rect x="0" y="7" width="4" height="4"></rect>
-                                                    <rect x="6" y="8" width="10" height="2"></rect>
+                                            <button type="button"
+                                                    class="zanders-view-btn"
+                                                    data-view-mode="list-text"
+                                                    title="{{ 'zanders.listing.listView'|trans|striptags }}"
+                                                    aria-label="{{ 'zanders.listing.listView'|trans|striptags }}">
+                                                <svg width="14" height="14" viewBox="0 0 16 14" fill="currentColor">
+                                                    <rect x="0" y="1" width="16" height="2"></rect>
+                                                    <rect x="0" y="6" width="16" height="2"></rect>
+                                                    <rect x="0" y="11" width="16" height="2"></rect>
                                                 </svg>
                                             </button>
                                         </div>
                                     {% endblock %}
 
                                     {% block page_content_zanders_category_listing_toolbar_stock_toggle %}
-                                        <div class="zanders-toolbar-stock-toggle">
-                                            <a href="#" class="zanders-stock-link" onclick="return false;">{{ 'zanders.listing.hideOutOfStock'|trans }}</a>
+                                        <div class="zanders-toolbar-stock-toggle" data-listing-stock-filter="true">
+                                            <a href="#" class="zanders-stock-link"
+                                               data-text-hide="{{ 'zanders.listing.hideOutOfStock'|trans }}"
+                                               data-text-show="{{ 'zanders.listing.showOutOfStock'|trans|default('SHOW OUT OF STOCK ITEMS') }}">{{ 'zanders.listing.hideOutOfStock'|trans }}</a>
                                         </div>
                                     {% endblock %}
 
                                     {% block page_content_zanders_category_listing_toolbar_sorting %}
                                         <div class="zanders-toolbar-sorting">
                                             <label for="zandersSortBy" class="zanders-sort-label">{{ 'zanders.listing.sortBy'|trans }}</label>
-                                            <select id="zandersSortBy" class="zanders-sort-select"{% if isSearchResults %} onchange="var params = new URLSearchParams(window.location.search); params.set('order', this.value); params.set('p', '1'); window.location.search = params.toString();"{% else %} onchange="if(this.value){window.location.search = '?order=' + this.value;}"{% endif %}>
+                                            <select id="zandersSortBy" class="zanders-sort-select" onchange="var params = new URLSearchParams(window.location.search); params.set('order', this.value); params.set('p', '1'); window.location.search = params.toString();">
                                                 <option value="price-asc"{% if listing and listing.sorting == 'price-asc' %} selected{% endif %}>{{ 'zanders.listing.price'|trans }}</option>
                                                 <option value="name-asc"{% if listing and listing.sorting == 'name-asc' %} selected{% endif %}>{{ 'zanders.listing.nameAZ'|trans }}</option>
                                                 <option value="name-desc"{% if listing and listing.sorting == 'name-desc' %} selected{% endif %}>{{ 'zanders.listing.nameZA'|trans }}</option>
@@ -135,12 +172,14 @@
                                     {% endblock %}
                                 </div>
                             {% endblock %}
+
+                            <div class="zanders-toolbar-divider zanders-toolbar-divider-bottom"></div>
                         </div>
                     {% endblock %}
 
                     {% block page_content_zanders_category_listing_grid %}
-                        {# 3-Column Product Grid #}
-                        <div class="zanders-category-product-grid">
+                        {# Product Grid / List container #}
+                        <div class="zanders-category-product-grid is-view-grid" data-listing-grid="true">
                             {% for product in products %}
                                 {% block page_content_zanders_category_listing_grid_item %}
                                     {% sw_include '@Storefront/storefront/component/product/card/zanders-card.html.twig' with {
@@ -160,6 +199,15 @@
                                     </div>
                                 {% endblock %}
                             {% endfor %}
+
+                            {# Dynamic empty alert for client-side filtering #}
+                            <div class="zanders-category-empty-alert alert alert-info w-100 is-dynamic-empty" style="display: none;">
+                                {% if isSearchResults|default(false) %}
+                                    {{ 'listing.emptyResultMessage'|trans|sw_sanitize }}
+                                {% else %}
+                                    {{ 'zanders.listing.noProductsCategory'|trans }}
+                                {% endif %}
+                            </div>
                         </div>
                     {% endblock %}
                 </main>

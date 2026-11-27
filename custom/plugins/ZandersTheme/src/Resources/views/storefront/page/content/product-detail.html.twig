@@ -91,16 +91,15 @@
                             </div>
 
                             {% if allMedia and allMedia|length > 1 %}
-                                <div class="zanders-pd-thumbnails-row">
+                                <div class="zanders-pd-thumbnails-row" data-product-gallery-thumbnails="true">
                                     {% for mediaItem in allMedia %}
                                         {% if mediaItem.media %}
                                             <div
                                                 class="zanders-pd-thumb-box{% if loop.first %} is-active{% endif %}"
-                                                onclick="
-                                                     document.getElementById('zanders-main-product-image').src='{{ mediaItem.media.url }}';
-                                                     document.querySelectorAll('.zanders-pd-thumb-box').forEach(function(el){el.classList.remove('is-active');});
-                                                     this.classList.add('is-active');
-                                                 "
+                                                data-thumbnail-src="{{ mediaItem.media.url }}"
+                                                role="button"
+                                                tabindex="0"
+                                                aria-label="{{ mediaItem.media.translated.alt ?? product.translated.name }}"
                                             >
                                                 <img
                                                     src="{{ mediaItem.media.url }}"

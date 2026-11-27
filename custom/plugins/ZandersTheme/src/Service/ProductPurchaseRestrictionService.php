@@ -11,7 +11,6 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 class ProductPurchaseRestrictionService
 {
     public const CONFIG_ENABLED = 'ZandersTheme.config.purchaseRestrictionEnabled';
-    public const CONFIG_RULE = 'ZandersTheme.config.purchaseRestrictionRule';
     public const CONFIG_GROUPS = 'ZandersTheme.config.purchaseAllowedCustomerGroups';
     public const CONFIG_MINIMUM_ORDER_VALUE = 'ZandersTheme.config.purchaseMinimumOrderValue';
 
@@ -39,11 +38,6 @@ class ProductPurchaseRestrictionService
             if (!in_array($customer->getGroupId(), $allowedGroups, true)) {
                 return true;
             }
-        }
-
-        $ruleId = $this->systemConfigService->getString(self::CONFIG_RULE, $salesChannelId);
-        if ($ruleId !== '' && !in_array($ruleId, $context->getRuleIds(), true)) {
-            return true;
         }
 
         $minimumOrderValue = (float) ($this->systemConfigService->get(self::CONFIG_MINIMUM_ORDER_VALUE, $salesChannelId) ?? 0);

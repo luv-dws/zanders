@@ -1120,6 +1120,462 @@ class ClientStatePlugin extends PluginBase {
     }
 }
 
+class ListingViewPlugin extends PluginBase {
+    static options = {
+        storageKey: 'zanders_listing_view',
+        gridSelector: '[data-listing-grid], .zanders-category-product-grid',
+        btnSelector: '[data-view-mode]',
+        defaultView: 'grid',
+    };
+
+    constructor(el, options = {}) {
+        super(el, options, 'ListingView');
+    }
+
+    init() {
+        this._grid = document.querySelector(this.options.gridSelector);
+        this._buttons = document.querySelectorAll(this.options.btnSelector);
+
+        if (!this._grid || this._buttons.length === 0) return;
+
+        let initialView = null;
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewParam = urlParams.get('view');
+            if (viewParam && ['grid', 'list-image', 'list-text'].includes(viewParam)) {
+                initialView = viewParam;
+            }
+        } catch (e) {}
+
+        if (!initialView) {
+            try {
+                const stored = localStorage.getItem(this.options.storageKey);
+                if (stored && ['grid', 'list-image', 'list-text'].includes(stored)) {
+                    initialView = stored;
+                }
+            } catch (e) {}
+        }
+
+        const activeView = initialView || this.options.defaultView;
+        this.setView(activeView, false);
+
+        this._registerEvents();
+    }
+
+    _registerEvents() {
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest(this.options.btnSelector);
+            if (btn) {
+                e.preventDefault();
+                const view = btn.getAttribute('data-view-mode');
+                if (view && ['grid', 'list-image', 'list-text'].includes(view)) {
+                    this.setView(view, true);
+                }
+            }
+        });
+    }
+
+    setView(viewMode, save = true) {
+        if (!this._grid) {
+            this._grid = document.querySelector(this.options.gridSelector);
+        }
+        if (!this._grid) return;
+
+        this._grid.classList.remove('is-view-grid', 'is-view-list-image', 'is-view-list-text');
+        this._grid.classList.add(`is-view-${viewMode}`);
+
+        const buttons = document.querySelectorAll(this.options.btnSelector);
+        buttons.forEach(btn => {
+            const mode = btn.getAttribute('data-view-mode');
+            const isActive = mode === viewMode;
+            btn.classList.toggle('is-active', isActive);
+            btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        });
+
+        if (save) {
+            try {
+                localStorage.setItem(this.options.storageKey, viewMode);
+            } catch (e) {}
+        }
+    }
+}
+
+class ListingStockFilterPlugin extends PluginBase {
+    static options = {
+        gridSelector: '[data-listing-grid], .zanders-category-product-grid',
+        cardSelector: '.zanders-product-card, .zanders-cat-product-card',
+        stockLinkSelector: '.zanders-stock-link',
+        countSelector: '.zanders-toolbar-items-count',
+        paginationSelector: '.zanders-toolbar-pagination',
+        perPageSelector: '#zandersShowPerPage',
+        dynamicEmptySelector: '.zanders-category-empty-alert.is-dynamic-empty',
+        storageKey: 'zanders_hide_out_of_stock',
+    };
+
+    constructor(el, options = {}) {
+        super(el, options, 'ListingStockFilter');
+    }
+
+    init() {
+        this._grid = document.querySelector(this.options.gridSelector);
+        this._stockLinks = document.querySelectorAll(this.options.stockLinkSelector);
+        this._countEls = document.querySelectorAll(this.options.countSelector);
+        this._paginationEls = document.querySelectorAll(this.options.paginationSelector);
+        this._perPageSelect = document.querySelector(this.options.perPageSelector);
+        this._dynamicEmptyEl = document.querySelector(this.options.dynamicEmptySelector);
+
+        if (!this._grid || this._stockLinks.length === 0) {
+            return;
+        }
+
+        this._allCards = Array.from(this._grid.querySelectorAll(this.options.cardSelector));
+        if (this._allCards.length === 0) {
+            return;
+        }
+
+        // Determine initial stock filter state from URL or localStorage
+        let isHiding = false;
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('hideOutOfStock')) {
+                const param = urlParams.get('hideOutOfStock');
+                isHiding = param === '1' || param === 'true';
+            } else {
+                const stored = localStorage.getItem(this.options.storageKey);
+                if (stored !== null) {
+                    isHiding = stored === 'true';
+                }
+            }
+        } catch (e) {}
+
+        this._isHidingOutOfStock = isHiding;
+
+        // Current page resolution
+        let initialPage = 1;
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const p = parseInt(urlParams.get('p'), 10);
+            if (!isNaN(p) && p > 0) {
+                initialPage = p;
+            }
+        } catch (e) {}
+        this._currentPage = initialPage;
+
+        this._registerEvents();
+
+        if (this._isHidingOutOfStock) {
+            this.updateListing(this._currentPage, false);
+        } else {
+            this._syncPaginationUrls();
+        }
+    }
+
+    isCardOutOfStock(card) {
+        return card.classList.contains('is-out-of-stock') ||
+               card.getAttribute('data-in-stock') === '0' ||
+               card.querySelector('.is-out-of-stock') !== null;
+    }
+
+    getPageLimit() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('limit')) {
+                const limitParam = parseInt(urlParams.get('limit'), 10);
+                if (!isNaN(limitParam) && limitParam > 0) return limitParam;
+            }
+        } catch (e) {}
+
+        const firstPagination = this._paginationEls[0];
+        if (firstPagination && firstPagination.dataset.pageLimit) {
+            const val = parseInt(firstPagination.dataset.pageLimit, 10);
+            if (!isNaN(val) && val > 0) {
+                return val;
+            }
+        }
+
+        if (this._perPageSelect) {
+            const val = parseInt(this._perPageSelect.value, 10);
+            if (!isNaN(val) && val > 0) {
+                return val;
+            }
+        }
+
+        return 15;
+    }
+
+    updateListing(page = 1, save = true) {
+        const matchingCards = [];
+        this._allCards.forEach(card => {
+            const isOos = this.isCardOutOfStock(card);
+            if (this._isHidingOutOfStock && isOos) {
+                // Out of stock product is filtered out
+            } else {
+                matchingCards.push(card);
+            }
+        });
+
+        const totalMatching = matchingCards.length;
+        const pageLimit = this.getPageLimit();
+        const totalPages = Math.max(1, Math.ceil(totalMatching / pageLimit));
+
+        if (page > totalPages) {
+            page = 1;
+        }
+        if (page < 1) {
+            page = 1;
+        }
+        this._currentPage = page;
+
+        const startIndex = (this._currentPage - 1) * pageLimit;
+        const endIndex = Math.min(startIndex + pageLimit, totalMatching);
+
+        // Update product card visibility in DOM
+        this._allCards.forEach(card => {
+            card.style.display = 'none';
+        });
+        for (let i = startIndex; i < endIndex; i++) {
+            matchingCards[i].style.display = '';
+        }
+
+        // Toggle dynamic empty alert message if all products hidden
+        if (this._dynamicEmptyEl) {
+            this._dynamicEmptyEl.style.display = totalMatching === 0 ? '' : 'none';
+        }
+
+        // Update stock toggle link texts
+        this._stockLinks.forEach(link => {
+            const showText = link.dataset.textShow || 'SHOW OUT OF STOCK ITEMS';
+            const hideText = link.dataset.textHide || 'HIDE OUT OF STOCK ITEMS';
+            link.textContent = this._isHidingOutOfStock ? showText : hideText;
+            link.classList.toggle('is-active', this._isHidingOutOfStock);
+        });
+
+        // Update item count element
+        this._countEls.forEach(countEl => {
+            const labelItems = countEl.dataset.labelItems || 'Items';
+            const labelOf = countEl.dataset.labelOf || 'Of';
+            if (totalMatching === 0) {
+                countEl.textContent = `${labelItems} 0-0 ${labelOf} 0`;
+            } else {
+                const startNum = startIndex + 1;
+                const endNum = endIndex;
+                countEl.textContent = `${labelItems} ${startNum}-${endNum} ${labelOf} ${totalMatching}`;
+            }
+        });
+
+        // Update search results heading count if present (e.g. "4 products found for 'mag'")
+        const searchHeadingEl = document.querySelector('.zanders-category-heading[data-search-results="true"]');
+        if (searchHeadingEl) {
+            const currentText = searchHeadingEl.textContent.trim();
+            if (currentText) {
+                if (totalMatching === 1) {
+                    searchHeadingEl.textContent = currentText.replace(/^\d+/, '1').replace(/\bproducts\b/i, 'product');
+                } else {
+                    searchHeadingEl.textContent = currentText.replace(/^\d+/, totalMatching.toString()).replace(/\bproduct\b/i, 'products');
+                }
+            }
+        }
+
+        // Update pagination element
+        this._paginationEls.forEach(paginationEl => {
+            this.renderPagination(paginationEl, this._currentPage, totalPages);
+        });
+
+        // Save preference and synchronize URL search params
+        if (save) {
+            try {
+                localStorage.setItem(this.options.storageKey, this._isHidingOutOfStock ? 'true' : 'false');
+                const newUrl = new URL(window.location.href);
+                if (this._isHidingOutOfStock) {
+                    newUrl.searchParams.set('hideOutOfStock', '1');
+                } else {
+                    newUrl.searchParams.delete('hideOutOfStock');
+                }
+                if (this._currentPage > 1) {
+                    newUrl.searchParams.set('p', this._currentPage.toString());
+                } else {
+                    newUrl.searchParams.delete('p');
+                }
+                window.history.replaceState({}, '', newUrl.toString());
+            } catch (e) {}
+        }
+    }
+
+    renderPagination(paginationEl, currentPage, totalPages) {
+        const labelPage = paginationEl.dataset.labelPage || 'Page:';
+        const labelPrev = paginationEl.dataset.labelPrev || 'Previous page';
+        const labelNext = paginationEl.dataset.labelNext || 'Next page';
+
+        const maxPages = 5;
+        const startP = Math.max(1, Math.min(currentPage - 2, totalPages - maxPages + 1));
+        const endP = Math.min(totalPages, startP + maxPages - 1);
+
+        let html = `<span class="zanders-page-label">${labelPage}</span>\n`;
+
+        // Previous arrow
+        if (currentPage > 1) {
+            const prevUrl = this._buildPageUrl(currentPage - 1);
+            html += `<a href="${prevUrl}" class="zanders-page-arrow" data-page="${currentPage - 1}" aria-label="${labelPrev}">&lt;</a>\n`;
+        } else {
+            html += `<span class="zanders-page-arrow is-disabled" aria-label="${labelPrev}">&lt;</span>\n`;
+        }
+
+        // Page numbers
+        for (let pNum = startP; pNum <= endP; pNum++) {
+            if (pNum === currentPage) {
+                html += `<span class="zanders-page-num is-active" data-page="${pNum}">${pNum}</span>\n`;
+            } else {
+                const pageUrl = this._buildPageUrl(pNum);
+                html += `<a href="${pageUrl}" class="zanders-page-num" data-page="${pNum}">${pNum}</a>\n`;
+            }
+        }
+
+        // Next arrow
+        if (currentPage < totalPages) {
+            const nextUrl = this._buildPageUrl(currentPage + 1);
+            html += `<a href="${nextUrl}" class="zanders-page-arrow" data-page="${currentPage + 1}" aria-label="${labelNext}">&gt;</a>\n`;
+        } else {
+            html += `<span class="zanders-page-arrow is-disabled" aria-label="${labelNext}">&gt;</span>\n`;
+        }
+
+        paginationEl.innerHTML = html;
+    }
+
+    _buildPageUrl(page) {
+        try {
+            const url = new URL(window.location.href);
+            if (page > 1) {
+                url.searchParams.set('p', page.toString());
+            } else {
+                url.searchParams.delete('p');
+            }
+            if (this._isHidingOutOfStock) {
+                url.searchParams.set('hideOutOfStock', '1');
+            } else {
+                url.searchParams.delete('hideOutOfStock');
+            }
+            return url.pathname + url.search;
+        } catch (e) {
+            let q = `?p=${page}`;
+            if (this._isHidingOutOfStock) q += '&hideOutOfStock=1';
+            return q;
+        }
+    }
+
+    _syncPaginationUrls() {
+        this._paginationEls.forEach(paginationEl => {
+            const links = paginationEl.querySelectorAll('a[href]');
+            links.forEach(link => {
+                const href = link.getAttribute('href');
+                if (href && !href.startsWith('#')) {
+                    try {
+                        const url = new URL(href, window.location.origin);
+                        if (this._isHidingOutOfStock) {
+                            url.searchParams.set('hideOutOfStock', '1');
+                        } else {
+                            url.searchParams.delete('hideOutOfStock');
+                        }
+                        link.setAttribute('href', url.pathname + url.search);
+                    } catch (e) {}
+                }
+            });
+        });
+    }
+
+    _registerEvents() {
+        // Toggle button click
+        this._stockLinks.forEach(link => {
+            if (link._hasStockFilterListener) return;
+            link._hasStockFilterListener = true;
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                this._isHidingOutOfStock = !this._isHidingOutOfStock;
+                this.updateListing(1, true);
+            });
+        });
+
+        // Pagination click (delegated on pagination elements)
+        this._paginationEls.forEach(paginationEl => {
+            paginationEl.addEventListener('click', (e) => {
+                const target = e.target.closest('[data-page]');
+                if (!target) return;
+                const pageNum = parseInt(target.getAttribute('data-page'), 10);
+                if (isNaN(pageNum) || pageNum === this._currentPage) return;
+
+                const pageLimit = this.getPageLimit();
+                const totalPages = Math.max(1, Math.ceil(this._allCards.length / pageLimit));
+                if (pageNum <= totalPages) {
+                    e.preventDefault();
+                    this.updateListing(pageNum, true);
+                    if (this._grid) {
+                        const top = this._grid.getBoundingClientRect().top + window.pageYOffset - 120;
+                        window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                    }
+                }
+            });
+        });
+
+        // Handle popstate for browser back/forward buttons
+        window.addEventListener('popstate', () => {
+            let isHiding = false;
+            let page = 1;
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('hideOutOfStock')) {
+                    isHiding = urlParams.get('hideOutOfStock') === '1' || urlParams.get('hideOutOfStock') === 'true';
+                }
+                const p = parseInt(urlParams.get('p'), 10);
+                if (!isNaN(p) && p > 0) {
+                    page = p;
+                }
+            } catch (e) {}
+            this._isHidingOutOfStock = isHiding;
+            this.updateListing(page, false);
+        });
+    }
+}
+
+class ProductGalleryThumbnailsPlugin extends PluginBase {
+    static options = {
+        mainImageSelector: '#zanders-main-product-image',
+        thumbSelector: '.zanders-pd-thumb-box, [data-thumbnail-src]',
+        activeClass: 'is-active',
+    };
+
+    constructor(el, options = {}) {
+        super(el, options, 'ProductGalleryThumbnails');
+    }
+
+    init() {
+        this._mainImg = document.querySelector(this.options.mainImageSelector);
+        this._thumbs = this.el.querySelectorAll(this.options.thumbSelector);
+
+        if (!this._mainImg || this._thumbs.length === 0) return;
+
+        this._registerEvents();
+    }
+
+    _registerEvents() {
+        this._thumbs.forEach(thumb => {
+            const activate = (e) => {
+                if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') {
+                    return;
+                }
+                e.preventDefault();
+                const src = thumb.dataset.thumbnailSrc || (thumb.querySelector('img') ? thumb.querySelector('img').src : null);
+                if (src && this._mainImg) {
+                    this._mainImg.src = src;
+                }
+                this._thumbs.forEach(t => t.classList.remove(this.options.activeClass));
+                thumb.classList.add(this.options.activeClass);
+            };
+
+            thumb.addEventListener('click', activate);
+            thumb.addEventListener('keydown', activate);
+        });
+    }
+}
+
 // Register into Shopware's native PluginManager
 if (typeof window !== 'undefined' && window.PluginManager) {
     window.PluginManager.register(
@@ -1162,6 +1618,21 @@ if (typeof window !== 'undefined' && window.PluginManager) {
         ClientStatePlugin,
         '[data-client-state]'
     );
+    window.PluginManager.register(
+        'ListingView',
+        ListingViewPlugin,
+        '[data-listing-view-switch]'
+    );
+    window.PluginManager.register(
+        'ListingStockFilter',
+        ListingStockFilterPlugin,
+        '[data-listing-stock-filter]'
+    );
+    window.PluginManager.register(
+        'ProductGalleryThumbnails',
+        ProductGalleryThumbnailsPlugin,
+        '[data-product-gallery-thumbnails]'
+    );
 }
 
 // Export for module systems or global access
@@ -1174,11 +1645,34 @@ if (typeof window !== 'undefined') {
     window.ProductWarningModalPlugin = ProductWarningModalPlugin;
     window.CrossSellingSliderPlugin = CrossSellingSliderPlugin;
     window.ClientStatePlugin = ClientStatePlugin;
+    window.ListingViewPlugin = ListingViewPlugin;
+    window.ListingStockFilterPlugin = ListingStockFilterPlugin;
+    window.ProductGalleryThumbnailsPlugin = ProductGalleryThumbnailsPlugin;
     window.printInvoiceUrl = printInvoiceUrl;
 }
 
 const initStorefront = () => {
     console.info('[ZandersTheme] Storefront JavaScript initialized.');
+
+    // Product Gallery Thumbnails Direct Initialization
+    const galleryThumbsEl = document.querySelector('[data-product-gallery-thumbnails]');
+    if (galleryThumbsEl && !window.zandersGalleryThumbsInstance) {
+        window.zandersGalleryThumbsInstance = new ProductGalleryThumbnailsPlugin(galleryThumbsEl);
+    }
+
+    // Global delegated listener for product gallery thumbnails
+    document.addEventListener('click', (e) => {
+        const thumb = e.target.closest('.zanders-pd-thumb-box, [data-thumbnail-src]');
+        if (thumb) {
+            const mainImg = document.getElementById('zanders-main-product-image');
+            const src = thumb.dataset.thumbnailSrc || (thumb.querySelector('img') ? thumb.querySelector('img').src : null);
+            if (src && mainImg) {
+                mainImg.src = src;
+            }
+            document.querySelectorAll('.zanders-pd-thumb-box').forEach(el => el.classList.remove('is-active'));
+            thumb.classList.add('is-active');
+        }
+    });
 
     // Product Finder Direct Initialization
     if (!window.zandersFinderInstance) {
@@ -1253,19 +1747,16 @@ const initStorefront = () => {
         });
     }
 
-    // Stock filter toggle ("HIDE OUT OF STOCK ITEMS" / "SHOW OUT OF STOCK ITEMS")
-    const stockLink = document.querySelector('.zanders-stock-link');
-    if (stockLink) {
-        let hideOutOfStock = false;
-        stockLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            hideOutOfStock = !hideOutOfStock;
-            const outOfStockCards = document.querySelectorAll('.zanders-product-card.is-out-of-stock, .zanders-cat-product-card.is-out-of-stock');
-            outOfStockCards.forEach(card => {
-                card.style.display = hideOutOfStock ? 'none' : '';
-            });
-            stockLink.textContent = hideOutOfStock ? 'SHOW OUT OF STOCK ITEMS' : 'HIDE OUT OF STOCK ITEMS';
-        });
+    // Listing View Switcher Direct Initialization
+    const viewSwitchEl = document.querySelector('[data-listing-view-switch]');
+    if (viewSwitchEl && !window.zandersListingViewInstance) {
+        window.zandersListingViewInstance = new ListingViewPlugin(viewSwitchEl);
+    }
+
+    // Stock filter toggle Direct Initialization
+    const stockFilterEl = document.querySelector('[data-listing-stock-filter], .zanders-toolbar-stock-toggle, .zanders-stock-link');
+    if (stockFilterEl && !window.zandersListingStockFilterInstance) {
+        window.zandersListingStockFilterInstance = new ListingStockFilterPlugin(stockFilterEl);
     }
 
     // Price visibility toggle ("HIDE PRICES" / "SHOW PRICES")

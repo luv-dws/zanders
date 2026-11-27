@@ -94,14 +94,6 @@
             <defaultValue>false</defaultValue>
         </input-field>
 
-        <component name="sw-entity-single-select">
-            <name>purchaseRestrictionRule</name>
-            <entity>rule</entity>
-            <label>Customer eligibility Rule Builder rule</label>
-            <label lang="de-DE">Rule-Builder-Regel für die Kundenberechtigung</label>
-            <placeholder>Select a rule...</placeholder>
-        </component>
-
         <component name="sw-entity-multi-id-select">
             <name>purchaseAllowedCustomerGroups</name>
             <entity>customer_group</entity>

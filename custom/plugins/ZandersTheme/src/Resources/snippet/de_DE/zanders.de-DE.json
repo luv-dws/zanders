@@ -51,6 +51,7 @@
             "outOfStock": "Nicht vorrätig",
             "qty": "Menge:",
             "addToCart": "IN DEN WARENKORB",
+            "backOrder": "RÜCKSTAND",
             "loginToViewPrice": "Bitte anmelden, um Preis zu sehen",
             "compare": "Vergleichen",
             "addToCompare": "Zum Vergleich hinzufügen"
@@ -131,7 +132,10 @@
             "gridView": "Gitteransicht",
             "listView": "Listenansicht",
             "detailView": "Detailansicht",
+            "compactView": "Textlisten-Ansicht",
+            "msrp": "UVP:",
             "hideOutOfStock": "NICHT VORRÄTIGE ARTIKEL AUSBLENDEN",
+            "showOutOfStock": "NICHT VORRÄTIGE ARTIKEL ANZEIGEN",
             "sortBy": "Sortieren nach:",
             "price": "Preis",
             "nameAZ": "Name A-Z",

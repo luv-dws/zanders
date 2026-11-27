@@ -51,6 +51,7 @@
             "outOfStock": "Out of Stock",
             "qty": "Qty:",
             "addToCart": "ADD TO CART",
+            "backOrder": "BACK ORDER",
             "loginToViewPrice": "Please Login to View Price",
             "compare": "Compare",
             "addToCompare": "Add to Compare"
@@ -131,7 +132,10 @@
             "gridView": "Grid View",
             "listView": "List View",
             "detailView": "Detail View",
+            "compactView": "Text List View",
+            "msrp": "MSRP:",
             "hideOutOfStock": "HIDE OUT OF STOCK ITEMS",
+            "showOutOfStock": "SHOW OUT OF STOCK ITEMS",
             "sortBy": "Sort By:",
             "price": "Price",
             "nameAZ": "Name A-Z",
